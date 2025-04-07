@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Chart & Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --text: #1e293b;
+            --background: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            text-align: center;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            margin: 20px auto;
+            position: relative;
+        }
+        .extra-data, .trading-section, .tables {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--card);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px var(--shadow);
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/learn">Learn Trading</a>
+        <a href="/practice">Practice Trading</a>
+        <a href="/simulator">Simulator</a>
+    </div>
+
+    <div class="container">
+        <h1>Stock Price Chart</h1>
+        <h3>Account Balance: $<span id="balance">100000.00</span></h3>
+        <input type="text" id="ticker" placeholder="Enter stock ticker (e.g. AAPL)">
+        <h3 id="stockPrice" style="margin-top:10px; color: var(--primary-dark);"></h3>
+        <button onclick="fetchStockData()">Show Chart</button>
+        
+        <div class="chart-container">
+            <canvas id="stockChart"></canvas>
+        </div>
+
+        <div id="extraData" class="extra-data" style="display: none;">
+            <h3>Stock Information</h3>
+            <ul id="extraDataList"></ul>
+        </div>
+        
+        <div class="trading-section">
+            <h3>Trade Stock</h3>
+            <input type="number" id="quantity" placeholder="Quantity">
+            <button onclick="confirmTrade('buy')">Buy</button>
+        </div>
+
+        <div class="tables">
+            <h3>Owned Stocks</h3>
+            <table id="ownedStocksTable">
+                <thead>
+                    <tr><th>Ticker</th><th>Date Bought</th><th>Quantity</th><th>Price Bought</th><th>Current Value</th><th>Earnings (% Change)</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div style="margin-top: 30px; text-align: center;">
+            <button onclick="resetAccount()" style="background: var(--primary-dark); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                Reset Account
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let stockChart = null;
+        
+        let currentStockPrice = null;
+        let autoUpdateInterval = null;
+
+        function fetchStockData(autoUpdate = false) {
+            const ticker = document.getElementById('ticker').value.trim().toUpperCase();
+            if (!ticker) return;
+
+            fetch(`/stock?ticker=${ticker}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || !data.prices) {
+                        console.error("Error fetching stock data");
+                        return;
+                    }
+                    
+                    const newPrice = data.prices[data.prices.length - 1];
+                    updateStockPriceDisplay(newPrice);
+                    
+                    if (!autoUpdate || currentStockPrice !== newPrice) {
+                        drawChart(data.timestamps, data.prices, ticker);
+                        currentStockPrice = newPrice;
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        function updateStockPriceDisplay(newPrice) {
+            const priceElement = document.getElementById('stockPrice');
+
+            if (currentStockPrice !== null) {
+                priceElement.style.color = newPrice > currentStockPrice ? "green" : newPrice < currentStockPrice ? "red" : "var(--primary-dark)";
+            }
+
+            priceElement.textContent = `Current Price: $${newPrice.toFixed(2)}`;
+        }
+
+        function startAutoUpdate() {
+            if (autoUpdateInterval) clearInterval(autoUpdateInterval);
+            autoUpdateInterval = setInterval(() => fetchStockData(true), 1000); // Updates every 10 sec
+        }
+
+        document.getElementById('ticker').addEventListener('input', () => {
+            clearInterval(autoUpdateInterval);
+            currentStockPrice = null;
+        });
+
+        document.getElementById('ticker').addEventListener('change', () => {
+            fetchStockData();
+            startAutoUpdate();
+        });
+
+        window.onload = () => {
+            updateBalanceDisplay();
+            updateTables();
+        };
+
+        function drawChart(timestamps, prices, ticker) {
+            if (stockChart) stockChart.destroy();
+            const ctx = document.getElementById('stockChart').getContext('2d');
+
+            // Create gradient effect
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.6)');
+            gradient.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
+
+            stockChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: `${ticker} Price`,
+                        data: prices,
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        backgroundColor: gradient,
+                        tension: 0.3,
+                        fill: true,
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        shadowOffsetY: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: context => `Price: $${context.raw.toFixed(2)}`
+                            }
+                        },
+                        legend: { display: true }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: 'rgba(0, 0, 0, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        function displayExtraData(extraData) {
+            const extraDataList = document.getElementById('extraDataList');
+            extraDataList.innerHTML = "";
+            for (let key in extraData) {
+                if (extraData[key] !== null) {
+                    const li = document.createElement("li");
+                    li.textContent = `${key}: ${extraData[key]}`;
+                    extraDataList.appendChild(li);
+                }
+            }
+            document.getElementById('extraData').style.display = "block";
+        }
+
+        function updateBalanceDisplay() {
+            fetch('/balance')
+                .then(response => response.json())
+                .then(data => document.getElementById("balance").textContent = data.balance.toFixed(2));
+        }
+
+        function confirmTrade(type) {
+            const ticker = document.getElementById('ticker').value.trim().toUpperCase();
+            const quantity = document.getElementById('quantity').value;
+
+            if (!ticker || quantity <= 0) {
+                alert("Please enter a valid ticker and quantity.");
+                return;
+            }
+
+            fetch(`/stock?ticker=${ticker}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.prices || data.prices.length === 0) {
+                        alert("Error fetching stock price.");
+                        return;
+                    }
+
+                    const currentPrice = data.prices[data.prices.length - 1];
+                    const totalCost = (quantity * currentPrice).toFixed(2);
+
+                    const confirmation = confirm(
+                        `Trade Confirmation:\n\n` +
+                        `Ticker: ${ticker}\n` +
+                        `Quantity: ${quantity}\n` +
+                        `Price per Share: $${currentPrice.toFixed(2)}\n` +
+                        `Total Cost: $${totalCost}\n\n` +
+                        `Do you want to proceed?`
+                    );
+
+                    if (confirmation) {
+                        fetchTrade(type);
+                        document.getElementById("quantity").value = "";
+                    }
+                })
+                .catch(error => console.error("Error fetching stock data:", error));
+                }
+                
+        function updateTables(autoUpdate = false) {
+            fetch('/update_holdings')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("ownedStocksTable").querySelector("tbody");
+                    tableBody.innerHTML = "";
+
+                    if (!data || data.length === 0) {
+                        tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No holdings available</td></tr>`;
+                        return;
+                    }
+
+                    data.forEach(trade => {
+                        if (parseFloat(trade.Quantity) > 0) {  
+                            const row = `<tr>
+                                <td>${trade.Ticker}</td>
+                                <td>${trade["Date Bought"]}</td>
+                                <td>${trade.Quantity}</td>
+                                <td>$${parseFloat(trade["Price Bought"]).toFixed(2)}</td>
+                                <td>$${parseFloat(trade["Current Value"]).toFixed(2)}</td>
+                                <td style="color: ${trade["Change %"] >= 0 ? 'green' : 'red'};">
+                                    $${parseFloat(trade.Earnings).toFixed(2)} (${parseFloat(trade["Change %"]).toFixed(2)}%)
+                                </td>
+                                <td>
+                                    <button class="sell-button" onclick="sellStock('${trade.Ticker}')">Sell</button>
+                                </td>
+                            </tr>`;
+                            tableBody.innerHTML += row;
+                        }
+                    });
+
+                    if (!autoUpdate) console.log("Holdings updated!");
+                })
+                .catch(error => console.error("Error updating holdings:", error));
+        }
+
+
+        // Auto-refresh holdings every 10 sec
+        setInterval(() => updateTables(true), 1000);
+
+        function sellStock(ticker) {
+            fetch('/update_holdings')
+                .then(response => response.json())
+                .then(data => {
+                    const stock = data.find(trade => trade.Ticker === ticker);
+                    if (!stock) {
+                        alert("Error: Stock not found.");
+                        return;
+                    }
+
+                    const { Quantity, "Price Bought": priceBought, "Current Value": currentValue, Earnings, "Change %": changePercent } = stock;
+
+                    // Confirmation message
+                    const message = `Sell ${Quantity} shares of ${ticker}?\n\n` +
+                                    `🔹 Bought Price: $${parseFloat(priceBought).toFixed(2)}\n` +
+                                    `🔹 Current Value: $${parseFloat(currentValue).toFixed(2)}\n` +
+                                    `🔹 Earnings/Loss: $${parseFloat(Earnings).toFixed(2)} (${parseFloat(changePercent).toFixed(2)}%)\n\n` +
+                                    `⚠️ This action is irreversible!`;
+
+                    if (!confirm(message)) return;
+
+                    // Proceed with selling
+                    fetch(`/sell_stock?ticker=${ticker}`, { method: 'POST' })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert(data.message || "Stock sold!");
+                            updateTables();  // Refresh holdings
+                            updateBalance(data.new_balance);  // Update balance display
+                        })
+                        .catch(error => console.error("Error selling stock:", error));
+                })
+                .catch(error => console.error("Error fetching stock details:", error));
+        }
+        function updateBalance(balance) {
+            document.getElementById("balance").textContent = `${parseFloat(balance).toFixed(2)}`;
+        }
+
+
+        function fetchTrade(type) {
+            const ticker = document.getElementById('ticker').value.trim().toUpperCase();
+            const quantity = document.getElementById('quantity').value;
+            fetch(`/trade?type=${type}&ticker=${ticker}&quantity=${quantity}`)
+                .then(response => response.json())
+                .then(() => { updateBalanceDisplay(); updateTables(); });
+        }
+
+        function resetAccount() {
+            fetch(`/reset`)
+                .then(() => { updateBalanceDisplay(); updateTables(); });
+        }
+
+        window.onload = () => { updateBalanceDisplay(); updateTables(); };
+        
+    </script>
+</body>
+</html>

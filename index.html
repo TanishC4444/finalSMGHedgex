@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedge - Fantasy Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light theme variables */
+            --primary-bg: linear-gradient(135deg, #a0c4ff, #caf0f8);
+            --card-bg: rgba(255, 255, 255, 0.2);
+            --card-hover-bg: rgba(255, 255, 255, 0.3);
+            --text-color: #1a3a5f;
+            --heading-color: #003566;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --button-bg: #0077b6;
+            --button-hover: #0096c7;
+            --section-border: rgba(255, 255, 255, 0.5);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme variables */
+            --primary-bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-hover-bg: rgba(44, 62, 80, 0.8);
+            --text-color: #e2e8f0;
+            --heading-color: #f8fafc;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            --button-bg: #0369a1;
+            --button-hover: #0284c7;
+            --section-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Header styles */
+        header {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #0077b6, #00b4d8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(0, 119, 182, 0.3);
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(90deg, transparent, #0077b6, transparent);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.5s ease;
+        }
+
+        .logo:hover::after {
+            transform: scaleX(1);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 50px;
+            height: 30px;
+            border-radius: 15px;
+            background-color: var(--card-bg);
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            top: 4px;
+            left: 4px;
+            background-color: #ffd60a;
+            transition: transform 0.3s ease;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(255, 214, 10, 0.5);
+        }
+
+        [data-theme="dark"] .theme-toggle::before {
+            transform: translateX(20px);
+            background-color: #94a3b8;
+        }
+
+        .theme-toggle .sun {
+            color: #ffd60a;
+            font-size: 14px;
+            z-index: 2;
+        }
+
+        .theme-toggle .moon {
+            color: #94a3b8;
+            font-size: 14px;
+            z-index: 2;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--heading-color);
+            position: relative;
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: fadeInDown 1s forwards 0.3s;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.8s;
+            margin-bottom: 40px;
+        }
+
+        /* Section styling */
+        .section {
+            background: var(--card-bg);
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            transform: translateY(30px);
+            opacity: 0;
+            transition: transform 0.5s ease, background 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--section-border);
+            backdrop-filter: blur(10px);
+            text-align: left;
+        }
+
+        .section.animate {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .section:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            background: var(--card-hover-bg);
+        }
+
+        .section h2 {
+            color: var(--heading-color);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--button-bg), transparent);
+            bottom: -10px;
+            left: 0;
+            border-radius: 3px;
+        }
+
+        .section p {
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .section ul {
+            list-style-type: none;
+            margin: 20px 0;
+        }
+
+        .section li {
+            margin: 10px 0;
+            position: relative;
+            padding-left: 25px;
+            line-height: 1.6;
+        }
+
+        .section li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--button-bg);
+            font-weight: bold;
+        }
+
+        .section li strong {
+            color: var(--heading-color);
+            font-weight: 600;
+        }
+
+        /* About section */
+        .about {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 119, 182, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            top: -20px;
+            right: -20px;
+            z-index: -1;
+        }
+
+        /* CTA button */
+        .cta-container {
+            margin: 50px 0;
+            text-align: center;
+        }
+
+        .download-link {
+            display: inline-block;
+            padding: 15px 35px;
+            background: var(--button-bg);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
+            z-index: 1;
+        }
+
+        .download-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 119, 182, 0.4);
+        }
+
+        .download-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+            z-index: -1;
+        }
+
+        .download-link:hover::before {
+            left: 100%;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--text-color), transparent);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .download-link {
+                padding: 12px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">Hedge</h1>
+            <button class="theme-toggle" aria-label="Toggle dark mode">
+                <span class="sun">☀️</span>
+                <span class="moon">🌙</span>
+            </button>
+        </header>
+        
+        <div class="hero">
+            <p class="tagline">Fantasy Trading. Real Learning.</p>
+        </div>
+        
+        <div class="section">
+            <h2>What is Trading?</h2>
+            <p>Trading is the act of buying and selling assets, such as stocks, to generate profit. Understanding trading helps develop financial literacy and strategic thinking. Markets operate on principles of supply and demand, and traders utilize various strategies like fundamental and technical analysis to make informed decisions.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Why is Trading Important?</h2>
+            <p>Trading plays a crucial role in the global economy, driving liquidity, price discovery, and wealth creation. Learning about trading equips individuals with the tools to navigate financial markets, make informed investment decisions, and prepare for long-term financial success.</p>
+        </div>
+        
+        <div class="section">
+            <h2>How Hedge Works</h2>
+            <p>Hedge is a fantasy trading platform designed to simulate real-world stock trading using fake money. It provides a risk-free environment for users to experiment with investment strategies, analyze market trends, and track their portfolio performance.</p>
+            <ul>
+                <li><strong>Data Collection:</strong> Hedge uses <code>yfinance</code> to fetch real-time market data, including stock prices, volume, and historical trends.</li>
+                <li><strong>Backend Processing:</strong> A <code>Flask</code>-based backend handles data requests, processes trades, and updates user portfolios.</li>
+                <li><strong>Local Data Tracking:</strong> User transactions and portfolio performance are stored locally, ensuring efficient tracking and retrieval.</li>
+                <li><strong>User Interface:</strong> A clean and interactive web interface allows users to explore stocks, make trades, and monitor their investments seamlessly.</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>Key Features</h2>
+            <p>Hedge is packed with features to create an engaging and realistic trading experience:</p>
+            <ul>
+                <li><strong>Live Stock Data:</strong> Access real-time stock prices and trends.</li>
+                <li><strong>Portfolio Management:</strong> Track your investments and assess performance over time.</li>
+                <li><strong>Simulated Trading:</strong> Execute buy/sell orders without real-world financial risk.</li>
+                <li><strong>Educational Resources:</strong> Learn fundamental and technical analysis techniques.</li>
+                <li><strong>Market Insights:</strong> Receive periodic updates on market trends and investment strategies.</li>
+            </ul>
+        </div>
+        
+        <div class="section about">
+            <h2>About Me</h2>
+            <p>I'm a junior at Prosper High School, passionate about finance and technology. I created Hedge to expand access to stock trading knowledge in a risk-free and engaging manner. By leveraging real market data and a structured learning approach, my goal is to make financial literacy more accessible to students and aspiring traders.</p>
+        </div>
+        
+        <div class="cta-container">
+            <a class="download-link" href="https://github.com/TanishC4444/PCIS_FantasySMG/archive/refs/heads/main.zip" download>Download Hedge</a>
+        </div>
+        
+        <div class="footer">
+            &copy; 2025 Hedge | Created with passion for financial education.
+        </div>
+    </div>
+
+    <script>
+        // Animate sections on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section');
+            
+            // Intersection Observer for section animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Dark mode toggle
+            const themeToggle = document.querySelector('.theme-toggle');
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        });
+    </script>
+</body>
+</html>

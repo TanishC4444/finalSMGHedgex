@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedge - Financial Literacy for Everyone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --success: #10b981;
+            --success-dark: #059669;
+            --text: #1e293b;
+            --background: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-button {
+            background-color: var(--success);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            background-color: var(--success-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .content {
+            margin: 3rem auto;
+            width: 90%;
+            max-width: 1000px;
+        }
+        
+        .card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 30px var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--text);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .feature {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial {
+            font-style: italic;
+            padding: 1.5rem;
+            background-color: rgba(96, 165, 250, 0.1);
+            border-left: 4px solid var(--primary);
+            margin: 1.5rem 0;
+        }
+        
+        .team {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .team-member {
+            text-align: center;
+        }
+        
+        .team-member h3 {
+            margin-top: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .team-member p {
+            color: var(--primary-dark);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .team-member .bio {
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+        
+        footer {
+            background-color: var(--text);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .team {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/learn">Learn Trading</a>
+        <a href="/practice">Practice Trading</a>
+        <a href="/simulator">Simulator</a>
+    </div>
+    
+    <div class="hero">
+        <h1>Hedge: Empowering Financial Literacy</h1>
+        <p>Founded by a high school student with a mission to make stock trading accessible to everyone.</p>
+        <a href="/learn" class="cta-button">Start Learning Now</a>
+    </div>
+    
+    <div class="content">
+        <div class="card">
+            <h2>Our Story</h2>
+            <p>Hedge was born from a personal journey. As a junior in high school, I (Tanish Chauhan) struggled to understand the complexities of the stock market. The resources available were either too technical or oversimplified. That's when I teamed up with my mentor to create Hedge.</p>
+            
+            <p>What started as a small project for a class assignment quickly evolved into a passionate mission to solve the financial literacy gap among young people. We believe that understanding how to invest and grow wealth shouldn't be limited to business majors or finance professionals.</p>
+            
+            <div class="testimonial">
+                "I created Hedge because I wanted to give young people the financial education I wish I had earlier. Understanding how money works shouldn't be complicated or boring." — Tanish Chauhan, Founder
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Our Mission</h2>
+            <p>At Hedge, we're on a mission to demystify stock trading and investing for everyone, especially young people. We believe financial literacy is a critical life skill that should be accessible to all, regardless of background or education.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">📚</div>
+                    <h3>Educational Content</h3>
+                    <p>Simple, jargon-free learning materials that break down complex concepts.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Risk-Free Practice</h3>
+                    <p>Gain confidence with virtual trading before investing real money.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Simulation Tools</h3>
+                    <p>Experiment with different variables to understand market dynamics.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Meet the Team</h2>
+            <div class="team">
+                <div class="team-member">
+                    <h3>Tanish Chauhan</h3>
+                    <p>Founder & Developer</p>
+                    <p class="bio">Junior in high school with a passion for technology and financial education. Started coding at 13 and created Hedge to help peers understand investing basics.</p>
+                </div>
+                <div class="team-member">
+                    <h3>Shubhrose Singh</h3>
+                    <p>Mentor</p>
+                    <p class="bio">Data Engineer and UCLA graduate passionate about mentoring and knowledge sharing. Experienced in Python, Git, and building efficient data pipelines, with a focus on guiding others in data engineering best practices.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Our Impact</h2>
+            <p>Since launching Hedge, we've helped over 500 students at our high school gain confidence in understanding stock markets. Our practice trading platform has simulated over 10,000 trades, allowing users to learn without financial risk.</p>
+            
+            <p>We've partnered with three local schools to incorporate Hedge into their economics curriculum, and we're expanding to more schools this year.</p>
+            
+            <div class="testimonial">
+                "Hedge has transformed how I teach economics. Students who were intimidated by the stock market are now eagerly participating in trading simulations and discussing investment strategies." — Economics Teacher, Lincoln High School
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Future Plans</h2>
+            <p>We're committed to continually improving Hedge based on user feedback. Our roadmap includes:</p>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
+                <li>Expanding our educational content to cover more advanced topics</li>
+                <li>Developing mobile apps for iOS and Android</li>
+                <li>Creating a community forum for users to share strategies and insights</li>
+                <li>Offering virtual workshops for schools and community organizations</li>
+            </ul>
+            
+            <a href="/learn" class="cta-button">Start Your Financial Journey</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>Contact Us</h3>
+                <p>Email: tanishchauhan4444@gmail.com</p>
+                <p>We'd love to hear your feedback or answer any questions!</p>
+            </div>
+            <div>
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn Trading</a></li>
+                    <li><a href="/practice">Practice Trading</a></li>
+                    <li><a href="/simulator">Simulator</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 Hedge Financial Literacy. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        function showAlert() {
+            alert("Welcome to Hedge!");
+        }
+    </script>
+</body>
+</html>

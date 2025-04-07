@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Equation Simulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --success: #10b981;
+            --text: #1e293b;
+            --background: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar a:hover {
+            transform: translateY(-2px);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .search-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        .search-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .select-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        .card {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 400px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            background: var(--border);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .info-item {
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .equation-builder {
+            margin-top: 2rem;
+        }
+        
+        .equation-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        
+        .equation-textarea {
+            flex: 1;
+            min-width: 300px;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            height: 80px;
+            font-family: monospace;
+        }
+        
+        .equation-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .column-container {
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .column-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .column-item {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        
+        .column-item:hover {
+            background: rgba(96, 165, 250, 0.3);
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .results-table th, .results-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .results-table th {
+            background-color: rgba(96, 165, 250, 0.1);
+        }
+        
+        .results-table tr:hover {
+            background-color: rgba(96, 165, 250, 0.05);
+        }
+        
+        .accuracy-display {
+            font-size: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        
+        .positive {
+            color: var(--success);
+        }
+        
+        .negative {
+            color: var(--error);
+        }
+        
+        .instructions {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: rgba(96, 165, 250, 0.1);
+            border-radius: 4px;
+        }
+        
+        .parameter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .parameter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .parameter-label {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/practice">Practice</a>
+        <a href="/learn">Learn</a>
+        <a href="/simulator">Simulator</a>
+    </div>
+    
+    <div class="hero">
+        <h1>Stock Equation Simulator</h1>
+        <p>Create and test stock price prediction equations</p>
+    </div>
+    
+    <div class="content">
+        <div class="card">
+            <h2>Equation Simulator</h2>
+            <div class="instructions">
+                <p>Enter a stock ticker and create equations using historical data columns to predict next-day price movements. 
+                The simulator will test your equation against historical data and show you the accuracy of your predictions.</p>
+                <p>Example equation: <code>(Close - Open) + (Volume / 1000000) - (beta * 10)</code></p>
+            </div>
+            
+            <div class="parameter-section">
+                <div class="parameter-group">
+                    <div class="parameter-label">Stock Ticker</div>
+                    <input type="text" id="ticker-input" class="search-input" placeholder="e.g. AAPL">
+                </div>
+                
+                <div class="parameter-group">
+                    <div class="parameter-label">Time Period</div>
+                    <select id="period-select" class="select-input">
+                        <option value="1mo">1 Month</option>
+                        <option value="3mo">3 Months</option>
+                        <option value="6mo">6 Months</option>
+                        <option value="1y">1 Year</option>
+                        <option value="2y">2 Years</option>
+                        <option value="5y">5 Years</option>
+                        <option value="ytd">Year to Date</option>
+                        <option value="max">Maximum</option>
+                    </select>
+                </div>
+                
+                <div class="parameter-group">
+                    <div class="parameter-label">Interval</div>
+                    <select id="interval-select" class="select-input">
+                        <option value="1d">1 Day</option>
+                        <option value="5d">5 Days</option>
+                        <option value="1wk">1 Week</option>
+                        <option value="1mo">1 Month</option>
+                    </select>
+                </div>
+                
+                <div class="parameter-group">
+                    <div class="parameter-label">&nbsp;</div>
+                    <button id="load-columns-btn" class="search-button">Load Columns</button>
+                </div>
+            </div>
+            
+            <div class="column-container" style="display: none;">
+                <h3>Available Columns</h3>
+                <p>Click on a column to insert it into your equation:</p>
+                <div id="column-list" class="column-list"></div>
+            </div>
+            
+            <div class="equation-builder" style="display: none;">
+                <h3>Enter Your Equation</h3>
+                <div class="equation-input">
+                    <textarea id="equation-textarea" class="equation-textarea" placeholder="Enter your equation using columns from above..."></textarea>
+                    <div class="equation-buttons">
+                        <button id="evaluate-equation-btn" class="search-button">Evaluate Equation</button>
+                        <button id="clear-equation-btn" class="search-button" style="background: var(--error);">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results-card" class="card" style="display: none;">
+            <h2>Results</h2>
+            
+            <div class="accuracy-display">
+                Prediction Accuracy: <span id="accuracy-value">0</span>%
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="results-chart"></canvas>
+            </div>
+            
+            <div class="results-table-container" style="margin-top: 2rem;">
+                <h3>Detailed Results</h3>
+                <table id="results-table" class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Equation Result</th>
+                            <th>Next-day Movement</th>
+                            <th>Prediction Correct?</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Results will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize variables
+        let resultsChart = null;
+        let availableColumns = [];
+        
+        // DOM Elements
+        const tickerInput = document.getElementById('ticker-input');
+        const periodSelect = document.getElementById('period-select');
+        const intervalSelect = document.getElementById('interval-select');
+        const loadColumnsBtn = document.getElementById('load-columns-btn');
+        const columnList = document.getElementById('column-list');
+        const columnContainer = document.querySelector('.column-container');
+        const equationBuilder = document.querySelector('.equation-builder');
+        const equationTextarea = document.getElementById('equation-textarea');
+        const evaluateEquationBtn = document.getElementById('evaluate-equation-btn');
+        const clearEquationBtn = document.getElementById('clear-equation-btn');
+        const resultsCard = document.getElementById('results-card');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const resultsBody = document.getElementById('results-body');
+        
+        // Load columns for the selected ticker and time period
+        loadColumnsBtn.addEventListener('click', function() {
+            const ticker = tickerInput.value.trim().toUpperCase();
+            if (!ticker) {
+                alert('Please enter a valid ticker symbol');
+                return;
+            }
+            
+            const period = periodSelect.value;
+            const interval = intervalSelect.value;
+            
+            // Show loading state
+            columnList.innerHTML = '<div class="loading">Loading columns...</div>';
+            columnContainer.style.display = 'block';
+            
+            // Fetch columns from API
+            fetch(`/available_columns?ticker=${ticker}&period=${period}&interval=${interval}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    availableColumns = data.columns || [];
+                    
+                    // Populate column list
+                    columnList.innerHTML = '';
+                    availableColumns.forEach(column => {
+                        const columnItem = document.createElement('div');
+                        columnItem.className = 'column-item';
+                        columnItem.textContent = column;
+                        columnItem.addEventListener('click', function() {
+                            insertTextAtCursor(equationTextarea, column);
+                        });
+                        columnList.appendChild(columnItem);
+                    });
+                    
+                    // Show equation builder
+                    equationBuilder.style.display = 'block';
+                })
+                .catch(error => {
+                    columnList.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                });
+        });
+        
+        // Function to insert text at cursor position in textarea
+        function insertTextAtCursor(textarea, text) {
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const scrollTop = textarea.scrollTop;
+            
+            textarea.value = textarea.value.substring(0, startPos) + text + textarea.value.substring(endPos, textarea.value.length);
+            textarea.focus();
+            textarea.selectionStart = startPos + text.length;
+            textarea.selectionEnd = startPos + text.length;
+            textarea.scrollTop = scrollTop;
+        }
+        
+        // Clear equation
+        clearEquationBtn.addEventListener('click', function() {
+            equationTextarea.value = '';
+            equationTextarea.focus();
+        });
+        
+        // Evaluate equation
+        evaluateEquationBtn.addEventListener('click', function() {
+            const ticker = tickerInput.value.trim().toUpperCase();
+            const period = periodSelect.value;
+            const interval = intervalSelect.value;
+            const equation = equationTextarea.value.trim();
+            
+            if (!ticker || !equation) {
+                alert('Please enter a ticker and equation');
+                return;
+            }
+            
+            // Show loading state
+            resultsCard.style.display = 'block';
+            accuracyValue.innerHTML = '<span class="loading">Calculating...</span>';
+            resultsBody.innerHTML = '<tr><td colspan="4" class="loading">Evaluating equation...</td></tr>';
+            
+            // Reset chart if it exists
+            if (resultsChart) {
+                resultsChart.destroy();
+            }
+            
+            // Evaluate equation using API
+            fetch('/evaluate_equation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ticker: ticker,
+                    period: period,
+                    interval: interval,
+                    equation: equation
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    // Display accuracy
+                    accuracyValue.textContent = data.accuracy;
+                    
+                    // Populate results table
+                    displayResultsTable(data.results);
+                    
+                    // Create chart
+                    createResultsChart(data.results);
+                })
+                .catch(error => {
+                    accuracyValue.innerHTML = '<span class="negative">Error</span>';
+                    resultsBody.innerHTML = `<tr><td colspan="4" class="negative">Error: ${error.message}</td></tr>`;
+                });
+        });
+        
+        // Display results table
+        function displayResultsTable(results) {
+            resultsBody.innerHTML = '';
+            
+            results.forEach(result => {
+                if (result.movement !== null) {
+                    const row = document.createElement('tr');
+                    
+                    // Date column
+                    const dateCell = document.createElement('td');
+                    dateCell.textContent = result.date;
+                    row.appendChild(dateCell);
+                    
+                    // Equation result column
+                    const resultCell = document.createElement('td');
+                    if (result.point !== null) {
+                        resultCell.textContent = result.point.toFixed(4);
+                        resultCell.className = result.point > 0 ? 'positive' : 'negative';
+                    } else {
+                        resultCell.textContent = 'N/A';
+                    }
+                    row.appendChild(resultCell);
+                    
+                    // Movement column
+                    const movementCell = document.createElement('td');
+                    movementCell.textContent = result.movement === '+' ? 'Up ↑' : 'Down ↓';
+                    movementCell.className = result.movement === '+' ? 'positive' : 'negative';
+                    row.appendChild(movementCell);
+                    
+                    // Prediction correct column
+                    const correctCell = document.createElement('td');
+                    if (result.point !== null) {
+                        const predictedDirection = result.point > 0 ? '+' : '-';
+                        const isCorrect = predictedDirection === result.movement;
+                        correctCell.textContent = isCorrect ? '✓' : '✗';
+                        correctCell.className = isCorrect ? 'positive' : 'negative';
+                    } else {
+                        correctCell.textContent = 'N/A';
+                    }
+                    row.appendChild(correctCell);
+                    
+                    resultsBody.appendChild(row);
+                }
+            });
+        }
+        
+        // Create results chart
+        function createResultsChart(results) {
+            const ctx = document.getElementById('results-chart').getContext('2d');
+            const filteredResults = results.filter(result => result.point !== null && result.movement !== null);
+            
+            const chartData = {
+                labels: filteredResults.map(result => result.date),
+                datasets: [
+                    {
+                        label: 'Equation Result',
+                        data: filteredResults.map(result => result.point),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        fill: false,
+                        tension: 0.1
+                    }
+                ]
+            };
+            
+            resultsChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    const idx = context.dataIndex;
+                                    const result = filteredResults[idx];
+                                    return [
+                                        `Next-day Movement: ${result.movement === '+' ? 'Up ↑' : 'Down ↓'}`,
+                                        `Prediction: ${result.point > 0 ? 'Up ↑' : 'Down ↓'}`,
+                                        `Correct: ${(result.point > 0 ? '+' : '-') === result.movement ? 'Yes ✓' : 'No ✗'}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
