@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedge - Stock Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --success: #10b981;
+            --success-dark: #059669;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --text: #1e293b;
+            --background: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .content {
+            margin: 2rem auto;
+            width: 95%;
+            max-width: 1200px;
+        }
+        
+        .card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 30px var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--text);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 2rem;
+        }
+        
+        .time-period-selector {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .time-period-selector button {
+            background-color: var(--background);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .time-period-selector button.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .time-period-selector button:hover {
+            background-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background-color: var(--card);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.2s ease;
+            border-left: 4px solid var(--border);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px var(--shadow-hover);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.8;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .good {
+            border-left-color: var(--success);
+        }
+        
+        .good .stat-value {
+            color: var(--success);
+        }
+        
+        .bad {
+            border-left-color: var(--danger);
+        }
+        
+        .bad .stat-value {
+            color: var(--danger);
+        }
+        
+        .neutral {
+            border-left-color: var(--warning);
+        }
+        
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stock-info h2 {
+            margin-bottom: 0.3rem;
+        }
+        
+        .stock-info p {
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            opacity: 0.7;
+        }
+        
+        .stock-price {
+            text-align: right;
+        }
+        
+        .stock-price .current-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        
+        .stock-price .price-change {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        
+        .price-up {
+            color: var(--success);
+        }
+        
+        .price-down {
+            color: var(--danger);
+        }
+        
+        .stats-section {
+            margin-top: 2rem;
+        }
+        
+        .stats-section h3 {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--text);
+            opacity: 0.7;
+        }
+        
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--danger);
+        }
+        
+        .trend-indicator {
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .stat-group {
+            margin-bottom: 1rem;
+        }
+        
+        .stat-category {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .comparison-container {
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .stock-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .stock-price {
+                text-align: left;
+                margin-top: 1rem;
+            }
+            
+            .stock-price .price-change {
+                justify-content: flex-start;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        #noDataMessage {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--background);
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .tab-container {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text);
+            opacity: 0.7;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            opacity: 1;
+            border-bottom-color: var(--primary);
+            color: var(--primary-dark);
+        }
+        
+        .tab:hover {
+            opacity: 1;
+            background-color: transparent;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .quarterly-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .quarterly-table th, .quarterly-table td {
+            padding: 0.75rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .quarterly-table th:first-child, .quarterly-table td:first-child {
+            text-align: left;
+        }
+        
+        .quarterly-table th {
+            background-color: var(--background);
+            font-weight: 600;
+        }
+        
+        .quarterly-table tr:hover {
+            background-color: var(--background);
+        }
+        
+        .positive-trend {
+            color: var(--success);
+        }
+        
+        .negative-trend {
+            color: var(--danger);
+        }
+        
+        .quarterly-chart-container {
+            height: 300px;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/learn">Learn Trading</a>
+        <a href="/practice">Practice Trading</a>
+        <a href="/simulator">Simulator</a>
+        <a href="/analysis">Analysis</a>
+    </div>
+    
+    <div class="content">
+        <div class="card">
+            <h2>Stock Analysis</h2>
+            <p>Enter a stock ticker symbol to get comprehensive information and analysis.</p>
+            
+            <div class="search-container">
+                <input type="text" id="stockTicker" placeholder="Enter stock ticker (e.g., AAPL, MSFT, GOOGL)" value="">
+                <button id="analyzeButton">Analyze</button>
+            </div>
+            
+            <div id="loadingIndicator" class="loading" style="display: none;">
+                <p>Loading stock data...</p>
+            </div>
+            
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            
+            <div id="stockAnalysis" style="display: none;">
+                <div class="stock-header">
+                    <div class="stock-info">
+                        <h2 id="stockName">Apple Inc.</h2>
+                        <p id="stockSymbol">AAPL</p>
+                        <p id="stockSector">Technology - Consumer Electronics</p>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price" id="currentPrice">$150.23</div>
+                        <div class="price-change" id="priceChange">
+                            <span id="priceChangeValue">+2.45 (1.65%)</span>
+                            <span id="priceChangeIcon">▲</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-container">
+                    <div class="tabs">
+                        <button class="tab active" data-tab="chart">Price Chart</button>
+                        <button class="tab" data-tab="fundamentals">Fundamentals</button>
+                        <button class="tab" data-tab="financials">Financials</button>
+                        <button class="tab" data-tab="growth">Growth & Performance</button>
+                    </div>
+                </div>
+                
+                <div id="chartTab" class="tab-content active">
+                    <div class="time-period-selector">
+                        <button class="time-period active" data-period="1d" data-interval="15m">1D</button>
+                        <button class="time-period" data-period="5d" data-interval="1h">5D</button>
+                        <button class="time-period" data-period="1mo" data-interval="1d">1M</button>
+                        <button class="time-period" data-period="3mo" data-interval="1d">3M</button>
+                        <button class="time-period" data-period="6mo" data-interval="1d">6M</button>
+                        <button class="time-period" data-period="1y" data-interval="1d">1Y</button>
+                        <button class="time-period" data-period="5y" data-interval="1wk">5Y</button>
+                        <button class="time-period" data-period="max" data-interval="1mo">Max</button>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="stockChart"></canvas>
+                    </div>
+                    
+                    <div class="stats-container" id="keyStats">
+                        <!-- Key stats will be dynamically loaded here -->
+                    </div>
+                </div>
+                
+                <div id="fundamentalsTab" class="tab-content">
+                    <div class="stats-section">
+                        <h3>Valuation Metrics</h3>
+                        <div class="stats-container" id="valuationMetrics">
+                            <!-- Valuation metrics will be dynamically loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="stats-section">
+                        <h3>Trading Information</h3>
+                        <div class="stats-container" id="tradingInfo">
+                            <!-- Trading info will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="financialsTab" class="tab-content">
+                    <div class="stats-section">
+                        <h3>Financial Health</h3>
+                        <div class="stats-container" id="financialHealth">
+                            <!-- Financial health metrics will be dynamically loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="stats-section">
+                        <h3>Quarterly Results</h3>
+                        <div id="quarterlyResultsChart" class="quarterly-chart-container">
+                            <canvas id="quarterlyChart"></canvas>
+                        </div>
+                        <table class="quarterly-table" id="quarterlyTable">
+                            <thead>
+                                <tr>
+                                    <th>Quarter</th>
+                                    <th>Revenue</th>
+                                    <th>YoY Growth</th>
+                                    <th>EPS</th>
+                                    <th>YoY Growth</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quarterlyTableBody">
+                                <!-- Quarterly data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="stats-section">
+                        <h3>Dividend Information</h3>
+                        <div class="stats-container" id="dividendInfo">
+                            <!-- Dividend info will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="growthTab" class="tab-content">
+                    <div class="stats-section">
+                        <h3>Growth Metrics</h3>
+                        <div class="stats-container" id="growthMetrics">
+                            <!-- Growth metrics will be dynamically loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="stats-section">
+                        <h3>Performance Metrics</h3>
+                        <div class="stats-container" id="performanceMetrics">
+                            <!-- Performance metrics will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="noDataMessage" style="display: none;">
+                <h3>Enter a stock ticker above to start analyzing</h3>
+                <p>You'll see comprehensive data, charts, and analysis for any publicly traded company.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Chart instance
+        let stockChart = null;
+        let quarterlyChart = null;
+        
+        // Current stock data
+        let currentStockData = {};
+        let currentTicker = '';
+        
+        // DOM elements
+        const stockTicker = document.getElementById('stockTicker');
+        const analyzeButton = document.getElementById('analyzeButton');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const stockAnalysis = document.getElementById('stockAnalysis');
+        const noDataMessage = document.getElementById('noDataMessage');
+        
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to current tab and content
+                tab.classList.add('active');
+                document.getElementById(tabId + 'Tab').classList.add('active');
+            });
+        });
+        
+        // Time period buttons
+        const timePeriodButtons = document.querySelectorAll('.time-period');
+        
+        timePeriodButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                timePeriodButtons.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Fetch new data for the selected time period
+                if (currentTicker) {
+                    const period = button.getAttribute('data-period');
+                    const interval = button.getAttribute('data-interval');
+                    fetchStockChartData(currentTicker, period, interval);
+                }
+            });
+        });
+        
+        // Initialize the page
+        function init() {
+            noDataMessage.style.display = 'block';
+            stockAnalysis.style.display = 'none';
+            
+            analyzeButton.addEventListener('click', analyzeStock);
+            stockTicker.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    analyzeStock();
+                }
+            });
+        }
+        
+        // Analyze stock function
+        function analyzeStock() {
+            const ticker = stockTicker.value.trim().toUpperCase();
+            
+            if (ticker === '') {
+                showError('Please enter a stock ticker symbol');
+                return;
+            }
+            
+            currentTicker = ticker;
+            
+            // Show loading indicator
+            loadingIndicator.style.display = 'block';
+            errorMessage.style.display = 'none';
+            stockAnalysis.style.display = 'none';
+            noDataMessage.style.display = 'none';
+            
+            // Fetch stock data
+            fetchStockData(ticker)
+                .then(() => {
+                    // Get active time period
+                    const activeTimePeriod = document.querySelector('.time-period.active');
+                    const period = activeTimePeriod.getAttribute('data-period');
+                    const interval = activeTimePeriod.getAttribute('data-interval');
+                    
+                    // Fetch chart data
+                    return fetchStockChartData(ticker, period, interval);
+                })
+                .then(() => {
+                    // Fetch quarterly results
+                    return fetchQuarterlyData(ticker);
+                })
+                .catch(error => {
+                    showError(`Error fetching stock data: ${error.message}`);
+                });
+        }
+        
+        // Show error function
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            loadingIndicator.style.display = 'none';
+        }
+        
+        // Fetch stock data function
+        function fetchStockData(ticker) {
+            return fetch(`/stock_analysis?ticker=${ticker}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Invalid ticker or no data available');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    currentStockData = data;
+                    
+                    // Update the UI with stock data
+                    updateStockInfo(data);
+                    populateStockStats(data);
+                    
+                    // Show the analysis section
+                    loadingIndicator.style.display = 'none';
+                    stockAnalysis.style.display = 'block';
+                });
+        }
+        
+        // Fetch chart data function
+        function fetchStockChartData(ticker, period, interval) {
+            return fetch(`/stock_chart?ticker=${ticker}&period=${period}&interval=${interval}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch chart data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    updateStockChart(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching chart data:', error);
+                });
+        }
+        
+        // Fetch quarterly data function
+        function fetchQuarterlyData(ticker) {
+            return fetch(`/quarterly_data?ticker=${ticker}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch quarterly data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    updateQuarterlyData(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching quarterly data:', error);
+                });
+        }
+        
+        // Update stock information
+        function updateStockInfo(data) {
+            document.getElementById('stockName').textContent = data.longName || data.shortName || data.symbol;
+            document.getElementById('stockSymbol').textContent = data.symbol;
+            document.getElementById('stockSector').textContent = `${data.sector || 'N/A'} - ${data.industry || 'N/A'}`;
+            
+            const currentPrice = document.getElementById('currentPrice');
+            const priceChange = document.getElementById('priceChange');
+            const priceChangeValue = document.getElementById('priceChangeValue');
+            const priceChangeIcon = document.getElementById('priceChangeIcon');
+            
+            currentPrice.textContent = `$${data.currentPrice.toFixed(2)}`;
+            
+            const changeAmount = data.change.toFixed(2);
+            const changePercent = data.changePercent.toFixed(2);
+            
+            priceChangeValue.textContent = `${changeAmount > 0 ? '+' : ''}${changeAmount} (${changePercent}%)`;
+            priceChangeIcon.textContent = changeAmount > 0 ? '▲' : '▼';
+            
+            if (changeAmount > 0) {
+                priceChange.classList.add('price-up');
+                priceChange.classList.remove('price-down');
+            } else {
+                priceChange.classList.add('price-down');
+                priceChange.classList.remove('price-up');
+            }
+        }
+        
+        // Update stock chart
+        function updateStockChart(data) {
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            
+            // Destroy previous chart if it exists
+            if (stockChart) {
+                stockChart.destroy();
+            }
+            
+            // Create gradient for chart background
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(96, 165, 250, 0.2)');
+            gradient.addColorStop(1, 'rgba(96, 165, 250, 0)');
+            
+            // Determine chart color based on price change
+            const isPositive = data.prices[data.prices.length - 1] >= data.prices[0];
+            const lineColor = isPositive ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)';
+            const fillColor = isPositive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+            
+            // Create new chart
+            stockChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.timestamps,
+                    datasets: [{
+                        label: currentTicker,
+                        data: data.prices,
+                        borderColor: lineColor,
+                        backgroundColor: fillColor,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: lineColor,
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `$${parseFloat(context.raw).toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 10
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+        
+        // Update quarterly data
+        function updateQuarterlyData(data) {
+            const tableBody = document.getElementById('quarterlyTableBody');
+            tableBody.innerHTML = '';
+            
+            // Create arrays for chart data
+            const quarters = [];
+            const revenues = [];
+            const earnings = [];
+            
+            // Populate table and collect chart data
+            data.quarters.forEach(quarter => {
+                const row = document.createElement('tr');
+                
+                // Quarter name
+                const quarterCell = document.createElement('td');
+                quarterCell.textContent = quarter.quarter;
+                row.appendChild(quarterCell);
+                
+                // Revenue
+                const revenueCell = document.createElement('td');
+                revenueCell.textContent = formatLargeNumber(quarter.revenue);
+                row.appendChild(revenueCell);
+                
+                // Revenue YoY Growth
+                const revenueGrowthCell = document.createElement('td');
+                const revenueGrowthValue = quarter.revenueGrowth || 0;
+                revenueGrowthCell.textContent = `${revenueGrowthValue > 0 ? '+' : ''}${revenueGrowthValue.toFixed(2)}%`;
+                
+                if (revenueGrowthValue > 0) {
+                    revenueGrowthCell.classList.add('positive-trend');
+                } else if (revenueGrowthValue < 0) {
+                    revenueGrowthCell.classList.add('negative-trend');
+                }
+                
+                row.appendChild(revenueGrowthCell);
+                
+                // EPS
+                const epsCell = document.createElement('td');
+                epsCell.textContent = formatCurrency(quarter.eps);
+                row.appendChild(epsCell);
+                
+                // EPS YoY Growth
+                const epsGrowthCell = document.createElement('td');
+                const epsGrowthValue = quarter.epsGrowth || 0;
+                epsGrowthCell.textContent = `${epsGrowthValue > 0 ? '+' : ''}${epsGrowthValue.toFixed(2)}%`;
+                
+                if (epsGrowthValue > 0) {
+                    epsGrowthCell.classList.add('positive-trend');
+                } else if (epsGrowthValue < 0) {
+                    epsGrowthCell.classList.add('negative-trend');
+                }
+                
+                row.appendChild(epsGrowthCell);
+                
+                tableBody.appendChild(row);
+                
+                // Collect data for chart
+                quarters.push(quarter.quarter);
+                revenues.push(quarter.revenue);
+                earnings.push(quarter.eps);
+            });
+            
+            // Create quarterly chart
+            updateQuarterlyChart(quarters, revenues, earnings);
+        }
+        
+        // Update quarterly chart
+        function updateQuarterlyChart(quarters, revenues, earnings) {
+            const ctx = document.getElementById('quarterlyChart').getContext('2d');
+            
+            // Destroy previous chart if it exists
+            if (quarterlyChart) {
+                quarterlyChart.destroy();
+            }
+            
+            // Normalize revenue values (convert to millions or billions for display)
+            const normalizedRevenues = revenues.map(revenue => revenue / 1000000); // Convert to millions
+            
+            // Create new chart
+            quarterlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: quarters,
+                    datasets: [
+                        {
+                            label: 'Revenue (in millions)',
+                            data: normalizedRevenues,
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'EPS',
+                            data: earnings,
+                            type: 'line',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                            fill: false,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Revenue (in millions)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'EPS'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Populate stock statistics
+        function populateStockStats(data) {
+            // Key stats
+            populateStatSection('keyStats', [
+                { label: 'Previous Close', value: formatCurrency(data.previousClose) },
+                { label: 'Open', value: formatCurrency(data.open) },
+                { label: 'Day Range', value: `${formatCurrency(data.dayLow)} - ${formatCurrency(data.dayHigh)}` },
+                { label: '52-Week Range', value: `${formatCurrency(data.fiftyTwoWeekLow)} - ${formatCurrency(data.fiftyTwoWeekHigh)}` },
+                { label: 'Volume', value: formatNumber(data.volume) },
+                { label: 'Avg Volume', value: formatNumber(data.averageVolume) }
+            ]);
+            
+            // Valuation metrics
+            populateStatSection('valuationMetrics', [
+                { 
+                    label: 'Market Cap', 
+                    value: formatLargeNumber(data.marketCap),
+                    tooltip: 'Total market value of a company\'s outstanding shares' 
+                },
+                { 
+                    label: 'P/E Ratio', 
+                    value: formatRatio(data.trailingPE),
+                    status: evaluateMetric(data.trailingPE, 15, 30, true),
+                    tooltip: 'Price-to-Earnings ratio - measures current share price relative to per-share earnings' 
+                },
+                { 
+                    label: 'Forward P/E', 
+                    value: formatRatio(data.forwardPE),
+                    status: evaluateMetric(data.forwardPE, data.trailingPE, null, true),
+                    tooltip: 'Forward Price-to-Earnings - based on forecasted earnings' 
+                },
+                { 
+                    label: 'PEG Ratio', 
+                    value: formatRatio(data.pegRatio),
+                    status: evaluateMetric(data.pegRatio, 1, 2, true),
+                    tooltip: 'Price/Earnings to Growth - factors in expected earnings growth' 
+                },
+                { 
+                    label: 'Price-to-Sales', 
+                    value: formatRatio(data.priceToSalesTrailing12Months),
+                    status: evaluateMetric(data.priceToSalesTrailing12Months, 2, 4, true),
+                    tooltip: 'Price-to-Sales ratio - compares stock price to revenue' 
+                },
+                { 
+                    label: 'Price-to-Book', 
+                    value: formatRatio(data.priceToBook),
+                    status: evaluateMetric(data.priceToBook, 1.5, 3, true),
+                    tooltip: 'Price-to-Book ratio - compares stock price to book value' 
+                },
+                { 
+                    label: 'Enterprise Value', 
+                    value: formatLargeNumber(data.enterpriseValue),
+                    tooltip: 'Total company value (market cap + debt - cash)' 
+                },
+                { 
+                    label: 'EV/Revenue', 
+                    value: formatRatio(data.enterpriseToRevenue),
+                    status: evaluateMetric(data.enterpriseToRevenue, 2, 4, true),
+                    tooltip: 'Enterprise Value to Revenue ratio' 
+                },
+                { 
+                    label: 'EV/EBITDA', 
+                    value: formatRatio(data.enterpriseToEbitda),
+                    status: evaluateMetric(data.enterpriseToEbitda, 8, 15, true),
+                    tooltip: 'Enterprise Value to EBITDA ratio' 
+                }
+            ]);
+            
+            // Trading information
+            populateStatSection('tradingInfo', [
+                { 
+                    label: 'Beta', 
+                    value: formatRatio(data.beta),
+                    status: evaluateMetric(data.beta, 1, 1.5, null),
+                    tooltip: 'Measure of stock volatility relative to the market' 
+                },
+                { 
+                    label: '50-Day MA', 
+                    value: formatCurrency(data.fiftyDayAverage),
+                    status: evaluateMetric(data.currentPrice, data.fiftyDayAverage, null, false),
+                    tooltip: '50-Day Moving Average price' 
+                },
+                { 
+                    label: '200-Day MA', 
+                    value: formatCurrency(data.twoHundredDayAverage),
+                    status: evaluateMetric(data.currentPrice, data.twoHundredDayAverage, null, false),
+                    tooltip: '200-Day Moving Average price' 
+                },
+                { 
+                    label: 'RSI (14)', 
+                    value: data.rsi ? data.rsi.toFixed(2) : 'N/A',
+                    status: evaluateRSI(data.rsi),
+                    tooltip: 'Relative Strength Index - momentum indicator' 
+                },
+                { 
+                    label: 'Average Volume (10d)', 
+                    value: formatNumber(data.averageVolume10days),
+                    tooltip: 'Average trading volume over the last 10 days' 
+                },
+                { 
+                    label: 'Shares Outstanding', 
+                    value: formatLargeNumber(data.sharesOutstanding),
+                    tooltip: 'Total number of shares issued by the company' 
+                },
+                { 
+                    label: 'Float', 
+                    value: formatLargeNumber(data.floatShares),
+                    tooltip: 'Number of shares available for trading' 
+                },
+                { 
+                    label: 'Short % of Float', 
+                    value: data.shortPercentOfFloat ? `${(data.shortPercentOfFloat * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateShortFloat(data.shortPercentOfFloat),
+                    tooltip: 'Percentage of float shares that are sold short' 
+                }
+            ]);
+            
+            // Financial health
+            populateStatSection('financialHealth', [
+                { 
+                    label: 'Current Ratio', 
+                    value: formatRatio(data.currentRatio),
+                    status: evaluateMetric(data.currentRatio, 1, 2, false),
+                    tooltip: 'Current assets divided by current liabilities' 
+                },
+                { 
+                    label: 'Quick Ratio', 
+                    value: formatRatio(data.quickRatio),
+                    status: evaluateMetric(data.quickRatio, 1, 1.5, false),
+                    tooltip: 'Quick assets divided by current liabilities' 
+                },
+                { 
+                    label: 'Debt-to-Equity', 
+                    value: formatRatio(data.debtToEquity),
+                    status: evaluateMetric(data.debtToEquity, 2, 1, true),
+                    tooltip: 'Total debt divided by shareholders\' equity' 
+                },
+                { 
+                    label: 'ROA', 
+                    value: data.returnOnAssets ? `${(data.returnOnAssets * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.returnOnAssets, 0.05, 0.1, false),
+                    tooltip: 'Return on Assets - net income divided by total assets' 
+                },
+                { 
+                    label: 'ROE', 
+                    value: data.returnOnEquity ? `${(data.returnOnEquity * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.returnOnEquity, 0.1, 0.2, false),
+                    tooltip: 'Return on Equity - net income divided by shareholders\' equity' 
+                },
+                { 
+                    label: 'Free Cash Flow', 
+                    value: formatLargeNumber(data.freeCashflow),
+                    status: evaluateMetric(data.freeCashflow, 0, null, false),
+                    tooltip: 'Operating cash flow minus capital expenditures' 
+                },
+                { 
+                    label: 'Operating Margin', 
+                    value: data.operatingMargins ? `${(data.operatingMargins * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.operatingMargins, 0.1, 0.2, false),
+                    tooltip: 'Operating income divided by revenue' 
+                },
+                { 
+                    label: 'Profit Margin', 
+                    value: data.profitMargins ? `${(data.profitMargins * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.profitMargins, 0.05, 0.15, false),
+                    tooltip: 'Net income divided by revenue' 
+                }
+            ]);
+            
+            // Dividend information
+            populateStatSection('dividendInfo', [
+                { 
+                    label: 'Dividend Yield', 
+                    value: data.dividendYield ? `${(data.dividendYield * 100).toFixed(2)}%` : 'N/A',
+                    tooltip: 'Annual dividend payments divided by share price' 
+                },
+                { 
+                    label: 'Dividend Rate', 
+                    value: formatCurrency(data.dividendRate),
+                    tooltip: 'Annual dividend payment per share' 
+                },
+                { 
+                    label: 'Payout Ratio', 
+                    value: data.payoutRatio ? `${(data.payoutRatio * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.payoutRatio, 0.7, 0.9, true),
+                    tooltip: 'Dividends per share divided by earnings per share' 
+                },
+                { 
+                    label: 'Ex-Dividend Date', 
+                    value: formatDate(data.exDividendDate),
+                    tooltip: 'Date when the dividend belongs to shareholders of record' 
+                },
+                { 
+                    label: 'Dividend Date', 
+                    value: formatDate(data.dividendDate),
+                    tooltip: 'Date when the dividend is paid to shareholders of record' 
+                }
+            ]);
+            
+            // Growth metrics
+            populateStatSection('growthMetrics', [
+                { 
+                    label: 'Revenue Growth (YoY)', 
+                    value: data.revenueGrowth ? `${(data.revenueGrowth * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.revenueGrowth, 0, 0.1, false),
+                    tooltip: 'Year-over-year revenue growth rate' 
+                },
+                { 
+                    label: 'Earnings Growth (YoY)', 
+                    value: data.earningsGrowth ? `${(data.earningsGrowth * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.earningsGrowth, 0, 0.15, false),
+                    tooltip: 'Year-over-year earnings growth rate' 
+                },
+                { 
+                    label: 'EPS Growth (YoY)', 
+                    value: data.earningsQuarterlyGrowth ? `${(data.earningsQuarterlyGrowth * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.earningsQuarterlyGrowth, 0, 0.15, false),
+                    tooltip: 'Year-over-year earnings per share growth rate' 
+                },
+                { 
+                    label: '5Y Revenue Growth (Annual)', 
+                    value: data.revenueGrowth5Y ? `${(data.revenueGrowth5Y * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.revenueGrowth5Y, 0.05, 0.15, false),
+                    tooltip: 'Average annual revenue growth over the past 5 years' 
+                },
+                { 
+                    label: '5Y Earnings Growth (Annual)', 
+                    value: data.earningsGrowth5Y ? `${(data.earningsGrowth5Y * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.earningsGrowth5Y, 0.08, 0.2, false),
+                    tooltip: 'Average annual earnings growth over the past 5 years' 
+                },
+                { 
+                    label: 'Revenue Estimate Next Q', 
+                    value: formatLargeNumber(data.revenueEstimateNextQuarter),
+                    tooltip: 'Average analyst estimate for next quarter revenue' 
+                },
+                { 
+                    label: 'EPS Estimate Next Q', 
+                    value: formatCurrency(data.epsEstimateNextQuarter),
+                    tooltip: 'Average analyst estimate for next quarter earnings per share' 
+                },
+                { 
+                    label: 'Revenue Estimate Next Y', 
+                    value: formatLargeNumber(data.revenueEstimateNextYear),
+                    tooltip: 'Average analyst estimate for next year revenue' 
+                }
+            ]);
+            
+            // Performance metrics
+            populateStatSection('performanceMetrics', [
+                { 
+                    label: 'YTD Performance', 
+                    value: data.ytdReturn ? `${(data.ytdReturn * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.ytdReturn, 0, null, false),
+                    tooltip: 'Year-to-date performance' 
+                },
+                { 
+                    label: '1-Month Return', 
+                    value: data.oneMonthReturn ? `${(data.oneMonthReturn * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.oneMonthReturn, 0, null, false),
+                    tooltip: 'Return over the past month' 
+                },
+                { 
+                    label: '3-Month Return', 
+                    value: data.threeMonthReturn ? `${(data.threeMonthReturn * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.threeMonthReturn, 0, null, false),
+                    tooltip: 'Return over the past three months' 
+                },
+                { 
+                    label: '1-Year Return', 
+                    value: data.oneYearReturn ? `${(data.oneYearReturn * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.oneYearReturn, 0, null, false),
+                    tooltip: 'Return over the past year' 
+                },
+                { 
+                    label: '3-Year Return (Annual)', 
+                    value: data.threeYearAverageReturn ? `${(data.threeYearAverageReturn * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.threeYearAverageReturn, 0.07, 0.15, false),
+                    tooltip: 'Annualized return over the past three years' 
+                },
+                { 
+                    label: '5-Year Return (Annual)', 
+                    value: data.fiveYearAverageReturn ? `${(data.fiveYearAverageReturn * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.fiveYearAverageReturn, 0.07, 0.15, false),
+                    tooltip: 'Annualized return over the past five years' 
+                },
+                { 
+                    label: '52-Week Change', 
+                    value: data.fiftyTwoWeekChange ? `${(data.fiftyTwoWeekChange * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.fiftyTwoWeekChange, 0, null, false),
+                    tooltip: 'Price change over the past 52 weeks' 
+                },
+                { 
+                    label: 'S&P500 52-Week Change', 
+                    value: data.SandP52WeekChange ? `${(data.SandP52WeekChange * 100).toFixed(2)}%` : 'N/A',
+                    tooltip: 'S&P 500 price change over the past 52 weeks' 
+                }
+            ]);
+        }
+        
+        // Populate stats section
+        function populateStatSection(sectionId, stats) {
+            const container = document.getElementById(sectionId);
+            container.innerHTML = '';
+            
+            stats.forEach(stat => {
+                if (stat.value === 'N/A' || stat.value === undefined || stat.value === null) {
+                    stat.value = 'N/A';
+                }
+                
+                const statCard = document.createElement('div');
+                statCard.className = 'stat-card';
+                
+                // Add status class if provided
+                if (stat.status) {
+                    statCard.classList.add(stat.status);
+                }
+                
+                let tooltipHtml = '';
+                if (stat.tooltip) {
+                    tooltipHtml = `
+                        <span class="tooltip">
+                            <i>ℹ️</i>
+                            <span class="tooltip-text">${stat.tooltip}</span>
+                        </span>
+                    `;
+                }
+                
+                statCard.innerHTML = `
+                    <div class="stat-label">${stat.label} ${tooltipHtml}</div>
+                    <div class="stat-value">${stat.value}</div>
+                `;
+                
+                container.appendChild(statCard);
+            });
+        }
+        
+        // Format currency
+        function formatCurrency(value) {
+            if (value === undefined || value === null) return 'N/A';
+            return `$${value.toFixed(2)}`;
+        }
+        
+        // Format large numbers
+        function formatLargeNumber(value) {
+            if (value === undefined || value === null) return 'N/A';
+            
+            if (value >= 1000000000000) {
+                return `$${(value / 1000000000000).toFixed(2)}T`;
+            } else if (value >= 1000000000) {
+                return `$${(value / 1000000000).toFixed(2)}B`;
+            } else if (value >= 1000000) {
+                return `$${(value / 1000000).toFixed(2)}M`;
+            } else if (value >= 1000) {
+                return `$${(value / 1000).toFixed(2)}K`;
+            } else {
+                return `$${value.toFixed(2)}`;
+            }
+        }
+        
+        // Format regular numbers
+        function formatNumber(value) {
+            if (value === undefined || value === null) return 'N/A';
+            
+            return new Intl.NumberFormat().format(value);
+        }
+        
+        // Format ratio
+        function formatRatio(value) {
+            if (value === undefined || value === null) return 'N/A';
+            return value.toFixed(2);
+        }
+        
+        // Format date
+        function formatDate(timestamp) {
+            if (!timestamp) return 'N/A';
+            
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleDateString();
+        }
+        
+        // Evaluate metric for color coding
+        function evaluateMetric(value, goodThreshold, badThreshold, lowerIsBetter) {
+            if (value === undefined || value === null) return null;
+            
+            if (lowerIsBetter) {
+                if (badThreshold !== null && value > badThreshold) return 'bad';
+                if (goodThreshold !== null && value < goodThreshold) return 'good';
+            } else {
+                if (goodThreshold !== null && value > goodThreshold) return 'good';
+                if (badThreshold !== null && value < badThreshold) return 'bad';
+            }
+            
+            return 'neutral';
+        }
+        
+        // Evaluate RSI
+        function evaluateRSI(value) {
+            if (value === undefined || value === null) return null;
+            
+            if (value > 70) return 'bad'; // Overbought
+            if (value < 30) return 'bad'; // Oversold
+            return 'good';
+        }
+        
+        // Evaluate short float
+        function evaluateShortFloat(value) {
+            if (value === undefined || value === null) return null;
+            
+            if (value > 0.2) return 'bad'; // High short interest
+            if (value > 0.1) return 'neutral'; // Moderate short interest
+            return 'good'; // Low short interest
+        }
+        
+        // Initialize the page
+        init();
+    </script>
+</body>
+</html>

@@ -15,6 +15,8 @@
             --card: #ffffff;
             --border: #e2e8f0;
             --shadow: rgba(0, 0, 0, 0.08);
+            --success: #10b981;
+            --error: #ef4444;
         }
         body {
             font-family: 'Lexend', sans-serif;
@@ -48,38 +50,203 @@
             transform: translateY(-2px);
         }
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 2rem auto;
             padding: 2rem;
             background: var(--card);
             border-radius: 12px;
             box-shadow: 0 4px 20px var(--shadow);
+        }
+        .header {
             text-align: center;
+            margin-bottom: 2rem;
         }
         .chart-container {
             width: 100%;
-            max-width: 800px;
-            height: 450px;
+            height: 400px;
             margin: 20px auto;
             position: relative;
         }
-        .extra-data, .trading-section, .tables {
-            margin-top: 20px;
+        .stock-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+        .stock-search input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            width: 150px;
+        }
+        .stock-search button {
+            padding: 10px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .stock-search button:hover {
+            background: var(--primary-dark);
+        }
+        .stock-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
             padding: 15px;
-            background: var(--card);
-            border-radius: 10px;
-            box-shadow: 0 2px 10px var(--shadow);
-            text-align: left;
+            background: rgba(96, 165, 250, 0.1);
+            border-radius: 8px;
+        }
+        .trading-panel {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            align-items: center;
+            justify-content: center;
+        }
+        .trading-panel input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            width: 100px;
+        }
+        .trading-panel button {
+            padding: 10px 20px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .trading-panel button:hover {
+            opacity: 0.9;
+        }
+        .portfolio {
+            margin-top: 30px;
+        }
+        .portfolio h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--text);
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            box-shadow: 0 2px 8px var(--shadow);
+            border-radius: 8px;
+            overflow: hidden;
         }
-        th, td {
-            border: 1px solid var(--border);
-            padding: 8px;
+        th {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:nth-child(even) {
+            background-color: rgba(96, 165, 250, 0.05);
+        }
+        .status-positive {
+            color: var(--success);
+            font-weight: 500;
+        }
+        .status-negative {
+            color: var(--error);
+            font-weight: 500;
+        }
+        .sell-button {
+            padding: 6px 12px;
+            background: var(--error);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .sell-button:hover {
+            opacity: 0.9;
+        }
+        .reset-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #475569;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .reset-button:hover {
+            background: #334155;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 1000;
+        }
+        .success {
+            background-color: var(--success);
+        }
+        .error {
+            background-color: var(--error);
+        }
+        .price-up {
+            animation: priceUp 1s;
+        }
+        .price-down {
+            animation: priceDown 1s;
+        }
+        @keyframes priceUp {
+            0% { color: var(--text); }
+            50% { color: var(--success); }
+            100% { color: var(--text); }
+        }
+        @keyframes priceDown {
+            0% { color: var(--text); }
+            50% { color: var(--error); }
+            100% { color: var(--text); }
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 5px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .no-holdings {
             text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-style: italic;
         }
     </style>
 </head>
@@ -92,111 +259,166 @@
     </div>
 
     <div class="container">
-        <h1>Stock Price Chart</h1>
-        <h3>Account Balance: $<span id="balance">100000.00</span></h3>
-        <input type="text" id="ticker" placeholder="Enter stock ticker (e.g. AAPL)">
-        <h3 id="stockPrice" style="margin-top:10px; color: var(--primary-dark);"></h3>
-        <button onclick="fetchStockData()">Show Chart</button>
-        
-        <div class="chart-container">
-            <canvas id="stockChart"></canvas>
+        <div class="header">
+            <h1>Stock Trading Dashboard</h1>
+            <h3>Account Balance: $<span id="balance">0.00</span></h3>
         </div>
 
-        <div id="extraData" class="extra-data" style="display: none;">
-            <h3>Stock Information</h3>
-            <ul id="extraDataList"></ul>
-        </div>
-        
-        <div class="trading-section">
-            <h3>Trade Stock</h3>
-            <input type="number" id="quantity" placeholder="Quantity">
-            <button onclick="confirmTrade('buy')">Buy</button>
+        <div class="stock-search">
+            <input type="text" id="ticker" placeholder="Enter stock ticker" autocomplete="off">
+            <button onclick="fetchStockData()">
+                <span id="search-button-text">Search</span>
+                <span id="search-loading" class="loading" style="display: none;"></span>
+            </button>
         </div>
 
-        <div class="tables">
-            <h3>Owned Stocks</h3>
+        <div id="current-stock" style="display: none;">
+            <h2 id="stock-name"></h2>
+            <div id="price-display" style="text-align: center; margin-bottom: 15px;">
+                <h3 id="stockPrice">$0.00</h3>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="stockChart"></canvas>
+            </div>
+
+            <div class="trading-panel">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" min="1" value="1">
+                <button onclick="confirmTrade('buy')">Buy Stock</button>
+            </div>
+        </div>
+
+        <div class="portfolio">
+            <h2>Your Portfolio</h2>
             <table id="ownedStocksTable">
                 <thead>
-                    <tr><th>Ticker</th><th>Date Bought</th><th>Quantity</th><th>Price Bought</th><th>Current Value</th><th>Earnings (% Change)</th></tr>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Date Bought</th>
+                        <th>Quantity</th>
+                        <th>Price Bought</th>
+                        <th>Current Value</th>
+                        <th>Profit/Loss</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    <!-- Table will be populated by JavaScript -->
+                </tbody>
             </table>
-        </div>
-        <div style="margin-top: 30px; text-align: center;">
-            <button onclick="resetAccount()" style="background: var(--primary-dark); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-                Reset Account
-            </button>
+            <button class="reset-button" onclick="resetAccount()">Reset Account</button>
         </div>
     </div>
 
+    <div id="notification" class="notification"></div>
+
     <script>
         let stockChart = null;
-        
         let currentStockPrice = null;
+        let currentStockTicker = null;
         let autoUpdateInterval = null;
 
-        function fetchStockData(autoUpdate = false) {
+        // On page load
+        window.onload = function() {
+            updateBalanceDisplay();
+            updatePortfolio();
+            
+            // Add event listener for Enter key on ticker input
+            document.getElementById('ticker').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    fetchStockData();
+                }
+            });
+        };
+
+        function fetchStockData() {
             const ticker = document.getElementById('ticker').value.trim().toUpperCase();
             if (!ticker) return;
 
+            // Show loading indicator
+            document.getElementById('search-button-text').style.display = 'none';
+            document.getElementById('search-loading').style.display = 'inline-block';
+
             fetch(`/stock?ticker=${ticker}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Invalid ticker or no data available');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data || !data.prices || data.prices.length === 0) {
+                        throw new Error('No stock data available');
+                    }
+                    
+                    // Set current ticker and price
+                    currentStockTicker = ticker;
+                    currentStockPrice = data.prices[data.prices.length - 1];
+                    
+                    // Update UI
+                    document.getElementById('stock-name').textContent = ticker;
+                    updateStockPriceDisplay(currentStockPrice);
+                    drawChart(data.timestamps, data.prices, ticker);
+                    document.getElementById('current-stock').style.display = 'block';
+                    
+                    // Start auto-update
+                    if (autoUpdateInterval) clearInterval(autoUpdateInterval);
+                    autoUpdateInterval = setInterval(autoUpdateStockPrice, 10000);
+                    
+                    // Show success notification
+                    showNotification(`Stock data loaded for ${ticker}`, 'success');
+                })
+                .catch(error => {
+                    showNotification(error.message || 'Error fetching stock data', 'error');
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    // Hide loading indicator
+                    document.getElementById('search-button-text').style.display = 'inline-block';
+                    document.getElementById('search-loading').style.display = 'none';
+                });
+        }
+
+        function autoUpdateStockPrice() {
+            if (!currentStockTicker) return;
+            
+            fetch(`/stock?ticker=${currentStockTicker}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (!data || !data.prices) {
-                        console.error("Error fetching stock data");
-                        return;
-                    }
+                    if (!data || !data.prices || data.prices.length === 0) return;
                     
                     const newPrice = data.prices[data.prices.length - 1];
                     updateStockPriceDisplay(newPrice);
-                    
-                    if (!autoUpdate || currentStockPrice !== newPrice) {
-                        drawChart(data.timestamps, data.prices, ticker);
-                        currentStockPrice = newPrice;
-                    }
                 })
-                .catch(error => console.error("Error:", error));
+                .catch(error => console.error('Error updating stock price:', error));
         }
 
         function updateStockPriceDisplay(newPrice) {
             const priceElement = document.getElementById('stockPrice');
-
-            if (currentStockPrice !== null) {
-                priceElement.style.color = newPrice > currentStockPrice ? "green" : newPrice < currentStockPrice ? "red" : "var(--primary-dark)";
+            let priceClass = '';
+            
+            if (currentStockPrice !== null && newPrice !== currentStockPrice) {
+                priceClass = newPrice > currentStockPrice ? 'price-up' : 'price-down';
             }
-
-            priceElement.textContent = `Current Price: $${newPrice.toFixed(2)}`;
+            
+            priceElement.textContent = `$${newPrice.toFixed(2)}`;
+            priceElement.className = priceClass;
+            
+            currentStockPrice = newPrice;
         }
-
-        function startAutoUpdate() {
-            if (autoUpdateInterval) clearInterval(autoUpdateInterval);
-            autoUpdateInterval = setInterval(() => fetchStockData(true), 1000); // Updates every 10 sec
-        }
-
-        document.getElementById('ticker').addEventListener('input', () => {
-            clearInterval(autoUpdateInterval);
-            currentStockPrice = null;
-        });
-
-        document.getElementById('ticker').addEventListener('change', () => {
-            fetchStockData();
-            startAutoUpdate();
-        });
-
-        window.onload = () => {
-            updateBalanceDisplay();
-            updateTables();
-        };
 
         function drawChart(timestamps, prices, ticker) {
-            if (stockChart) stockChart.destroy();
             const ctx = document.getElementById('stockChart').getContext('2d');
-
-            // Create gradient effect
+            
+            // Destroy existing chart if it exists
+            if (stockChart) stockChart.destroy();
+            
+            // Create gradient for chart
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.6)');
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
             gradient.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
-
+            
             stockChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -206,186 +428,217 @@
                         data: prices,
                         borderColor: 'rgba(59, 130, 246, 1)',
                         backgroundColor: gradient,
+                        borderWidth: 2,
                         tension: 0.3,
                         fill: true,
-                        borderWidth: 2,
-                        pointRadius: 3,
-                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        shadowOffsetY: 4
+                        pointRadius: 2,
+                        pointHoverRadius: 5
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
                             callbacks: {
-                                label: context => `Price: $${context.raw.toFixed(2)}`
+                                label: function(context) {
+                                    return `Price: $${context.raw.toFixed(2)}`;
+                                }
                             }
-                        },
-                        legend: { display: true }
+                        }
                     },
                     scales: {
-                        x: { grid: { display: false } },
-                        y: { grid: { color: 'rgba(0, 0, 0, 0.1)' } }
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
                     }
                 }
             });
         }
 
-        function displayExtraData(extraData) {
-            const extraDataList = document.getElementById('extraDataList');
-            extraDataList.innerHTML = "";
-            for (let key in extraData) {
-                if (extraData[key] !== null) {
-                    const li = document.createElement("li");
-                    li.textContent = `${key}: ${extraData[key]}`;
-                    extraDataList.appendChild(li);
-                }
+        function confirmTrade(type) {
+            if (!currentStockTicker || !currentStockPrice) {
+                showNotification('No stock selected', 'error');
+                return;
             }
-            document.getElementById('extraData').style.display = "block";
+            
+            const quantity = parseInt(document.getElementById('quantity').value);
+            if (isNaN(quantity) || quantity <= 0) {
+                showNotification('Please enter a valid quantity', 'error');
+                return;
+            }
+            
+            const totalCost = (quantity * currentStockPrice).toFixed(2);
+            
+            const confirmation = confirm(
+                `Confirm ${type.toUpperCase()} order:\n\n` +
+                `Stock: ${currentStockTicker}\n` +
+                `Quantity: ${quantity}\n` +
+                `Price per share: $${currentStockPrice.toFixed(2)}\n` +
+                `Total cost: $${totalCost}\n\n` +
+                `Proceed with transaction?`
+            );
+            
+            if (confirmation) {
+                executeTrade(type, currentStockTicker, quantity);
+            }
+        }
+
+        function executeTrade(type, ticker, quantity) {
+            fetch(`/trade?type=${type}&ticker=${ticker}&quantity=${quantity}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    showNotification(data.success || 'Transaction completed successfully', 'success');
+                    updateBalanceDisplay();
+                    updatePortfolio();
+                    
+                    // Clear quantity input
+                    document.getElementById('quantity').value = 1;
+                })
+                .catch(error => {
+                    showNotification(error.message || 'Error executing trade', 'error');
+                    console.error('Error:', error);
+                });
+        }
+
+        function sellStock(ticker, positionId) {
+            // Check if positionId is provided
+            if (positionId === undefined) {
+                alert('Error: No position ID provided');
+                return;
+            }
+            
+            fetch(`/sell_stock?ticker=${ticker}&position_id=${positionId}`, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(data.message);
+                    // Update UI with new balance
+                    updateBalanceDisplay();
+                    // Refresh the portfolio display
+                    updatePortfolio();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to sell stock');
+            });
+        }
+
+        function updatePortfolio() {
+            fetch('/update_holdings')
+                .then(response => response.json())
+                .then(holdings => {
+                    const tableBody = document.getElementById('ownedStocksTable').querySelector('tbody');
+                    tableBody.innerHTML = '';
+                    
+                    if (!holdings || holdings.length === 0 || (holdings.error && holdings.error.includes('No holdings'))) {
+                        tableBody.innerHTML = '<tr><td colspan="7" class="no-holdings">No stocks in your portfolio</td></tr>';
+                        return;
+                    }
+                    
+                    holdings.forEach((holding, index) => {
+                        if (parseFloat(holding.Quantity) <= 0) return;
+                        
+                        const priceBought = parseFloat(holding['Price Bought']).toFixed(2);
+                        const currentValue = parseFloat(holding['Current Value']).toFixed(2);
+                        const earnings = parseFloat(holding.Earnings).toFixed(2);
+                        const changePercent = parseFloat(holding['Change %']).toFixed(2);
+                        const isProfit = parseFloat(earnings) >= 0;
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${holding.Ticker}</td>
+                            <td>${holding['Date Bought']}</td>
+                            <td>${holding.Quantity}</td>
+                            <td>$${priceBought}</td>
+                            <td>$${currentValue}</td>
+                            <td class="${isProfit ? 'status-positive' : 'status-negative'}">
+                                $${earnings} (${isProfit ? '+' : ''}${changePercent}%)
+                            </td>
+                            <td>
+                                <button class="sell-button" onclick="sellStock('${holding.Ticker}', ${index})">Sell</button>
+                            </td>
+                        `;
+                        
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error updating portfolio:', error);
+                    const tableBody = document.getElementById('ownedStocksTable').querySelector('tbody');
+                    tableBody.innerHTML = '<tr><td colspan="7" class="no-holdings">Error loading portfolio</td></tr>';
+                });
         }
 
         function updateBalanceDisplay() {
             fetch('/balance')
                 .then(response => response.json())
-                .then(data => document.getElementById("balance").textContent = data.balance.toFixed(2));
-        }
-
-        function confirmTrade(type) {
-            const ticker = document.getElementById('ticker').value.trim().toUpperCase();
-            const quantity = document.getElementById('quantity').value;
-
-            if (!ticker || quantity <= 0) {
-                alert("Please enter a valid ticker and quantity.");
-                return;
-            }
-
-            fetch(`/stock?ticker=${ticker}`)
-                .then(response => response.json())
                 .then(data => {
-                    if (!data.prices || data.prices.length === 0) {
-                        alert("Error fetching stock price.");
-                        return;
-                    }
-
-                    const currentPrice = data.prices[data.prices.length - 1];
-                    const totalCost = (quantity * currentPrice).toFixed(2);
-
-                    const confirmation = confirm(
-                        `Trade Confirmation:\n\n` +
-                        `Ticker: ${ticker}\n` +
-                        `Quantity: ${quantity}\n` +
-                        `Price per Share: $${currentPrice.toFixed(2)}\n` +
-                        `Total Cost: $${totalCost}\n\n` +
-                        `Do you want to proceed?`
-                    );
-
-                    if (confirmation) {
-                        fetchTrade(type);
-                        document.getElementById("quantity").value = "";
-                    }
+                    document.getElementById('balance').textContent = parseFloat(data.balance).toFixed(2);
                 })
-                .catch(error => console.error("Error fetching stock data:", error));
-                }
-                
-        function updateTables(autoUpdate = false) {
-            fetch('/update_holdings')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.getElementById("ownedStocksTable").querySelector("tbody");
-                    tableBody.innerHTML = "";
-
-                    if (!data || data.length === 0) {
-                        tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No holdings available</td></tr>`;
-                        return;
-                    }
-
-                    data.forEach(trade => {
-                        if (parseFloat(trade.Quantity) > 0) {  
-                            const row = `<tr>
-                                <td>${trade.Ticker}</td>
-                                <td>${trade["Date Bought"]}</td>
-                                <td>${trade.Quantity}</td>
-                                <td>$${parseFloat(trade["Price Bought"]).toFixed(2)}</td>
-                                <td>$${parseFloat(trade["Current Value"]).toFixed(2)}</td>
-                                <td style="color: ${trade["Change %"] >= 0 ? 'green' : 'red'};">
-                                    $${parseFloat(trade.Earnings).toFixed(2)} (${parseFloat(trade["Change %"]).toFixed(2)}%)
-                                </td>
-                                <td>
-                                    <button class="sell-button" onclick="sellStock('${trade.Ticker}')">Sell</button>
-                                </td>
-                            </tr>`;
-                            tableBody.innerHTML += row;
-                        }
-                    });
-
-                    if (!autoUpdate) console.log("Holdings updated!");
-                })
-                .catch(error => console.error("Error updating holdings:", error));
-        }
-
-
-        // Auto-refresh holdings every 10 sec
-        setInterval(() => updateTables(true), 1000);
-
-        function sellStock(ticker) {
-            fetch('/update_holdings')
-                .then(response => response.json())
-                .then(data => {
-                    const stock = data.find(trade => trade.Ticker === ticker);
-                    if (!stock) {
-                        alert("Error: Stock not found.");
-                        return;
-                    }
-
-                    const { Quantity, "Price Bought": priceBought, "Current Value": currentValue, Earnings, "Change %": changePercent } = stock;
-
-                    // Confirmation message
-                    const message = `Sell ${Quantity} shares of ${ticker}?\n\n` +
-                                    `🔹 Bought Price: $${parseFloat(priceBought).toFixed(2)}\n` +
-                                    `🔹 Current Value: $${parseFloat(currentValue).toFixed(2)}\n` +
-                                    `🔹 Earnings/Loss: $${parseFloat(Earnings).toFixed(2)} (${parseFloat(changePercent).toFixed(2)}%)\n\n` +
-                                    `⚠️ This action is irreversible!`;
-
-                    if (!confirm(message)) return;
-
-                    // Proceed with selling
-                    fetch(`/sell_stock?ticker=${ticker}`, { method: 'POST' })
-                        .then(response => response.json())
-                        .then(data => {
-                            alert(data.message || "Stock sold!");
-                            updateTables();  // Refresh holdings
-                            updateBalance(data.new_balance);  // Update balance display
-                        })
-                        .catch(error => console.error("Error selling stock:", error));
-                })
-                .catch(error => console.error("Error fetching stock details:", error));
-        }
-        function updateBalance(balance) {
-            document.getElementById("balance").textContent = `${parseFloat(balance).toFixed(2)}`;
-        }
-
-
-        function fetchTrade(type) {
-            const ticker = document.getElementById('ticker').value.trim().toUpperCase();
-            const quantity = document.getElementById('quantity').value;
-            fetch(`/trade?type=${type}&ticker=${ticker}&quantity=${quantity}`)
-                .then(response => response.json())
-                .then(() => { updateBalanceDisplay(); updateTables(); });
+                .catch(error => {
+                    console.error('Error updating balance:', error);
+                });
         }
 
         function resetAccount() {
-            fetch(`/reset`)
-                .then(() => { updateBalanceDisplay(); updateTables(); });
+            if (confirm('Are you sure you want to reset your account?\nThis will clear all your holdings and reset your balance to $100,000.')) {
+                fetch('/reset', {
+                    method: 'POST'  // Changed from GET to POST
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        showNotification('Account reset successfully', 'success');
+                        updateBalanceDisplay();
+                        updatePortfolio();
+                    })
+                    .catch(error => {
+                        showNotification('Error resetting account', 'error');
+                        console.error('Error:', error);
+                    });
+            }
         }
 
-        window.onload = () => { updateBalanceDisplay(); updateTables(); };
-        
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        // Auto-refresh portfolio every 30 seconds
+        setInterval(updatePortfolio, 30000);
     </script>
 </body>
 </html>

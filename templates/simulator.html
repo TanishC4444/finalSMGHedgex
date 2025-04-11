@@ -261,14 +261,91 @@
             font-weight: bold;
             font-size: 0.9rem;
         }
+        /* Add these styles to your existing CSS in simulator.html */
+        .column-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .column-list h4 {
+            width: 100%;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .column-list h4:first-child {
+            margin-top: 0;
+        }
+
+        .column-item {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .column-item:hover {
+            background: rgba(96, 165, 250, 0.2);
+            transform: translateY(-1px);
+            border-color: rgba(96, 165, 250, 0.4);
+        }
+
+        #additional-fundamentals {
+            flex-wrap: wrap;
+            display: none;
+            gap: 0.5rem;
+        }
+        .column-item {
+            position: relative;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            width: 200px;
+            z-index: 100;
+            display: none;
+        }
+
+        .column-item:hover .tooltip {
+            display: block;
+        }
+
+        .tooltip-content {
+            font-size: 0.8rem;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text) transparent transparent transparent;
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
         <a href="/">Home</a>
-        <a href="/practice">Practice</a>
         <a href="/learn">Learn</a>
+        <a href="/practice">Practice</a>
         <a href="/simulator">Simulator</a>
+        <a href="/analysis">Analysis</a>
     </div>
     
     <div class="hero">
@@ -334,11 +411,32 @@
                     <div class="equation-buttons">
                         <button id="evaluate-equation-btn" class="search-button">Evaluate Equation</button>
                         <button id="clear-equation-btn" class="search-button" style="background: var(--error);">Clear</button>
+                        <button id="evaluate-sp500-btn" class="search-button" style="background: var(--warning);">Test on S&P 500</button>
                     </div>
                 </div>
             </div>
         </div>
         
+        <div id="sp500-results-card" class="card" style="display: none;">
+            <h2>S&P 500 Results</h2>
+            <div class="loading" id="sp500-loading">Processing S&P 500 stocks...</div>
+            
+            <table id="sp500-results-table" class="results-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Ticker</th>
+                        <th>Accuracy</th>
+                        <th>Average Signal</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="sp500-results-body">
+                    <!-- Results will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
         <div id="results-card" class="card" style="display: none;">
             <h2>Results</h2>
             
@@ -357,7 +455,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Equation Result</th>
-                            <th>Next-day Movement</th>
+                            <th>Next-Interval Movement</th>
                             <th>Prediction Correct?</th>
                         </tr>
                     </thead>
@@ -417,6 +515,13 @@
                     
                     // Populate column list
                     columnList.innerHTML = '';
+                    
+                    // Add a header for price data columns
+                    const priceHeader = document.createElement('h4');
+                    priceHeader.textContent = 'Price Data';
+                    columnList.appendChild(priceHeader);
+                    
+                    // Add price data columns
                     availableColumns.forEach(column => {
                         const columnItem = document.createElement('div');
                         columnItem.className = 'column-item';
@@ -427,6 +532,75 @@
                         columnList.appendChild(columnItem);
                     });
                     
+                    // Add top important fundamental metrics
+                    if (data.important_fundamentals && data.important_fundamentals.length > 0) {
+                        // Add a header for key metrics
+                        const fundamentalHeader = document.createElement('h4');
+                        fundamentalHeader.textContent = 'Key Fundamental Metrics';
+                        fundamentalHeader.style.marginTop = '1rem';
+                        columnList.appendChild(fundamentalHeader);
+                        
+                        // Add important fundamental columns
+                        data.important_fundamentals.forEach(column => {
+                            const columnItem = document.createElement('div');
+                            columnItem.className = 'column-item';
+                            columnItem.style.backgroundColor = 'rgba(16, 185, 129, 0.1)'; // Different color for fundamentals
+                            columnItem.textContent = column;
+                            columnItem.addEventListener('click', function() {
+                                insertTextAtCursor(equationTextarea, column);
+                            });
+                            columnList.appendChild(columnItem);
+                        });
+                        
+                        // Add "Show All Fundamentals" toggle if there are additional ones
+                        if (data.fundamental_columns && data.fundamental_columns.length > 0) {
+                            const toggleContainer = document.createElement('div');
+                            toggleContainer.style.marginTop = '1rem';
+                            toggleContainer.style.textAlign = 'center';
+                            
+                            const toggleButton = document.createElement('button');
+                            toggleButton.className = 'search-button';
+                            toggleButton.style.background = '#f59e0b';
+                            toggleButton.textContent = 'Show All Fundamentals';
+                            toggleButton.dataset.state = 'hidden';
+                            
+                            // Create div for additional fundamentals (initially hidden)
+                            const additionalFundamentals = document.createElement('div');
+                            additionalFundamentals.id = 'additional-fundamentals';
+                            additionalFundamentals.style.display = 'none';
+                            additionalFundamentals.style.marginTop = '0.5rem';
+                            
+                            // Populate additional fundamentals
+                            data.fundamental_columns.forEach(column => {
+                                const columnItem = document.createElement('div');
+                                columnItem.className = 'column-item';
+                                columnItem.style.backgroundColor = 'rgba(245, 158, 11, 0.1)'; // Different color
+                                columnItem.textContent = column;
+                                columnItem.addEventListener('click', function() {
+                                    insertTextAtCursor(equationTextarea, column);
+                                });
+                                additionalFundamentals.appendChild(columnItem);
+                            });
+                            
+                            // Toggle functionality
+                            toggleButton.addEventListener('click', function() {
+                                if (this.dataset.state === 'hidden') {
+                                    additionalFundamentals.style.display = 'flex';
+                                    this.textContent = 'Hide Additional Fundamentals';
+                                    this.dataset.state = 'shown';
+                                } else {
+                                    additionalFundamentals.style.display = 'none';
+                                    this.textContent = 'Show All Fundamentals';
+                                    this.dataset.state = 'hidden';
+                                }
+                            });
+                            
+                            toggleContainer.appendChild(toggleButton);
+                            columnList.appendChild(toggleContainer);
+                            columnList.appendChild(additionalFundamentals);
+                        }
+                    }
+
                     // Show equation builder
                     equationBuilder.style.display = 'block';
                 })
@@ -560,7 +734,18 @@
                 }
             });
         }
-        
+        function createTooltip(title, description) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.innerHTML = `
+                <div class="tooltip-content">
+                    <strong>${title}</strong>
+                    <p>${description}</p>
+                </div>
+            `;
+            return tooltip;
+        }
+
         // Create results chart
         function createResultsChart(results) {
             const ctx = document.getElementById('results-chart').getContext('2d');
@@ -622,6 +807,120 @@
                         intersect: false
                     }
                 }
+            });
+        }
+        // Add this to your existing JavaScript
+        const evaluateSp500Btn = document.getElementById('evaluate-sp500-btn');
+        const sp500ResultsCard = document.getElementById('sp500-results-card');
+        const sp500Loading = document.getElementById('sp500-loading');
+        const sp500ResultsBody = document.getElementById('sp500-results-body');
+
+        // Evaluate equation on S&P 500
+        evaluateSp500Btn.addEventListener('click', function() {
+            const equation = equationTextarea.value.trim();
+            const period = periodSelect.value;
+            const interval = intervalSelect.value;
+            
+            if (!equation) {
+                alert('Please enter an equation');
+                return;
+            }
+            
+            // Show loading state
+            sp500ResultsCard.style.display = 'block';
+            sp500Loading.style.display = 'block';
+            sp500ResultsBody.innerHTML = '';
+            
+            // Evaluate equation on S&P 500 using API
+            fetch('/evaluate_sp500', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    period: period,
+                    interval: interval,
+                    equation: equation
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Hide loading
+                sp500Loading.style.display = 'none';
+                
+                // Sort results by accuracy (descending)
+                const sortedResults = data.results.sort((a, b) => b.accuracy - a.accuracy);
+                
+                // Display top results
+                displaySp500Results(sortedResults);
+            })
+            .catch(error => {
+                sp500Loading.style.display = 'none';
+                sp500ResultsBody.innerHTML = `<tr><td colspan="5" class="negative">Error: ${error.message}</td></tr>`;
+            });
+        });
+
+        // Display S&P 500 results
+        function displaySp500Results(results) {
+            sp500ResultsBody.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const row = document.createElement('tr');
+                
+                // Rank column
+                const rankCell = document.createElement('td');
+                rankCell.textContent = index + 1;
+                row.appendChild(rankCell);
+                
+                // Ticker column
+                const tickerCell = document.createElement('td');
+                tickerCell.textContent = result.ticker;
+                row.appendChild(tickerCell);
+                
+                // Accuracy column
+                const accuracyCell = document.createElement('td');
+                accuracyCell.textContent = result.accuracy + '%';
+                
+                // Color based on accuracy
+                if (result.accuracy >= 60) {
+                    accuracyCell.className = 'positive';
+                } else if (result.accuracy <= 45) {
+                    accuracyCell.className = 'negative';
+                }
+                row.appendChild(accuracyCell);
+                
+                // Average Signal column
+                const signalCell = document.createElement('td');
+                signalCell.textContent = result.avg_signal ? result.avg_signal.toFixed(4) : 'N/A';
+                row.appendChild(signalCell);
+                
+                // Action column
+                const actionCell = document.createElement('td');
+                const selectBtn = document.createElement('button');
+                selectBtn.className = 'search-button';
+                selectBtn.style.padding = '0.25rem 0.5rem';
+                selectBtn.textContent = 'Select';
+                selectBtn.addEventListener('click', function() {
+                    // Set the ticker and run the equation for this stock
+                    tickerInput.value = result.ticker;
+                    loadColumnsBtn.click();
+                    setTimeout(() => {
+                        evaluateEquationBtn.click();
+                    }, 1000); // Allow time for columns to load
+                });
+                actionCell.appendChild(selectBtn);
+                row.appendChild(actionCell);
+                
+                sp500ResultsBody.appendChild(row);
             });
         }
     </script>
