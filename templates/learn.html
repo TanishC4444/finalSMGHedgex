@@ -3,26 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Trading - Hedge</title>
+    <title>Learn Trading - Hedgex</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        .white{
+            color: white;
+            margin-right: 0.5rem;
+            justify-content: center;
+        }
         :root {
+            /* Light Mode Colors */
             --primary: #60a5fa;
             --primary-dark: #3b82f6;
+            --primary-light: #93c5fd;
+            --primary-lightest: #dbeafe;
+            --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --secondary: #a855f7;
+            --secondary-dark: #8b5cf6;
             --success: #10b981;
             --success-dark: #059669;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --warning-dark: #d97706;
+            --info: #3b82f6;
+            --info-dark: #2563eb;
             --text: #1e293b;
+            --text-light: #475569;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
             --background: #f8fafc;
+            --background-secondary: #f1f5f9;
             --card: #ffffff;
             --border: #e2e8f0;
+            --border-dark: #cbd5e1;
             --shadow: rgba(0, 0, 0, 0.08);
             --shadow-hover: rgba(0, 0, 0, 0.15);
+            --shadow-dropdown: rgba(0, 0, 0, 0.15);
+            --table-header: rgba(96, 165, 250, 0.1);
+            --table-row: rgba(96, 165, 250, 0.05);
+            --navbar-bg: var(--primary);
+            --navbar-text: white;
+            --hero-text: white;
+            --footer-bg: var(--text);
+            --footer-text: white;
+            --footer-link: rgba(255, 255, 255, 0.8);
+            --tooltip-bg: var(--text);
+            --tooltip-text: white;
+            --scrollbar-track: #f1f5f9;
+            --scrollbar-thumb: #cbd5e1;
+            --scrollbar-thumb-hover: #94a3b8;
+            --code-bg: #f8fafc;
+            --code-text: #1e293b;
+            --code-border: #e2e8f0;
         }
+
+        [data-theme="dark"] {
+            /* Dark Mode Colors */
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --primary-lightest: #1e3a8a;
+            --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --secondary: #a855f7;
+            --secondary-dark: #8b5cf6;
+            --success: #059669;
+            --success-dark: #047857;
+            --success-light: #065f46;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --warning: #d97706;
+            --warning-dark: #b45309;
+            --info: #2563eb;
+            --info-dark: #1d4ed8;
+            --text: #f1f5f9;
+            --text-light: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --background: #0f172a;
+            --background-secondary: #1e293b;
+            --card: #1e293b;
+            --border: #334155;
+            --border-dark: #475569;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --shadow-hover: rgba(0, 0, 0, 0.35);
+            --shadow-dropdown: rgba(0, 0, 0, 0.5);
+            --table-header: rgba(59, 130, 246, 0.2);
+            --table-row: rgba(59, 130, 246, 0.1);
+            --navbar-bg: #1e293b;
+            --navbar-text: #f1f5f9;
+            --hero-text: #f1f5f9;
+            --footer-bg: #0f172a;
+            --footer-text: #f1f5f9;
+            --footer-link: rgba(241, 245, 249, 0.7);
+            --tooltip-bg: var(--card);
+            --tooltip-text: var(--text);
+            --scrollbar-track: #1e293b;
+            --scrollbar-thumb: #475569;
+            --scrollbar-thumb-hover: #64748b;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+            --code-border: #334155;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 6px;
+            border: 3px solid var(--scrollbar-track);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+
         body {
             font-family: 'Lexend', sans-serif;
             background-color: var(--background);
@@ -30,253 +145,1223 @@
             line-height: 1.6;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Navbar styling */
         .navbar {
-            background: var(--primary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            box-shadow: 0 2px 10px var(--shadow);
+            background: var(--navbar-bg);
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
         }
-        .navbar a {
-            color: white;
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navbar-text);
+            text-decoration: none;
+            transition: transform 0.3s ease, opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .nav-logo svg,
+        .nav-logo img {
+            margin-right: 0.5rem;
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--navbar-text);
             text-decoration: none;
             font-size: 1rem;
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.2s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .navbar a:hover {
+
+        .nav-links a:hover {
             background-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
         }
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background-color: var(--navbar-text);
+            transition: width 0.3s ease, left 0.3s ease;
         }
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: white;
+
+        .nav-links a:hover::after {
+            width: 80%;
+            left: 10%;
         }
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto;
-            color: rgba(255, 255, 255, 0.9);
-        }
-        .content {
-            margin: 3rem auto;
-            width: 90%;
-            max-width: 1000px;
-        }
-        .card {
-            background: var(--card);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px var(--shadow);
-            margin-bottom: 2rem;
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             transition: all 0.3s ease;
         }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: rotate(360deg);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero section styling */
+        .hero {
+            background: var(--primary-gradient);
+            color: var(--hero-text);
+            padding: 6rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjtvcGFjaXR5OjAuMTt9PC9zdHlsZT48L2RlZnM+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjAwLDEwMFMxNTAsMCwxMDAsMFMwLDEwMCwwLDEwMHM1MCwxMDAsMTAwLDEwMCwyMDAtMTAwLDIwMC0xMDBaIi8+PC9zdmc+');
+            opacity: 0.1;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            animation: pulse 10s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--hero-text);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1s ease both;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Content styling */
+        .content {
+            margin: 4rem auto;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px var(--shadow);
+            margin-bottom: 2.5rem;
+            transition: all 0.4s ease;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
         .card:hover {
             box-shadow: 0 8px 30px var(--shadow-hover);
             transform: translateY(-5px);
         }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        /* Typography styling */
         h2 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin: 1.5rem 0 1rem;
             color: var(--primary-dark);
+            position: relative;
+            padding-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .card:hover h2::after {
+            width: 100px;
+        }
+
         h3 {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             margin: 1.2rem 0 0.8rem;
             color: var(--text);
+            transition: color 0.3s ease;
         }
+
+        h4 {
+            font-size: 1.25rem;
+            margin: 1rem 0 0.5rem;
+            color: var(--text);
+            transition: color 0.3s ease;
+        }
+
         p {
             margin-bottom: 1.5rem;
             font-size: 1.1rem;
             color: var(--text);
+            transition: color 0.3s ease;
+            line-height: 1.7;
         }
-        ul {
+
+        ul, ol {
             margin-bottom: 1.5rem;
             padding-left: 1.5rem;
+            list-style-position: outside;
         }
+
         li {
             font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
         }
+
+        /* Table styling */
+        .table-wrapper {
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .table-wrapper:hover {
+            box-shadow: 0 4px 15px var(--shadow-hover);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
         }
+
         th, td {
             border: 1px solid var(--border);
-            padding: 0.75rem;
+            padding: 1rem;
             text-align: left;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
+
         th {
-            background-color: rgba(96, 165, 250, 0.1);
+            background-color: var(--table-header);
             font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
+
         tr:nth-child(even) {
-            background-color: rgba(96, 165, 250, 0.05);
+            background-color: var(--table-row);
         }
+
+        tr {
+            transition: background-color 0.3s ease;
+        }
+
+        tr:hover {
+            background-color: var(--primary-lightest);
+        }
+
+        /* Emoji and icon styling */
         .emoji {
             font-size: 1.2rem;
             margin-right: 0.5rem;
+            display: inline-block;
+            transition: transform 0.3s ease;
         }
+
+        .card:hover .emoji {
+            transform: scale(1.2);
+        }
+
         .section {
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease;
         }
+
         .strategy-item, .tip-item, .term-item {
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: baseline;
+            transition: transform 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 8px;
         }
+
+        .strategy-item:hover, .tip-item:hover, .term-item:hover {
+            transform: translateX(10px);
+            background-color: var(--background-secondary);
+        }
+
+        .strategy-item strong, .tip-item strong, .term-item strong {
+            margin-left: 0.5rem;
+            color: var(--primary-dark);
+            transition: color 0.3s ease;
+        }
+
+        /* Tools grid layout */
         .tools {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin: 1.5rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
         }
+
         .tool {
-            background: var(--background);
-            padding: 1.5rem;
-            border-radius: 8px;
+            background: var(--background-secondary);
+            padding: 2rem;
+            border-radius: 12px;
             border: 1px solid var(--border);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
+
+        .tool::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .tool:hover {
+            box-shadow: 0 8px 25px var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        .tool:hover::before {
+            opacity: 1;
+        }
+
+        .tool h3 {
+            margin-top: 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .tool h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .tool:hover h3::after {
+            width: 100%;
+        }
+
+        .tool ul {
+            margin-top: auto;
+        }
+
+        /* Call to action buttons */
         .cta-buttons {
             display: flex;
             gap: 1rem;
             margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
+
         .cta-button {
             background-color: var(--success);
             color: white;
             padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: 500;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+            z-index: -1;
+        }
+
         .cta-button:hover {
             background-color: var(--success-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
         .cta-button-secondary {
             background-color: transparent;
             color: var(--primary-dark);
             border: 1px solid var(--primary-dark);
         }
+
         .cta-button-secondary:hover {
             background-color: rgba(59, 130, 246, 0.1);
         }
+
+        .tool .cta-button {
+            margin-top: auto;
+            align-self: flex-start;
+        }
+
+        /* Footer styling */
         footer {
-            background-color: var(--text);
-            color: white;
-            padding: 2rem;
-            text-align: center;
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            position: relative;
         }
-        .footer-content {
-            max-width: 1000px;
-            margin: 0 auto;
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .footer-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
-            text-align: left;
+            margin-bottom: 2rem;
         }
+
+        .footer-col h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--footer-text);
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .footer-col:hover h3::after {
+            width: 100%;
+        }
+
         .footer-links {
             list-style: none;
+            padding: 0;
         }
+
         .footer-links li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
+
         .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--footer-link);
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
         }
+
+        .footer-links a::before {
+            content: '›';
+            margin-right: 0.5rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
         .footer-links a:hover {
-            color: white;
+            color: var(--footer-text);
+            transform: translateX(5px);
         }
+
+        .footer-links a:hover::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         .copyright {
             margin-top: 2rem;
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: var(--primary);
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .back-to-top:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-5px);
+        }
+
+        .back-to-top::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.3s ease;
+        }
+
+        .back-to-top:hover::after {
+            transform: scale(1);
+        }
+
+        /* Utility classes */
+        .no-bullets {
+            list-style: none;
+            padding-left: 1.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .badge-high {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .badge-medium {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .badge-low {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .badge-very-high {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        tr:hover .badge {
+            transform: scale(1.1);
+        }
+
+        /* Feature boxes */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-box {
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: var(--background-secondary);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px var(--shadow-hover);
+        }
+
+        .feature-box:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-box:hover .feature-icon {
+            transform: scale(1.2);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 1rem;
+            width: 3px;
+            background: var(--primary-gradient);
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            transform: translateX(-50%);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover::before {
+            transform: translateX(-50%) scale(1.5);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Code block styling */
+        .code-block {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-family: monospace;
+            color: var(--code-text);
+            overflow-x: auto;
+            transition: all 0.3s ease;
+        }
+
+        .code-block:hover {
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        /* Tooltip styling */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--text-secondary);
+        }
+
+        .tooltip .tooltip-content {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.75rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px var(--shadow-dropdown);
+        }
+
+        .tooltip:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        /* Accordion styling */
+        .accordion {
+            margin: 1.5rem 0;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-item:hover {
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .accordion-header {
+            background-color: var(--background-secondary);
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background-color: var(--primary-lightest);
+        }
+
+        .accordion-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1rem;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+            padding: 1rem;
+        }
+
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Chart container */
+        .chart-container {
+            background-color: var(--card);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .chart-container:hover {
+            box-shadow: 0 8px 30px var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        /* Card tabs */
+        .card-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .card-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .card-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .card-tab:hover:not(.active) {
+            background-color: var(--background-secondary);
+            border-bottom-color: var(--border-dark);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Risk meter */
+        .risk-meter-container {
+            margin: 2rem 0;
+        }
+
+        .risk-meter {
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(to right, var(--success), var(--warning), var(--danger));
+            border-radius: 6px;
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .risk-indicator {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: var(--card);
+            border: 3px solid var(--text);
+            border-radius: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 0.5s ease;
+        }
+
+        .risk-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Progress circle */
+        .progress-circle {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0% var(--progress, 0%), var(--background-secondary) var(--progress, 0%) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            transition: background 0.3s ease;
+        }
+
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--card);
+        }
+
+        .progress-value {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Responsive media queries */
         @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
-                gap: 1rem;
+            .navbar-container {
+                flex-direction: column;
+                align-items: flex-start;
+                position: relative;
             }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+                display: none;
+                padding: 1rem 0;
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                right: 1rem;
+                top: 1rem;
+            }
+
             .hero h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
             .content {
-                padding: 1.5rem;
+                padding: 1rem;
                 margin: 2rem auto;
-                width: 95%;
             }
-            h1 {
-                font-size: 1.8rem;
+
+            .card {
+                padding: 1.5rem;
             }
-            table {
-                font-size: 0.9rem;
+
+            h2 {
+                font-size: 1.75rem;
             }
-            th, td {
-                padding: 0.5rem;
-            }
-            .tools {
-                grid-template-columns: 1fr;
-            }
+
             .cta-buttons {
                 flex-direction: column;
             }
-            .footer-content {
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+
+            .timeline::before {
+                left: 0.75rem;
+            }
+
+            .timeline-item {
+                padding-left: 2.5rem;
+            }
+
+            .timeline-item::before {
+                left: 0.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 4rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 1.25rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.3rem;
+            }
+
+            .tools {
                 grid-template-columns: 1fr;
-                gap: 1rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/learn">Learn Trading</a>
-        <a href="/practice">Practice Trading</a>
-        <a href="/simulator">Simulator</a>
-        <a href="/analysis">Analysis</a>
-    </div>
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="/" class="nav-logo">
+                Hedgex
+            </a>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">☰</button>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/learn">Learn Trading</a>
+                <a href="/practice">Practice Trading</a>
+                <a href="/simulator">Simulator</a>
+                <a href="/analysis">Analysis</a>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        </div>
+    </nav>
     
     <div class="hero">
-        <h1>Learn Trading with Hedge</h1>
-        <p>Master the fundamentals of stock trading with our simple, beginner-friendly resources.</p>
+        <div class="container hero-content">
+            <h1>Learn Trading with Hedgex</h1>
+            <p>Master the fundamentals of stock trading with our simple, beginner-friendly resources and interactive tools.</p>
+            <div class="hero-buttons">
+                <a href="#getting-started" class="cta-button">Get Started</a>
+                <a href="/practice" class="cta-button">Try Practice Trading</a>
+            </div>
+        </div>
     </div>
     
-    <div class="content">
-        <div class="card">
+    <div class="content container">
+        <div class="card" id="getting-started">
             <h2>Our Learning Tools</h2>
-            <p>Hedge provides powerful tools designed to help you understand and master stock trading in a risk-free environment.</p>
+            <p>Hedgex provides powerful tools designed to help you understand and master stock trading in a risk-free environment. Whether you're a complete beginner or looking to refine your strategies, our suite of tools can help you build confidence before risking real capital.</p>
             
             <div class="tools">
                 <div class="tool">
                     <h3>Practice Trading</h3>
-                    <p>Start with a virtual $100,000 and make trades just like in a real market. See how your portfolio performs over time and develop your trading strategy.</p>
+                    <p>Start with a virtual $100,000 and make trades just like in a real market. See how your portfolio performs over time and develop your trading strategy without risking real money.</p>
                     <ul>
-                        <li>Simulate real trading conditions</li>
+                        <li>Simulate real trading conditions with live market data</li>
                         <li>Buy and sell stocks with no real financial risk</li>
-                        <li>Track your progress over time</li>
+                        <li>Track your progress over time with detailed analytics</li>
                         <li>Learn from mistakes without losing money</li>
                     </ul>
                     <a href="/practice" class="cta-button">Try Practice Trading</a>
@@ -284,156 +1369,1181 @@
                 
                 <div class="tool">
                     <h3>Stock Growth Simulator</h3>
-                    <p>Experiment with different stock variables and analyze trends to predict stock or sector growth under various conditions.</p>
+                    <p>Experiment with different stock variables and analyze trends to predict stock or sector growth under various market conditions and economic scenarios.</p>
                     <ul>
-                        <li>Adjust key financial variables</li>
-                        <li>Test different market scenarios</li>
-                        <li>Visualize potential outcomes</li>
-                        <li>Understand how different factors affect stocks</li>
+                        <li>Adjust key financial variables and see immediate results</li>
+                        <li>Test different market scenarios and economic conditions</li>
+                        <li>Visualize potential outcomes with interactive charts</li>
+                        <li>Understand how different factors affect stock performance</li>
                     </ul>
                     <a href="/simulator" class="cta-button">Use Simulator</a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-tabs">
+                <div class="card-tab active" data-tab="basics">Trading Basics</div>
+                <div class="card-tab" data-tab="strategies">Trading Strategies</div>
+                <div class="card-tab" data-tab="analysis">Analysis Methods</div>
+                <div class="card-tab" data-tab="psychology">Trading Psychology</div>
+                <div class="card-tab" data-tab="resources">Learning Resources</div>
+            </div>
+            
+            <div class="tab-content active" id="basics">
+                <div class="section">
+                    <h2>📌 What Is Stock Trading?</h2>
+                    <p>Stock trading is the buying and selling of company shares on stock exchanges with the aim of profiting from price movements. When you buy a share, you're purchasing a small piece of ownership in a company, which entitles you to a portion of the company's assets and earnings.</p>
+                    
+                    <p>Unlike long-term investors who buy and hold stocks for years, traders typically focus on shorter timeframes, capitalizing on price fluctuations driven by market sentiment, news events, and technical indicators.</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">💰</div>
+                            <div class="feature-title">Capital Appreciation</div>
+                            <p>Profit from rising stock prices by buying low and selling high, the most common way traders make money.</p>
+                        </div>
+                        <div class="feature-box">
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-title">Dividend Income</div>
+                            <p>Earn periodic payments from companies that distribute a portion of their profits to shareholders.</p>
+                        </div>
+                        <div class="feature-box">
+                            <div class="feature-icon">⚖️</div>
+                            <div class="feature-title">Risk Management</div>
+                            <p>Successful trading requires balancing potential profit against risk through proper position sizing and stop-loss orders.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>📊 Types of Stock Trading</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Holding Period</th>
+                                    <th>Risk Level</th>
+                                    <th>Suitable For</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Day Trading</td>
+                                    <td>Buy & sell securities within the same trading day, focusing on short-term price movements</td>
+                                    <td>Minutes to hours</td>
+                                    <td>High <span class="badge badge-high">High 🚀</span></td>
+                                    <td>Full-time traders with quick decision-making abilities</td>
+                                </tr>
+                                <tr>
+                                    <td>Swing Trading</td>
+                                    <td>Capitalize on short to medium-term price trends and "swings" in the market</td>
+                                    <td>Days to weeks</td>
+                                    <td>Medium <span class="badge badge-medium">Medium 🔄</span></td>
+                                    <td>Part-time traders with day jobs</td>
+                                </tr>
+                                <tr>
+                                    <td>Position Trading</td>
+                                    <td>Hold positions for extended periods to capture longer-term trends</td>
+                                    <td>Months to years</td>
+                                    <td>Low <span class="badge badge-low">Low 🏦</span></td>
+                                    <td>Patient traders with fundamental analysis skills</td>
+                                </tr>
+                                <tr>
+                                    <td>Scalping</td>
+                                    <td>Make numerous trades to profit from tiny price movements, often using high leverage</td>
+                                    <td>Seconds to minutes</td>
+                                    <td>Very High <span class="badge badge-very-high">Very High ⚡</span></td>
+                                    <td>Experienced traders with advanced technology</td>
+                                </tr>
+                                <tr>
+                                    <td>Algorithmic Trading</td>
+                                    <td>Use computer programs and mathematical models to execute trades at optimal times</td>
+                                    <td>Variable</td>
+                                    <td>Medium to High <span class="badge badge-medium">Medium 🔄</span></td>
+                                    <td>Quantitative analysts and programmers</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>📈 How Stocks Are Traded</h2>
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">🏢</div>
+                            <h4>Stock Exchanges</h4>
+                            <p>Organized marketplaces where stocks are bought and sold, including:</p>
+                            <ul>
+                                <li>New York Stock Exchange (NYSE)</li>
+                                <li>NASDAQ</li>
+                                <li>London Stock Exchange (LSE)</li>
+                                <li>Tokyo Stock Exchange (TSE)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🏛️</div>
+                            <h4>Brokerage Firms</h4>
+                            <p>Financial institutions that facilitate trading by executing orders on behalf of clients:</p>
+                            <ul>
+                                <li>Robinhood - Commission-free mobile trading</li>
+                                <li>TD Ameritrade - Full-service with robust tools</li>
+                                <li>Interactive Brokers - Advanced platform for serious traders</li>
+                                <li>Fidelity - Balanced offering for investors</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">📝</div>
+                            <h4>Order Types</h4>
+                            <p>Different instructions for executing trades:</p>
+                            <ul>
+                                <li><strong>Market Order</strong> - Execute immediately at current price</li>
+                                <li><strong>Limit Order</strong> - Execute only at specified price or better</li>
+                                <li><strong>Stop Order</strong> - Becomes market order when price reaches trigger</li>
+                                <li><strong>Stop-Limit Order</strong> - Becomes limit order when price reaches trigger</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <h3>Trading Hours & Sessions</h3>
+                    <p>Stock markets operate during specific hours, with US markets typically open from 9:30 AM to 4:00 PM Eastern Time. However, extended trading hours exist:</p>
+                    
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Session</th>
+                                    <th>Times (Eastern)</th>
+                                    <th>Characteristics</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Pre-Market</td>
+                                    <td>4:00 AM - 9:30 AM</td>
+                                    <td>Lower volume, higher volatility, wider spreads</td>
+                                </tr>
+                                <tr>
+                                    <td>Regular Market</td>
+                                    <td>9:30 AM - 4:00 PM</td>
+                                    <td>Highest volume, most liquidity</td>
+                                </tr>
+                                <tr>
+                                    <td>After Hours</td>
+                                    <td>4:00 PM - 8:00 PM</td>
+                                    <td>Lower volume, higher volatility, news-driven moves</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>📊 Important Stock Metrics</h2>
+                    <p>Successful traders analyze various metrics to make informed decisions. These key indicators help evaluate a stock's value, growth potential, and risk.</p>
+                    
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h3 class="accordion-title">Price Metrics</h3>
+                                <span class="accordion-icon">▼</span>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="table-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Description</th>
+                                                <th>Why It Matters</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Last Price</td>
+                                                <td>Current trading price of the stock</td>
+                                                <td>Shows stock value at that moment; basis for calculating gains/losses</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Previous Close</td>
+                                                <td>Final price at which stock traded on previous day</td>
+                                                <td>Used to calculate daily price change and performance</td>
+                                            </tr>
+                                            <tr>
+                                                <td>52-Week Range</td>
+                                                <td>Lowest & highest price in the past year</td>
+                                                <td>Measures volatility & provides context for current price</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Moving Averages</td>
+                                                <td>Average price over specified periods (e.g., 50-day, 200-day)</td>
+                                                <td>Identify trend direction and potential support/resistance levels</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h3 class="accordion-title">Valuation Metrics</h3>
+                                <span class="accordion-icon">▼</span>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="table-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Description</th>
+                                                <th>Why It Matters</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Market Cap</td>
+                                                <td>Total value of all outstanding shares</td>
+                                                <td>Indicates company size, stability, and market category</td>
+                                            </tr>
+                                            <tr>
+                                                <td>P/E Ratio</td>
+                                                <td>Price divided by earnings per share</td>
+                                                <td>Shows how expensive a stock is relative to its earnings</td>
+                                            </tr>
+                                            <tr>
+                                                <td>PEG Ratio</td>
+                                                <td>P/E ratio divided by earnings growth rate</td>
+                                                <td>Factors in growth; lower values indicate potential undervaluation</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Price-to-Book (P/B)</td>
+                                                <td>Price divided by book value per share</td>
+                                                <td>Compares market value to accounting value; below 1 may indicate undervaluation</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Price-to-Sales (P/S)</td>
+                                                <td>Price divided by sales per share</td>
+                                                <td>Useful for evaluating unprofitable companies or comparing within sectors</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h3 class="accordion-title">Financial Performance Metrics</h3>
+                                <span class="accordion-icon">▼</span>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="table-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Description</th>
+                                                <th>Why It Matters</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>EPS</td>
+                                                <td>Earnings Per Share - net income divided by outstanding shares</td>
+                                                <td>Higher EPS indicates better profitability per share</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ROE</td>
+                                                <td>Return on Equity - net income divided by shareholder equity</td>
+                                                <td>Measures how efficiently company uses equity to generate profit</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Profit Margin</td>
+                                                <td>Net income divided by revenue</td>
+                                                <td>Reflects company's ability to convert revenue into profit</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Dividend & Yield</td>
+                                                <td>Payout per share & percentage return based on price</td>
+                                                <td>Indicates income potential from stock ownership</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h3 class="accordion-title">Trading & Volatility Metrics</h3>
+                                <span class="accordion-icon">▼</span>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="table-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Description</th>
+                                                <th>Why It Matters</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Volume</td>
+                                                <td>Number of shares traded in a given period</td>
+                                                <td>High volume indicates strong interest and liquidity</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Avg. Volume</td>
+                                                <td>3-month average daily trading volume</td>
+                                                <td>Provides baseline to compare current trading activity</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Beta</td>
+                                                <td>Stock's volatility compared to the market (1 = equal)</td>
+                                                <td>>1 = more volatile than market, <1 = less volatile</td>
+                                            </tr>
+                                            <tr>
+                                                <td>RSI</td>
+                                                <td>Relative Strength Index - momentum oscillator (0-100)</td>
+                                                <td>Above 70 = potentially overbought, below 30 = potentially oversold</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ATR</td>
+                                                <td>Average True Range - measure of volatility</td>
+                                                <td>Higher values indicate more volatility; useful for setting stop-losses</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>📊 Stock Market Participants</h2>
+                    <p>The market consists of various participants, each with different goals, resources, and strategies:</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">👨‍💼</div>
+                            <h4>Individual Investors</h4>
+                            <p>Retail traders investing personal capital with varying degrees of experience and capital. They typically trade through online brokerage platforms.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🏢</div>
+                            <h4>Institutional Investors</h4>
+                            <p>Large organizations managing substantial portfolios including mutual funds, pension funds, insurance companies, and Hedgex funds.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">⚖️</div>
+                            <h4>Market Makers</h4>
+                            <p>Financial firms that provide liquidity by continuously buying and selling securities, maintaining an orderly market and profiting from the bid-ask spread.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🏛️</div>
+                            <h4>Brokers</h4>
+                            <p>Entities that execute trades on behalf of clients, offering various services from basic order execution to comprehensive research and advice.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">💹</div>
+                            <h4>High-Frequency Traders</h4>
+                            <p>Specialized firms using advanced algorithms and technology to execute large numbers of trades in fractions of a second, capitalizing on tiny price discrepancies.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="strategies">
+                <h2>Trading Strategies</h2>
+                <p>Different approaches to trading stocks based on various methodologies and timeframes.</p>
+                
+                <div class="section">
+                    <h3>Technical Analysis Strategies</h3>
+                    <p>Strategies based on chart patterns, indicators, and historical price data:</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">📈</div>
+                            <h4>Trend Following</h4>
+                            <p>Identifying and trading in the direction of established market trends using moving averages, trendlines, and momentum indicators.</p>
+                            <ul>
+                                <li>Moving Average Crossovers</li>
+                                <li>MACD Strategy</li>
+                                <li>Trend Channel Trading</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">↕️</div>
+                            <h4>Range Trading</h4>
+                            <p>Buying at support levels and selling at resistance levels in sideways markets, using oscillators like RSI and Stochastic.</p>
+                            <ul>
+                                <li>Support/Resistance Bounces</li>
+                                <li>Bollinger Band Strategies</li>
+                                <li>Overbought/Oversold Indicators</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🔄</div>
+                            <h4>Breakout Trading</h4>
+                            <p>Entering trades when price breaks through significant support or resistance levels with increased volume.</p>
+                            <ul>
+                                <li>Chart Pattern Breakouts</li>
+                                <li>Triangle and Flag Patterns</li>
+                                <li>Volume Confirmation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Fundamental Analysis Strategies</h3>
+                    <p>Strategies based on company financials, industry trends, and economic factors:</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">💰</div>
+                            <h4>Value Investing</h4>
+                            <p>Finding undervalued stocks based on financial metrics and intrinsic value calculations.</p>
+                            <ul>
+                                <li>Low P/E, P/B Ratio Screening</li>
+                                <li>Discounted Cash Flow Analysis</li>
+                                <li>Margin of Safety Principle</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🚀</div>
+                            <h4>Growth Investing</h4>
+                            <p>Focusing on companies with strong revenue and earnings growth potential, often trading at higher multiples.</p>
+                            <ul>
+                                <li>Revenue Growth Analysis</li>
+                                <li>Earnings Momentum Strategy</li>
+                                <li>Market Share Expansion</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">📰</div>
+                            <h4>Event-Driven Trading</h4>
+                            <p>Capitalizing on significant events like earnings announcements, mergers, or product launches.</p>
+                            <ul>
+                                <li>Earnings Surprise Strategy</li>
+                                <li>Merger Arbitrage</li>
+                                <li>FDA Approval Trading</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Hybrid & Alternative Strategies</h3>
+                    <p>Combining multiple approaches or utilizing specialized methodologies:</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">⚖️</div>
+                            <h4>Pairs Trading</h4>
+                            <p>Taking opposite positions in two correlated securities to profit from the convergence of their price relationship.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🔄</div>
+                            <h4>Rotational Trading</h4>
+                            <p>Moving between different sectors or asset classes based on economic cycles and relative strength.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🤖</div>
+                            <h4>Algorithm-Based</h4>
+                            <p>Using automated systems with predefined rules to execute trades based on technical and/or fundamental criteria.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="analysis">
+                <h2>Analysis Methods</h2>
+                <p>Different ways to evaluate stocks and make informed trading decisions.</p>
+                
+                <div class="section">
+                    <h3>Technical Analysis</h3>
+                    <p>The study of historical price and volume data to predict future price movements using charts and statistical indicators.</p>
+                    
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h4 class="accordion-title">Chart Patterns</h4>
+                                <span class="accordion-icon">▼</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Visual patterns that form on price charts that may indicate continuation or reversal of trends.</p>
+                                <ul>
+                                    <li><strong>Head and Shoulders</strong> - Reversal pattern with three peaks, the middle being highest</li>
+                                    <li><strong>Double Top/Bottom</strong> - Reversal pattern showing two peaks/troughs at similar levels</li>
+                                    <li><strong>Cup and Handle</strong> - Continuation pattern resembling a teacup with handle</li>
+                                    <li><strong>Triangles</strong> - Consolidation patterns showing converging trendlines (ascending, descending, symmetric)</li>
+                                    <li><strong>Flags and Pennants</strong> - Short-term continuation patterns after strong price moves</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h4 class="accordion-title">Technical Indicators</h4>
+                                <span class="accordion-icon">▼</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Mathematical calculations based on price, volume, or open interest used to forecast future price movements.</p>
+                                <div class="table-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Indicator Type</th>
+                                                <th>Examples</th>
+                                                <th>Purpose</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Trend Indicators</td>
+                                                <td>Moving Averages, MACD, ADX</td>
+                                                <td>Identify direction and strength of trends</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Momentum Oscillators</td>
+                                                <td>RSI, Stochastic, CCI</td>
+                                                <td>Measure overbought/oversold conditions</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Volatility Indicators</td>
+                                                <td>Bollinger Bands, ATR, Keltner Channels</td>
+                                                <td>Gauge market volatility and potential breakouts</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Volume Indicators</td>
+                                                <td>On-Balance Volume, Volume Profile, VWAP</td>
+                                                <td>Confirm price movements with volume analysis</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Fundamental Analysis</h3>
+                    <p>Evaluating a company's financial health, business model, competitive position, and growth prospects to determine its intrinsic value.</p>
+                    
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h4 class="accordion-title">Financial Statement Analysis</h4>
+                                <span class="accordion-icon">▼</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Examining key financial documents to assess company performance:</p>
+                                <ul>
+                                    <li><strong>Income Statement</strong> - Revenue, expenses, and profitability</li>
+                                    <li><strong>Balance Sheet</strong> - Assets, liabilities, and shareholder equity</li>
+                                    <li><strong>Cash Flow Statement</strong> - Cash generation and usage</li>
+                                    <li><strong>Financial Ratios</strong> - Metrics derived from financial statements</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <h4 class="accordion-title">Qualitative Analysis</h4>
+                                <span class="accordion-icon">▼</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Assessing non-financial aspects that impact company value:</p>
+                                <ul>
+                                    <li><strong>Business Model</strong> - How the company generates revenue</li>
+                                    <li><strong>Competitive Advantage</strong> - Unique strengths and moats</li>
+                                    <li><strong>Management Quality</strong> - Leadership track record and vision</li>
+                                    <li><strong>Industry Position</strong> - Market share and growth potential</li>
+                                    <li><strong>Regulatory Environment</strong> - Legal and compliance factors</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="psychology">
+                <h2>Trading Psychology</h2>
+                <p>The study of how emotions and cognitive biases influence trading decisions and performance.</p>
+                
+                <div class="section">
+                    <h3>Common Trading Biases</h3>
+                    <p>Psychological tendencies that can negatively impact trading performance:</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">😨</div>
+                            <h4>Fear & Greed</h4>
+                            <p>The two primary emotions driving market movements and individual trading decisions:</p>
+                            <ul>
+                                <li><strong>Fear</strong> leads to panic selling, staying out of markets, or abandoning strategies</li>
+                                <li><strong>Greed</strong> causes overtrading, taking excessive risks, and holding winners too long</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🔄</div>
+                            <h4>Confirmation Bias</h4>
+                            <p>Seeking information that supports existing beliefs while ignoring contradictory evidence.</p>
+                            <p><em>Example:</em> Only reading bullish articles when you own a stock, dismissing negative news.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">💸</div>
+                            <h4>Loss Aversion</h4>
+                            <p>The tendency to feel losses more strongly than equivalent gains, leading to poor risk management.</p>
+                            <p><em>Example:</em> Holding losing positions too long hoping for recovery while taking profits too early.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">🔮</div>
+                            <h4>Recency Bias</h4>
+                            <p>Giving excessive weight to recent events and extrapolating short-term trends too far.</p>
+                            <p><em>Example:</em> Assuming a stock that recently surged will continue rising indefinitely.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Developing Mental Discipline</h3>
+                    <p>Strategies to improve psychological resilience and decision-making quality:</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <div class="feature-icon">📝</div>
+                            <h4>Trading Plan</h4>
+                            <p>Creating a detailed, written strategy with specific entry, exit, and risk management rules.</p>
+                            <p>A good plan defines exactly when to trade, what to trade, how much to risk, and when to exit.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">📊</div>
+                            <h4>Trading Journal</h4>
+                            <p>Documenting trades, including rationale, outcomes, and emotional states to identify patterns.</p>
+                            <p>Regular review helps identify both technical and psychological improvement areas.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">⏸️</div>
+                            <h4>Mindfulness</h4>
+                            <p>Developing awareness of emotional states and learning to pause before acting on impulses.</p>
+                            <p>Techniques like meditation and deep breathing can help maintain calm during market volatility.</p>
+                        </div>
+                        
+                        <div class="feature-box">
+                            <div class="feature-icon">👨‍💻</div>
+                            <h4>Deliberate Practice</h4>
+                            <p>Focused, systematic improvement of specific trading skills with regular feedback.</p>
+                            <p>Includes backtesting strategies, simulation trading, and post-trade analysis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="resources">
+                <h2>Learning Resources</h2>
+                <p>Additional materials to further your trading education and development.</p>
+                
+                <div class="section">
+                    <h3>Recommended Books</h3>
+                    <div class="resources-grid">
+                        <div class="resource-card">
+                            <h4>Technical Analysis</h4>
+                            <ul>
+                                <li>"Technical Analysis of the Financial Markets" by John J. Murphy</li>
+                                <li>"Japanese Candlestick Charting Techniques" by Steve Nison</li>
+                                <li>"Encyclopedia of Chart Patterns" by Thomas Bulkowski</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h4>Fundamental Analysis</h4>
+                            <ul>
+                                <li>"The Intelligent Investor" by Benjamin Graham</li>
+                                <li>"Security Analysis" by Graham & Dodd</li>
+                                <li>"Financial Statement Analysis" by Martin Fridson</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h4>Trading Psychology</h4>
+                            <ul>
+                                <li>"Trading in the Zone" by Mark Douglas</li>
+                                <li>"The Daily Trading Coach" by Brett Steenbarger</li>
+                                <li>"Thinking, Fast and Slow" by Daniel Kahneman</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h4>Trading Strategies</h4>
+                            <ul>
+                                <li>"How to Make Money in Stocks" by William O'Neil</li>
+                                <li>"Trade Your Way to Financial Freedom" by Van Tharp</li>
+                                <li>"Come Into My Trading Room" by Alexander Elder</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Online Learning</h3>
+                    <div class="resources-grid">
+                        <div class="resource-card">
+                            <h4>Courses & Tutorials</h4>
+                            <ul>
+                                <li>Investopedia Academy - Comprehensive courses for all levels</li>
+                                <li>Trading View Pine Script Tutorials - Learn to code trading indicators</li>
+                                <li>MIT OpenCourseWare - Free finance and investment courses</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h4>YouTube Channels</h4>
+                            <ul>
+                                <li>Trading Channel - Technical analysis and market reviews</li>
+                                <li>Stock Market Basics - Beginner-friendly educational content</li>
+                                <li>Investor's Corner - Value investing principles and case studies</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h4>Podcasts</h4>
+                            <ul>
+                                <li>Chat With Traders - Interviews with professional traders</li>
+                                <li>Market Wizards - Trading psychology and strategy discussions</li>
+                                <li>Daily Market Brief - Market news and analysis</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h4>Forums & Communities</h4>
+                            <ul>
+                                <li>Hedgex Community - Our own trading discussion platform</li>
+                                <li>Elite Trader - Long-running trading forum</li>
+                                <li>Trading View Ideas - Shared chart analysis and setups</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Market Data & Research Tools</h3>
+                    <div class="resources-grid">
+                        <div class="resource-card">
+                            <h4>Free Resources</h4>
+                            <ul>
+                                <li>Yahoo Finance - Stock data, news, and basic charts</li>
+                                <li>Finviz - Stock screener and visualization tools</li>
+                                <li>Trading View - Advanced charting platform with community</li>
+                                <li>SEC EDGAR - Official company filings and reports</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h4>Premium Services</h4>
+                            <ul>
+                                <li>Bloomberg Terminal - Professional market data platform</li>
+                                <li>Morningstar - Comprehensive investment research</li>
+                                <li>Trade Ideas - AI-powered stock scanner</li>
+                                <li>Seeking Alpha Premium - In-depth stock analysis</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="card">
-            <div class="section">
-                <h2>📌 What Is Stock Trading?</h2>
-                <p>Stock trading is the buying and selling of company shares to profit from price movements. Traders use different strategies based on market conditions and risk tolerance. When you buy a share, you're purchasing a small piece of ownership in a company.</p>
+            <h2>Ready to Start Practicing?</h2>
+            <p>Put your knowledge to the test in our risk-free environment. Start with $100,000 in virtual cash and build your trading skills without the financial risk.</p>
+            <div class="cta-container">
+                <a href="/practice" class="cta-button">Try Practice Trading</a>
+                <a href="/simulator" class="cta-button cta-button-secondary">Use Stock Simulator</a>
             </div>
-            
-            <div class="section">
-                <h2>📊 Types of Stock Trading</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Description</th>
-                            <th>Holding Period</th>
-                            <th>Risk Level</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Day Trading</td>
-                            <td>Buy & sell within the same day</td>
-                            <td>Minutes to hours</td>
-                            <td>High 🚀</td>
-                        </tr>
-                        <tr>
-                            <td>Swing Trading</td>
-                            <td>Capitalize on short-term trends</td>
-                            <td>Days to weeks</td>
-                            <td>Medium 🔄</td>
-                        </tr>
-                        <tr>
-                            <td>Position Trading</td>
-                            <td>Long-term investing with occasional trades</td>
-                            <td>Months to years</td>
-                            <td>Low 🏦</td>
-                        </tr>
-                        <tr>
-                            <td>Scalping</td>
-                            <td>Profiting from tiny price movements</td>
-                            <td>Seconds to minutes</td>
-                            <td>Very High ⚡</td>
-                        </tr>
-                    </tbody>
-                </table>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3 class="white">About Hedgex</h3>
+                    <p class="white">Empowering young people with financial knowledge and skills to navigate the stock market with confidence.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/learn">Learn Trading</a></li>
+                        <li><a href="/practice">Practice Trading</a></li>
+                        <li><a href="/simulator">Simulator</a></li>
+                        <li><a href="/analysis">Analysis</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <p class="white">Email: tanishchauhan4444@gmail.com</p>
+                    <p class="white">We'd love to hear your feedback or answer any questions!</p>
+                </div>
             </div>
-            
-            <div class="section">
-                <h2>📈 How Stocks Are Traded</h2>
-                <p>✅ <strong>Stock Exchanges</strong> – NYSE, NASDAQ, etc.</p>
-                <p>✅ <strong>Brokerages</strong> – Robinhood, TD Ameritrade, Fidelity, etc.</p>
-                <p>✅ <strong>Order Types</strong></p>
-                <ul style="list-style: none; padding-left: 1.5rem;">
-                    <li>• Market Order – Executes immediately at the best price</li>
-                    <li>• Limit Order – Executes only at a specified price</li>
-                    <li>• Stop-Loss Order – Sells automatically to limit losses</li>
-                </ul>
+            <div class="copyright">
+                © 2025 Hedgex Financial Literacy. All rights reserved.
             </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Navigation Menu Toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Dark/Light Theme Toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.classList.add(savedTheme);
+            themeToggle.textContent = savedTheme === 'dark-theme' ? '☀️' : '🌙';
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            body.classList.add('dark-theme');
+            themeToggle.textContent = '☀️';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                localStorage.setItem('theme', 'light-theme');
+                themeToggle.textContent = '🌙';
+            } else {
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark-theme');
+                themeToggle.textContent = '☀️';
+            }
+        });
+        
+        // Tab Navigation for Learning Content
+        const cardTabs = document.querySelectorAll('.card-tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        cardTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                cardTabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Hide all tab contents
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Show corresponding tab content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Accordion functionality
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                // Get the parent accordion item
+                const accordionItem = header.parentElement;
+                
+                // Toggle the active class on the accordion item
+                accordionItem.classList.toggle('active');
+                
+                // Get the accordion content
+                const content = header.nextElementSibling;
+                
+                // Toggle display of content
+                if (accordionItem.classList.contains('active')) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    header.querySelector('.accordion-icon').textContent = '▲';
+                } else {
+                    content.style.maxHeight = '0';
+                    header.querySelector('.accordion-icon').textContent = '▼';
+                }
+            });
+        });
+        
+        // Initialize first accordion item as open in each accordion
+        document.querySelectorAll('.accordion').forEach(accordion => {
+            const firstItem = accordion.querySelector('.accordion-item');
+            if (firstItem) {
+                firstItem.classList.add('active');
+                const content = firstItem.querySelector('.accordion-content');
+                const icon = firstItem.querySelector('.accordion-icon');
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.textContent = '▲';
+            }
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80, // Offset for fixed navbar
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Add animation on scroll
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.feature-box, .section, .tool');
             
-            <div class="section">
-                <h2>📊 Important Stock Metrics</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Metric</th>
-                            <th>Meaning</th>
-                            <th>Why It Matters?</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Last Price</td>
-                            <td>Current trading price</td>
-                            <td>Shows stock value at that moment</td>
-                        </tr>
-                        <tr>
-                            <td>Previous Close</td>
-                            <td>Price at last session's close</td>
-                            <td>Used to compare daily performance</td>
-                        </tr>
-                        <tr>
-                            <td>52-Week Range</td>
-                            <td>Lowest & highest price in a year</td>
-                            <td>Measures volatility & trends</td>
-                        </tr>
-                        <tr>
-                            <td>Market Cap</td>
-                            <td>Total value of all shares</td>
-                            <td>Indicates company size & stability</td>
-                        </tr>
-                        <tr>
-                            <td>P/E Ratio</td>
-                            <td>Price / Earnings per Share</td>
-                            <td>Shows valuation (lower = undervalued)</td>
-                        </tr>
-                        <tr>
-                            <td>EPS</td>
-                            <td>Earnings Per Share</td>
-                            <td>Higher EPS = better profitability</td>
-                        </tr>
-                        <tr>
-                            <td>Dividend & Yield</td>
-                            <td>Payout per share & yield %</td>
-                            <td>Income for investors (dividend stocks)</td>
-                        </tr>
-                        <tr>
-                            <td>Beta</td>
-                            <td>Volatility vs. market (1 = equal)</td>
-                            <td>>1 = riskier, <1 = less volatile</td>
-                        </tr>
-                        <tr>
-                            <td>Volume</td>
-                            <td>Shares traded in a day</td>
-                            <td>High volume = more liquidity</td>
-                        </tr>
-                        <tr>
-                            <td>Avg. Volume</td>
-                            <td>3-month average trading volume</td>
-                            <td>Compares current activity to normal</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+                
+                if (elementPosition < screenPosition) {
+                    element.classList.add('animate');
+                }
+            });
+        };
+        
+        // Run animation check on load and scroll
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Add sample chart to demonstrate functionality (using a simple canvas)
+        const addSampleChart = () => {
+            const chartCanvas = document.getElementById('sample-chart');
+            if (!chartCanvas) return;
             
-            <div class="section">
-                <h2>📊 Key Trading Strategies</h2>
-                <div class="strategy-item">🔹 <strong>Technical Analysis</strong> – Uses price charts, patterns, and indicators like RSI, MACD, and Bollinger Bands.</div>
-                <div class="strategy-item">🔹 <strong>Fundamental Analysis</strong> – Examines financials, earnings, and company performance.</div>
-                <div class="strategy-item">🔹 <strong>Momentum Trading</strong> – Rides trends in high-volume stocks.</div>
-                <div class="strategy-item">🔹 <strong>News Trading</strong> – Trades based on earnings reports, political events, and macroeconomic news.</div>
-            </div>
+            const ctx = chartCanvas.getContext('2d');
+            const width = chartCanvas.width;
+            const height = chartCanvas.height;
             
-            <div class="section">
-                <h2>📉 Risk Management Tips</h2>
-                <div class="tip-item">✅ <strong>Stop-Loss Orders</strong> – Set auto-sell to limit losses.</div>
-                <div class="tip-item">✅ <strong>Diversification</strong> – Spread investments across sectors.</div>
-                <div class="tip-item">✅ <strong>Risk-Reward Ratio</strong> – Aim for higher potential profits than losses.</div>
-                <div class="tip-item">✅ <strong>Emotional Control</strong> – Avoid panic selling or greedy buying.</div>
-            </div>
+            // Sample stock data points (closing prices)
+            const stockData = [
+                245, 248, 253, 246, 250, 255, 261, 258, 263, 270, 
+                267, 273, 279, 275, 282, 278, 283, 290, 286, 292
+            ];
             
-            <div class="section">
-                <h2>📊 Stock Market Participants</h2>
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw chart background
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--card-bg');
+            ctx.fillRect(0, 0, width, height);
+            
+            // Calculate scaling factors
+            const dataMax = Math.max(...stockData);
+            const dataMin = Math.min(...stockData);
+            const dataRange = dataMax - dataMin;
+            const xScale = width / (stockData.length - 1);
+            const yScale = (height - 40) / dataRange;
+            
+            // Draw axes
+            ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--text-color');
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(30, 10);
+            ctx.lineTo(30, height - 30);
+            ctx.lineTo(width - 10, height - 30);
+            ctx.stroke();
+            
+            // Draw price line
+            ctx.strokeStyle = '#4CAF50';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            stockData.forEach((price, index) => {
+                const x = 30 + index * xScale;
+                const y = height - 30 - (price - dataMin) * yScale;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.stroke();
+            
+            // Add price points
+            ctx.fillStyle = '#4CAF50';
+            stockData.forEach((price, index) => {
+                const x = 30 + index * xScale;
+                const y = height - 30 - (price - dataMin) * yScale;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Add labels
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-color');
+            ctx.font = '10px Arial';
+            ctx.fillText(dataMax.toFixed(0), 10, 20);
+            ctx.fillText(dataMin.toFixed(0), 10, height - 30);
+            ctx.fillText('Price', 10, height / 2);
+            ctx.fillText('Time', width / 2, height - 10);
+        };
+        
+        // Initialize charts if they exist
+        window.addEventListener('load', addSampleChart);
+        
+        // Resize handler for responsive charts
+        window.addEventListener('resize', () => {
+            addSampleChart();
+        });
+        
+        // Add live date and time to trading simulator sections
+        const updateDateTime = () => {
+            const dateTimeElements = document.querySelectorAll('.live-date-time');
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            
+            dateTimeElements.forEach(element => {
+                element.textContent = now.toLocaleDateString('en-US', options);
+            });
+        };
+        
+        // Update date/time immediately and then every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Fake stock ticker animation
+        const animateStockTicker = () => {
+            const tickerElement = document.querySelector('.stock-ticker');
+            if (!tickerElement) return;
+            
+            // Sample stock data with random changes
+            const stocks = [
+                { symbol: 'AAPL', price: 178.72, change: +1.25 },
+                { symbol: 'MSFT', price: 332.06, change: -0.87 },
+                { symbol: 'GOOGL', price: 136.39, change: +0.63 },
+                { symbol: 'AMZN', price: 145.24, change: +2.18 },
+                { symbol: 'META', price: 347.56, change: -1.42 },
+                { symbol: 'TSLA', price: 193.57, change: +4.32 },
+                { symbol: 'NVDA', price: 819.66, change: +12.45 },
+                { symbol: 'JPM', price: 183.52, change: -0.76 },
+                { symbol: 'V', price: 266.89, change: +0.54 },
+                { symbol: 'WMT', price: 59.34, change: +0.21 }
+            ];
+            
+            let tickerHTML = '';
+            
+            stocks.forEach(stock => {
+                const changeClass = stock.change >= 0 ? 'positive' : 'negative';
+                const changeSymbol = stock.change >= 0 ? '+' : '';
+                
+                tickerHTML += `
+                    <div class="ticker-item">
+                        <span class="ticker-symbol">${stock.symbol}</span>
+                        <span class="ticker-price">$${stock.price.toFixed(2)}</span>
+                        <span class="ticker-change ${changeClass}">${changeSymbol}${stock.change.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            
+            tickerElement.innerHTML = tickerHTML;
+            
+            // Animate ticker
+            const tickerContainer = tickerElement.parentElement;
+            const tickerWidth = tickerElement.offsetWidth;
+            const containerWidth = tickerContainer.offsetWidth;
+            
+            let position = containerWidth;
+            
+            const moveStockTicker = () => {
+                position -= 1;
+                
+                // Reset position when ticker has scrolled completely
+                if (position < -tickerWidth) {
+                    position = containerWidth;
+                }
+                
+                tickerElement.style.transform = `translateX(${position}px)`;
+                requestAnimationFrame(moveStockTicker);
+            };
+            
+            requestAnimationFrame(moveStockTicker);
+        };
+        
+        // Initialize stock ticker if it exists
+        window.addEventListener('load', animateStockTicker);
+        // Dark mode toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            // Check for saved theme preference or use prefer-color-scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // Apply theme based on saved preference or system preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '🌙';
+            }
+            
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update toggle button appearance
+                themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+            });
+    </script>
+</body>
+        

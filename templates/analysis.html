@@ -3,24 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hedge - Stock Analysis</title>
+    <title>Hedgex - Stock Analysis & Trading Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #60a5fa;
             --primary-dark: #3b82f6;
+            --primary-light: #60a5fa;
+            --secondary: #a855f7;
             --success: #10b981;
             --success-dark: #059669;
             --danger: #ef4444;
             --danger-dark: #dc2626;
             --warning: #f59e0b;
             --text: #1e293b;
+            --text-light: #64748b;
             --background: #f8fafc;
+            --background-secondary: #e2e8f0;
             --card: #ffffff;
             --border: #e2e8f0;
             --shadow: rgba(0, 0, 0, 0.08);
             --shadow-hover: rgba(0, 0, 0, 0.15);
+            --table-header: rgba(59, 130, 246, 0.2);
+            --table-row: rgba(59, 130, 246, 0.1);
+            --navbar-bg: var(--primary);
+            --navbar-text: white;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #a855f7;
+            --success: #059669;
+            --success-dark: #047857;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --warning: #d97706;
+            --text: #f1f5f9;
+            --text-light: #cbd5e1;
+            --text-secondary: #94a3b8;
+            --background: #0f172a;
+            --background-secondary: #1e293b;
+            --card: #1e293b;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --shadow-hover: rgba(0, 0, 0, 0.35);
+            --table-header: rgba(59, 130, 246, 0.2);
+            --table-row: rgba(59, 130, 246, 0.1);
+            --navbar-bg: #1e293b;
+            --navbar-text: #f1f5f9;
         }
         
         * {
@@ -36,33 +69,117 @@
             line-height: 1.6;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
         
         .navbar {
-            background: var(--primary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            box-shadow: 0 2px 10px var(--shadow);
+            background: var(--navbar-bg);
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
         }
         
-        .navbar a {
-            color: white;
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navbar-text);
+            text-decoration: none;
+            transition: transform 0.3s ease, opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-logo:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--navbar-text);
             text-decoration: none;
             font-size: 1rem;
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.2s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
         }
         
-        .navbar a:hover {
+        .nav-links a:hover {
             background-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background-color: var(--navbar-text);
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 80%;
+            left: 10%;
+        }
+        
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: rotate(360deg);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+        
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
         }
         
         .content {
@@ -116,6 +233,8 @@
             border-radius: 6px;
             font-size: 1rem;
             transition: border-color 0.2s ease;
+            background-color: var(--card);
+            color: var(--text);
         }
         
         input[type="text"]:focus {
@@ -146,6 +265,7 @@
             position: relative;
             height: 400px;
             margin-bottom: 2rem;
+            width: 100%;
         }
         
         .time-period-selector {
@@ -175,8 +295,8 @@
             border-color: var(--primary);
         }
         
-        .time-period-selector button:hover {
-            background-color: var(--primary-dark);
+        .time-period-selector button:hover:not(.active) {
+            background-color: var(--primary-light);
             color: white;
             transform: translateY(-2px);
         }
@@ -274,12 +394,26 @@
         
         .price-up {
             color: var(--success);
+            animation: priceUp 1s;
         }
         
         .price-down {
             color: var(--danger);
+            animation: priceDown 1s;
         }
         
+        @keyframes priceUp {
+            0% { color: var(--text); }
+            50% { color: var(--success); }
+            100% { color: var(--text); }
+        }
+        
+        @keyframes priceDown {
+            0% { color: var(--text); }
+            50% { color: var(--danger); }
+            100% { color: var(--text); }
+        }
+
         .stats-section {
             margin-top: 2rem;
         }
@@ -291,11 +425,30 @@
         }
         
         .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 5px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-container {
             text-align: center;
             padding: 2rem;
             font-size: 1.2rem;
             color: var(--text);
             opacity: 0.7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
         
         .error-message {
@@ -304,92 +457,6 @@
             padding: 1rem;
             margin-bottom: 1.5rem;
             color: var(--danger);
-        }
-        
-        .trend-indicator {
-            display: inline-block;
-            margin-left: 0.5rem;
-        }
-        
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
-        }
-        
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--text);
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 0.5rem;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.85rem;
-        }
-        
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .stat-group {
-            margin-bottom: 1rem;
-        }
-        
-        .stat-category {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            padding-left: 0.5rem;
-            border-left: 3px solid var(--primary);
-        }
-        
-        .comparison-container {
-            margin-top: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
-                gap: 1rem;
-            }
-            
-            .search-container {
-                flex-direction: column;
-            }
-            
-            .stock-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .stock-price {
-                text-align: left;
-                margin-top: 1rem;
-            }
-            
-            .stock-price .price-change {
-                justify-content: flex-start;
-            }
-            
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        #noDataMessage {
-            text-align: center;
-            padding: 2rem;
-            background-color: var(--background);
-            border-radius: 8px;
-            margin: 2rem 0;
         }
         
         .tab-container {
@@ -441,6 +508,36 @@
             display: block;
         }
         
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px var(--shadow);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th {
+            background-color: var(--table-header);
+            color: var(--text);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--table-row);
+        }
+        
         .quarterly-table {
             width: 100%;
             border-collapse: collapse;
@@ -459,48 +556,267 @@
         }
         
         .quarterly-table th {
-            background-color: var(--background);
+            background-color: var(--table-header);
             font-weight: 600;
         }
         
         .quarterly-table tr:hover {
-            background-color: var(--background);
+            background-color: var(--table-row);
         }
         
-        .positive-trend {
+        .status-positive, .positive-trend {
             color: var(--success);
+            font-weight: 500;
         }
         
-        .negative-trend {
+        .status-negative, .negative-trend {
             color: var(--danger);
+            font-weight: 500;
         }
         
         .quarterly-chart-container {
             height: 300px;
             margin: 2rem 0;
         }
+        
+        .trading-panel {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--card);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .trading-panel input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            width: 100px;
+            background-color: var(--card);
+            color: var(--text);
+        }
+        
+        .sell-button {
+            padding: 6px 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .sell-button:hover {
+            background: var(--danger-dark);
+            opacity: 0.9;
+        }
+        
+        .reset-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #475569;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .reset-button:hover {
+            background: #334155;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .success {
+            background-color: var(--success);
+        }
+        
+        .error {
+            background-color: var(--danger);
+        }
+        
+        .portfolio {
+            margin-top: 30px;
+        }
+        
+        .portfolio h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+        
+        .no-holdings {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+            font-style: italic;
+        }
+        
+        #noDataMessage {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--background-secondary);
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        /* Improved mobile responsive styles */
+        @media (max-width: 768px) {
+            .navbar-container {
+                padding: 0.5rem 1.5rem;
+            }
+            
+            .nav-logo {
+                z-index: 101;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                height: 100vh;
+                width: 80%;
+                max-width: 300px;
+                flex-direction: column;
+                background: var(--navbar-bg);
+                padding: 5rem 1rem 1rem;
+                gap: 1rem;
+                transition: left 0.3s ease;
+                box-shadow: 0 4px 10px var(--shadow);
+                z-index: 100;
+                justify-content: flex-start;
+                align-items: flex-start;
+            }
+            
+            .nav-links.show {
+                left: 0;
+            }
+            
+            .nav-links a {
+                width: 100%;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 102;
+            }
+            
+            .theme-toggle {
+                margin-left: auto;
+                z-index: 102;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .stock-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .stock-price {
+                text-align: left;
+                margin-top: 1rem;
+            }
+            
+            .stock-price .price-change {
+                justify-content: flex-start;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .trading-panel {
+                flex-direction: column;
+            }
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/learn">Learn Trading</a>
-        <a href="/practice">Practice Trading</a>
-        <a href="/simulator">Simulator</a>
-        <a href="/analysis">Analysis</a>
-    </div>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="nav-logo">
+                Hedgex
+            </a>
+            <button class="mobile-menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/learn">Learn Trading</a>
+                <a href="/practice">Practice Trading</a>
+                <a href="/simulator">Simulator</a>
+                <a href="/analysis">Analysis</a>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        </div>
+    </nav>
     
     <div class="content">
         <div class="card">
-            <h2>Stock Analysis</h2>
-            <p>Enter a stock ticker symbol to get comprehensive information and analysis.</p>
+            <h2>Stock Analysis & Trading</h2>
+            <p>Enter a stock ticker symbol to get comprehensive information and start trading.</p>
             
             <div class="search-container">
                 <input type="text" id="stockTicker" placeholder="Enter stock ticker (e.g., AAPL, MSFT, GOOGL)" value="">
                 <button id="analyzeButton">Analyze</button>
             </div>
             
-            <div id="loadingIndicator" class="loading" style="display: none;">
+            <div id="loadingIndicator" class="loading-container" style="display: none;">
+                <div class="loading"></div>
                 <p>Loading stock data...</p>
             </div>
             
@@ -527,7 +843,6 @@
                         <button class="tab active" data-tab="chart">Price Chart</button>
                         <button class="tab" data-tab="fundamentals">Fundamentals</button>
                         <button class="tab" data-tab="financials">Financials</button>
-                        <button class="tab" data-tab="growth">Growth & Performance</button>
                     </div>
                 </div>
                 
@@ -576,25 +891,40 @@
                         </div>
                     </div>
                     
-                    <div class="stats-section">
-                        <h3>Quarterly Results</h3>
-                        <div id="quarterlyResultsChart" class="quarterly-chart-container">
-                            <canvas id="quarterlyChart"></canvas>
+                    <!-- Add this to your analysis.html or where you want to display the quarterly data -->
+                    <div class="card mb-4 mt-4">  <!-- Added mt-4 for more top margin -->
+                        <div class="card-header">
+                        <h5 class="mb-0">Quarterly Financial Data</h5>
                         </div>
-                        <table class="quarterly-table" id="quarterlyTable">
-                            <thead>
+                        <div class="card-body">
+                        <div id="quarterlyDataLoading" class="text-center my-4">
+                            <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading quarterly data...</p>
+                        </div>
+                        <div id="quarterlyDataError" class="alert alert-warning" style="display:none;"></div>
+                        <div id="quarterlyDataContainer" style="display:none;">
+                            <div class="table-responsive">
+                            <table class="table table-striped table-hover mt-3">  <!-- Added mt-3 for more spacing from top -->
+                                <thead>
                                 <tr>
                                     <th>Quarter</th>
                                     <th>Revenue</th>
-                                    <th>YoY Growth</th>
-                                    <th>EPS</th>
-                                    <th>YoY Growth</th>
+                                    <th>Net Income</th>
+                                    <th>Gross Margin</th>
+                                    <th>Operating Margin</th>
+                                    <th>Net Margin</th>
+                                    <th>Operating Cash Flow</th>
                                 </tr>
-                            </thead>
-                            <tbody id="quarterlyTableBody">
-                                <!-- Quarterly data will be loaded here -->
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody id="quarterlyDataBody">
+                                <!-- Data will be populated here -->
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                        </div>
                     </div>
                     
                     <div class="stats-section">
@@ -630,6 +960,106 @@
     </div>
     
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            // Check for saved theme preference or use prefer-color-scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // Apply theme based on saved preference or system preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '🌙';
+            }
+            
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update toggle button appearance
+                themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+            });
+
+        function loadQuarterlyData(ticker) {
+            document.getElementById('quarterlyDataContainer').style.display = 'none';
+            document.getElementById('quarterlyDataLoading').style.display = 'block';
+            document.getElementById('quarterlyDataError').style.display = 'none';
+            
+            fetch(`/quarterly_data?ticker=${ticker}`)
+                .then(response => response.json())
+                .then(data => {
+                const container = document.getElementById('quarterlyDataContainer');
+                const tableBody = document.getElementById('quarterlyDataBody');
+                const loadingDiv = document.getElementById('quarterlyDataLoading');
+                const errorDiv = document.getElementById('quarterlyDataError');
+                
+                // Clear previous data
+                tableBody.innerHTML = '';
+                
+                if (data.error) {
+                    errorDiv.textContent = data.error;
+                    errorDiv.style.display = 'block';
+                    loadingDiv.style.display = 'none';
+                    return;
+                }
+                
+                if (!data.quarters || data.quarters.length === 0) {
+                    errorDiv.textContent = 'No quarterly data available for this stock.';
+                    errorDiv.style.display = 'block';
+                    loadingDiv.style.display = 'none';
+                    return;
+                }
+                
+                // Format numbers for display
+                const formatNumber = (num) => {
+                    if (Math.abs(num) >= 1e9) {
+                    return (num / 1e9).toFixed(2) + 'B';
+                    } else if (Math.abs(num) >= 1e6) {
+                    return (num / 1e6).toFixed(2) + 'M';
+                    } else {
+                    return num.toLocaleString();
+                    }
+                };
+                
+                // Populate table with quarterly data
+                data.quarters.forEach(quarter => {
+                    const row = document.createElement('tr');
+                    
+                    // Add data columns
+                    row.innerHTML = `
+                    <td>${quarter.quarter}</td>
+                    <td>${quarter.revenue ? '$' + formatNumber(quarter.revenue) : 'N/A'}</td>
+                    <td>${quarter.netIncome ? '$' + formatNumber(quarter.netIncome) : 'N/A'}</td>
+                    <td>${quarter.grossMargin ? quarter.grossMargin.toFixed(1) + '%' : 'N/A'}</td>
+                    <td>${quarter.operatingMargin ? quarter.operatingMargin.toFixed(1) + '%' : 'N/A'}</td>
+                    <td>${quarter.netMargin ? quarter.netMargin.toFixed(1) + '%' : 'N/A'}</td>
+                    <td>${quarter.operatingCashFlow ? '$' + formatNumber(quarter.operatingCashFlow) : 'N/A'}</td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Show the data container and hide loading spinner
+                container.style.display = 'block';
+                loadingDiv.style.display = 'none';
+                })
+                .catch(error => {
+                console.error('Error fetching quarterly data:', error);
+                const errorDiv = document.getElementById('quarterlyDataError');
+                errorDiv.textContent = 'Failed to load quarterly data. Please try again later.';
+                errorDiv.style.display = 'block';
+                document.getElementById('quarterlyDataLoading').style.display = 'none';
+                });
+            }
         // Chart instance
         let stockChart = null;
         let quarterlyChart = null;
@@ -782,19 +1212,7 @@
         
         // Fetch quarterly data function
         function fetchQuarterlyData(ticker) {
-            return fetch(`/quarterly_data?ticker=${ticker}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch quarterly data');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    updateQuarterlyData(data);
-                })
-                .catch(error => {
-                    console.error('Error fetching quarterly data:', error);
-                });
+            loadQuarterlyData(ticker);
         }
         
         // Update stock information
@@ -909,18 +1327,30 @@
             });
         }
         
-        // Update quarterly data
+        // Update quarterly data function - modified to remove chart and use only table
         function updateQuarterlyData(data) {
             const tableBody = document.getElementById('quarterlyTableBody');
             tableBody.innerHTML = '';
             
-            // Create arrays for chart data
-            const quarters = [];
-            const revenues = [];
-            const earnings = [];
+            // Check if we have valid data
+            if (!data || !data.quarters || !Array.isArray(data.quarters) || data.quarters.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5">No quarterly data available</td></tr>';
+                return;
+            }
             
-            // Populate table and collect chart data
+            // Remove chart canvas element
+            const chartContainer = document.getElementById('quarterlyResultsChart');
+            chartContainer.style.display = 'none'; // Hide the chart container
+            
+            // Make table more prominent
+            const quarterlyTable = document.getElementById('quarterlyTable');
+            quarterlyTable.classList.add('quarterly-table-expanded');
+            
+            // Populate table
             data.quarters.forEach(quarter => {
+                // Skip invalid data points
+                if (!quarter || !quarter.quarter) return;
+                
                 const row = document.createElement('tr');
                 
                 // Quarter name
@@ -930,138 +1360,102 @@
                 
                 // Revenue
                 const revenueCell = document.createElement('td');
-                revenueCell.textContent = formatLargeNumber(quarter.revenue);
+                revenueCell.textContent = quarter.revenue ? formatLargeNumber(quarter.revenue) : 'N/A';
                 row.appendChild(revenueCell);
                 
                 // Revenue YoY Growth
                 const revenueGrowthCell = document.createElement('td');
-                const revenueGrowthValue = quarter.revenueGrowth || 0;
-                revenueGrowthCell.textContent = `${revenueGrowthValue > 0 ? '+' : ''}${revenueGrowthValue.toFixed(2)}%`;
-                
-                if (revenueGrowthValue > 0) {
-                    revenueGrowthCell.classList.add('positive-trend');
-                } else if (revenueGrowthValue < 0) {
-                    revenueGrowthCell.classList.add('negative-trend');
+                if (quarter.revenueGrowth !== undefined && quarter.revenueGrowth !== null) {
+                    const revenueGrowthValue = quarter.revenueGrowth;
+                    revenueGrowthCell.textContent = `${revenueGrowthValue > 0 ? '+' : ''}${revenueGrowthValue.toFixed(2)}%`;
+                    
+                    if (revenueGrowthValue > 0) {
+                        revenueGrowthCell.classList.add('positive-trend');
+                    } else if (revenueGrowthValue < 0) {
+                        revenueGrowthCell.classList.add('negative-trend');
+                    }
+                } else {
+                    revenueGrowthCell.textContent = 'N/A';
                 }
-                
                 row.appendChild(revenueGrowthCell);
                 
                 // EPS
                 const epsCell = document.createElement('td');
-                epsCell.textContent = formatCurrency(quarter.eps);
+                epsCell.textContent = quarter.eps !== undefined ? formatCurrency(quarter.eps) : 'N/A';
                 row.appendChild(epsCell);
                 
                 // EPS YoY Growth
                 const epsGrowthCell = document.createElement('td');
-                const epsGrowthValue = quarter.epsGrowth || 0;
-                epsGrowthCell.textContent = `${epsGrowthValue > 0 ? '+' : ''}${epsGrowthValue.toFixed(2)}%`;
-                
-                if (epsGrowthValue > 0) {
-                    epsGrowthCell.classList.add('positive-trend');
-                } else if (epsGrowthValue < 0) {
-                    epsGrowthCell.classList.add('negative-trend');
+                if (quarter.epsGrowth !== undefined && quarter.epsGrowth !== null) {
+                    const epsGrowthValue = quarter.epsGrowth;
+                    epsGrowthCell.textContent = `${epsGrowthValue > 0 ? '+' : ''}${epsGrowthValue.toFixed(2)}%`;
+                    
+                    if (epsGrowthValue > 0) {
+                        epsGrowthCell.classList.add('positive-trend');
+                    } else if (epsGrowthValue < 0) {
+                        epsGrowthCell.classList.add('negative-trend');
+                    }
+                } else {
+                    epsGrowthCell.textContent = 'N/A';
                 }
-                
                 row.appendChild(epsGrowthCell);
                 
                 tableBody.appendChild(row);
-                
-                // Collect data for chart
-                quarters.push(quarter.quarter);
-                revenues.push(quarter.revenue);
-                earnings.push(quarter.eps);
             });
-            
-            // Create quarterly chart
-            updateQuarterlyChart(quarters, revenues, earnings);
         }
-        
-        // Update quarterly chart
-        function updateQuarterlyChart(quarters, revenues, earnings) {
-            const ctx = document.getElementById('quarterlyChart').getContext('2d');
-            
-            // Destroy previous chart if it exists
-            if (quarterlyChart) {
-                quarterlyChart.destroy();
+        // Add some CSS to make the table more prominent
+        // You can add this to your CSS file
+        const style = document.createElement('style');
+        style.textContent = `
+        .quarterly-table-expanded {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .quarterly-table-expanded th {
+            background-color: var(--secondary-color, #f1f5f9);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color, #e2e8f0);
+        }
+
+        .quarterly-table-expanded td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+        }
+
+        .quarterly-table-expanded tr:hover {
+            background-color: var(--hover-color, #f8fafc);
+        }
+
+        .quarterly-table-expanded .positive-trend {
+            color: var(--success-color, #10b981);
+            font-weight: 500;
+        }
+
+        .quarterly-table-expanded .negative-trend {
+            color: var(--danger-color, #ef4444);
+            font-weight: 500;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .quarterly-table-expanded {
+                font-size: 14px;
             }
             
-            // Normalize revenue values (convert to millions or billions for display)
-            const normalizedRevenues = revenues.map(revenue => revenue / 1000000); // Convert to millions
-            
-            // Create new chart
-            quarterlyChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: quarters,
-                    datasets: [
-                        {
-                            label: 'Revenue (in millions)',
-                            data: normalizedRevenues,
-                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                            borderColor: 'rgba(59, 130, 246, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'EPS',
-                            data: earnings,
-                            type: 'line',
-                            borderColor: 'rgba(16, 185, 129, 1)',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            borderWidth: 2,
-                            pointRadius: 4,
-                            pointBackgroundColor: 'rgba(16, 185, 129, 1)',
-                            fill: false,
-                            yAxisID: 'y1'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: 'Revenue (in millions)'
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            title: {
-                                display: true,
-                                text: 'EPS'
-                            },
-                            grid: {
-                                drawOnChartArea: false
-                            }
-                        }
-                    }
-                }
-            });
+            .quarterly-table-expanded th,
+            .quarterly-table-expanded td {
+                padding: 8px;
+            }
         }
+        `;
+        document.head.appendChild(style);
+
+        
         
         // Populate stock statistics
         function populateStockStats(data) {
@@ -1229,6 +1623,24 @@
                     value: data.profitMargins ? `${(data.profitMargins * 100).toFixed(2)}%` : 'N/A',
                     status: evaluateMetric(data.profitMargins, 0.05, 0.15, false),
                     tooltip: 'Net income divided by revenue' 
+                },
+                { 
+                    label: 'Revenue Growth (YoY)', 
+                    value: data.revenueGrowth ? `${(data.revenueGrowth * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.revenueGrowth, 0, 0.1, false),
+                    tooltip: 'Year-over-year revenue growth rate' 
+                },
+                { 
+                    label: 'Earnings Growth (YoY)', 
+                    value: data.earningsGrowth ? `${(data.earningsGrowth * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.earningsGrowth, 0, 0.15, false),
+                    tooltip: 'Year-over-year earnings growth rate' 
+                },
+                { 
+                    label: 'EPS Growth (YoY)', 
+                    value: data.earningsQuarterlyGrowth ? `${(data.earningsQuarterlyGrowth * 100).toFixed(2)}%` : 'N/A',
+                    status: evaluateMetric(data.earningsQuarterlyGrowth, 0, 0.15, false),
+                    tooltip: 'Year-over-year earnings per share growth rate' 
                 }
             ]);
             
@@ -1262,105 +1674,6 @@
                 }
             ]);
             
-            // Growth metrics
-            populateStatSection('growthMetrics', [
-                { 
-                    label: 'Revenue Growth (YoY)', 
-                    value: data.revenueGrowth ? `${(data.revenueGrowth * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.revenueGrowth, 0, 0.1, false),
-                    tooltip: 'Year-over-year revenue growth rate' 
-                },
-                { 
-                    label: 'Earnings Growth (YoY)', 
-                    value: data.earningsGrowth ? `${(data.earningsGrowth * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.earningsGrowth, 0, 0.15, false),
-                    tooltip: 'Year-over-year earnings growth rate' 
-                },
-                { 
-                    label: 'EPS Growth (YoY)', 
-                    value: data.earningsQuarterlyGrowth ? `${(data.earningsQuarterlyGrowth * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.earningsQuarterlyGrowth, 0, 0.15, false),
-                    tooltip: 'Year-over-year earnings per share growth rate' 
-                },
-                { 
-                    label: '5Y Revenue Growth (Annual)', 
-                    value: data.revenueGrowth5Y ? `${(data.revenueGrowth5Y * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.revenueGrowth5Y, 0.05, 0.15, false),
-                    tooltip: 'Average annual revenue growth over the past 5 years' 
-                },
-                { 
-                    label: '5Y Earnings Growth (Annual)', 
-                    value: data.earningsGrowth5Y ? `${(data.earningsGrowth5Y * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.earningsGrowth5Y, 0.08, 0.2, false),
-                    tooltip: 'Average annual earnings growth over the past 5 years' 
-                },
-                { 
-                    label: 'Revenue Estimate Next Q', 
-                    value: formatLargeNumber(data.revenueEstimateNextQuarter),
-                    tooltip: 'Average analyst estimate for next quarter revenue' 
-                },
-                { 
-                    label: 'EPS Estimate Next Q', 
-                    value: formatCurrency(data.epsEstimateNextQuarter),
-                    tooltip: 'Average analyst estimate for next quarter earnings per share' 
-                },
-                { 
-                    label: 'Revenue Estimate Next Y', 
-                    value: formatLargeNumber(data.revenueEstimateNextYear),
-                    tooltip: 'Average analyst estimate for next year revenue' 
-                }
-            ]);
-            
-            // Performance metrics
-            populateStatSection('performanceMetrics', [
-                { 
-                    label: 'YTD Performance', 
-                    value: data.ytdReturn ? `${(data.ytdReturn * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.ytdReturn, 0, null, false),
-                    tooltip: 'Year-to-date performance' 
-                },
-                { 
-                    label: '1-Month Return', 
-                    value: data.oneMonthReturn ? `${(data.oneMonthReturn * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.oneMonthReturn, 0, null, false),
-                    tooltip: 'Return over the past month' 
-                },
-                { 
-                    label: '3-Month Return', 
-                    value: data.threeMonthReturn ? `${(data.threeMonthReturn * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.threeMonthReturn, 0, null, false),
-                    tooltip: 'Return over the past three months' 
-                },
-                { 
-                    label: '1-Year Return', 
-                    value: data.oneYearReturn ? `${(data.oneYearReturn * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.oneYearReturn, 0, null, false),
-                    tooltip: 'Return over the past year' 
-                },
-                { 
-                    label: '3-Year Return (Annual)', 
-                    value: data.threeYearAverageReturn ? `${(data.threeYearAverageReturn * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.threeYearAverageReturn, 0.07, 0.15, false),
-                    tooltip: 'Annualized return over the past three years' 
-                },
-                { 
-                    label: '5-Year Return (Annual)', 
-                    value: data.fiveYearAverageReturn ? `${(data.fiveYearAverageReturn * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.fiveYearAverageReturn, 0.07, 0.15, false),
-                    tooltip: 'Annualized return over the past five years' 
-                },
-                { 
-                    label: '52-Week Change', 
-                    value: data.fiftyTwoWeekChange ? `${(data.fiftyTwoWeekChange * 100).toFixed(2)}%` : 'N/A',
-                    status: evaluateMetric(data.fiftyTwoWeekChange, 0, null, false),
-                    tooltip: 'Price change over the past 52 weeks' 
-                },
-                { 
-                    label: 'S&P500 52-Week Change', 
-                    value: data.SandP52WeekChange ? `${(data.SandP52WeekChange * 100).toFixed(2)}%` : 'N/A',
-                    tooltip: 'S&P 500 price change over the past 52 weeks' 
-                }
-            ]);
         }
         
         // Populate stats section

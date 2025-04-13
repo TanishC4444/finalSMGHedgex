@@ -17,37 +17,267 @@
             --shadow: rgba(0, 0, 0, 0.08);
             --success: #10b981;
             --error: #ef4444;
+            --navbar-bg: var(--primary);
+            --navbar-text: white;
         }
+        [data-theme="dark"] {
+            /* Dark Mode Colors */
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --primary-lightest: #1e3a8a;
+            --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --secondary: #a855f7;
+            --secondary-dark: #8b5cf6;
+            --success: #059669;
+            --success-dark: #047857;
+            --success-light: #065f46;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --warning: #d97706;
+            --warning-dark: #b45309;
+            --info: #2563eb;
+            --info-dark: #1d4ed8;
+            --text: #f1f5f9;
+            --text-light: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --background: #0f172a;
+            --background-secondary: #1e293b;
+            --card: #1e293b;
+            --border: #334155;
+            --border-dark: #475569;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --shadow-hover: rgba(0, 0, 0, 0.35);
+            --shadow-dropdown: rgba(0, 0, 0, 0.5);
+            --table-header: rgba(59, 130, 246, 0.2);
+            --table-row: rgba(59, 130, 246, 0.1);
+            --navbar-bg: #1e293b;
+            --navbar-text: #f1f5f9;
+            --hero-text: #f1f5f9;
+            --footer-bg: #0f172a;
+            --footer-text: #f1f5f9;
+            --footer-link: rgba(241, 245, 249, 0.7);
+            --tooltip-bg: var(--card);
+            --tooltip-text: var(--text);
+            --scrollbar-track: #1e293b;
+            --scrollbar-thumb: #475569;
+            --scrollbar-thumb-hover: #64748b;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+            --code-border: #334155;
+        }
+
         body {
             font-family: 'Lexend', sans-serif;
             background-color: var(--background);
             color: var(--text);
+            line-height: 1.6;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
+        /* Replace your existing navbar CSS with these styles */
         .navbar {
-            background: var(--primary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            box-shadow: 0 2px 10px var(--shadow);
+            background: var(--navbar-bg);
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
         }
-        .navbar a {
-            color: white;
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navbar-text);
+            text-decoration: none;
+            transition: transform 0.3s ease, opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--navbar-text);
             text-decoration: none;
             font-size: 1rem;
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.2s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .navbar a:hover {
+
+        .nav-links a:hover {
             background-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background-color: var(--navbar-text);
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 80%;
+            left: 10%;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: rotate(360deg);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Improved mobile responsive styles */
+        @media (max-width: 768px) {
+            .navbar-container {
+                padding: 0.5rem 1.5rem;
+            }
+            
+            .nav-logo {
+                z-index: 101;
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                width: 100%;
+                background: var(--navbar-bg);
+                padding: 1rem;
+                gap: 1rem;
+                display: none;
+                box-shadow: 0 4px 10px var(--shadow);
+                border-radius: 0 0 8px 8px;
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: auto;
+                margin-right: 1rem;
+            }
+            
+            .theme-toggle {
+                position: absolute;
+                right: 1.5rem;
+                z-index: 101;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Add these responsive styles for mobile */
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+                align-items: flex-start;
+                position: relative;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+                display: none;
+                padding: 1rem 0;
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                right: 1rem;
+                top: 1rem;
+            }
         }
         .container {
             max-width: 1000px;
@@ -248,14 +478,57 @@
             color: #64748b;
             font-style: italic;
         }
+        /* Add this to your existing CSS */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .download-button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .download-button svg {
+            width: 18px;
+            height: 18px;
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/learn">Learn Trading</a>
-        <a href="/practice">Practice Trading</a>
-        <a href="/simulator">Simulator</a>
+        <div class="navbar-container">
+            <a href="/" class="nav-logo">
+                Hedgex
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/learn">Learn Trading</a>
+                <a href="/practice">Practice Trading</a>
+                <a href="/simulator">Simulator</a>
+                <a href="/analysis">Analysis</a>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+            <button class="mobile-menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <div class="container">
@@ -308,6 +581,14 @@
                 </tbody>
             </table>
             <button class="reset-button" onclick="resetAccount()">Reset Account</button>
+            <button class="download-button" onclick="downloadTransactions()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Transactions
+            </button>
         </div>
     </div>
 
@@ -392,6 +673,40 @@
                     updateStockPriceDisplay(newPrice);
                 })
                 .catch(error => console.error('Error updating stock price:', error));
+        }
+
+        function downloadTransactions() {
+            // Show loading notification
+            showNotification('Preparing transaction data...', 'success');
+            
+            // Use the correct endpoint
+            fetch('/download_transactions')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch transaction data');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create a download link
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'transactions.csv';
+                    
+                    // Add to document, click and remove
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    showNotification('Transaction data downloaded successfully', 'success');
+                })
+                .catch(error => {
+                    console.error('Error downloading transactions:', error);
+                    showNotification('Error downloading transactions', 'error');
+                });
         }
 
         function updateStockPriceDisplay(newPrice) {
@@ -639,6 +954,81 @@
 
         // Auto-refresh portfolio every 30 seconds
         setInterval(updatePortfolio, 30000);
+
+        // Add this to your existing JavaScript
+        // Replace your existing DOMContentLoaded event handler
+        document.addEventListener('DOMContentLoaded', function() {
+            initMobileMenu();
+            initThemeToggle();
+        });
+
+        function initMobileMenu() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileMenuBtn && navLinks) {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navLinks.classList.toggle('show');
+                    
+                    // Change hamburger icon to X when menu is open
+                    if (navLinks.classList.contains('show')) {
+                        this.innerHTML = `
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        `;
+                    } else {
+                        this.innerHTML = `
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        `;
+                    }
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target) && navLinks.classList.contains('show')) {
+                        navLinks.classList.remove('show');
+                        mobileMenuBtn.innerHTML = `
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        `;
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            // Check for saved theme preference or use prefer-color-scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // Apply theme based on saved preference or system preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '🌙';
+            }
+            
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update toggle button appearance
+                themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+            });
     </script>
 </body>
 </html>

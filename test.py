@@ -158,12 +158,133 @@
 # print(f"Forward P/E: {info.get('forwardPE', 'N/A')}")
 # print(f"Trailing PEG Ratio: {info.get('trailingPEG1Y', 'N/A')}")
 
+import yfinance as yf
 import pandas as pd
 
-def get_sp500_tickers():
-    url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-    table = pd.read_html(url)[0]
-    return table['Symbol'].tolist()
+def get_stock_metrics(ticker_symbol):
+    ticker = yf.Ticker(ticker_symbol)
 
-tickers = get_sp500_tickers()
-print(tickers)
+    # === Financials for growth calculations ===
+    financials = ticker.financials.T.sort_index()
+
+    try:
+        rev_start = financials["Total Revenue"].iloc[0]
+        rev_end = financials["Total Revenue"].iloc[-1]
+        earn_start = financials["Net Income"].iloc[0]
+        earn_end = financials["Net Income"].iloc[-1]
+        years = len(financials) - 1
+
+        revenue_growth_5y = ((rev_end / rev_start) ** (1 / years)) - 1
+        earnings_growth_5y = ((earn_end / earn_start) ** (1 / years)) - 1
+    except:
+        revenue_growth_5y = None
+        earnings_growth_5y = None
+
+    # === Analyst Estimates ===
+    try:
+        est = ticker.analysis
+        revenue_next_q = est.loc["Revenue Estimate"].iloc[0]
+        eps_next_q = est.loc["Earnings Estimate"].iloc[0]
+        revenue_next_y = est.loc["Revenue Estimate"].iloc[1]
+    except:
+        revenue_next_q = eps_next_q = revenue_next_y = None
+
+    # === Historical Performance ===
+    hist = ticker.history(period="5y")
+    latest = hist["Close"].iloc[-1]
+
+    def calc_return(offset_days, annualized=False):
+        try:
+            past_price = hist["Close"].iloc[-offset_days]
+            raw_return = (latest - past_price) / past_price
+            if annualized:
+                years = offset_days / 252
+                return (latest / past_price) ** (1 / years) - 1
+            return raw_return
+        except:
+            return None
+
+    returns = {
+        "YTD": calc_return(len(hist.loc[hist.index.year == pd.Timestamp.now().year])),
+        "1M": calc_return(21),
+        "3M": calc_return(63),
+        "1Y": calc_return(252),
+        "3Y": calc_return(3 * 252, annualized=True),
+        "5Y": calc_return(5 * 252, annualized=True),
+        "52W": calc_return(252),
+    }
+
+    # === Format into JS-style structure ===
+    metrics = [
+        {
+            "label": "5Y Revenue Growth (Annual)",
+            "value": f"{revenue_growth_5y * 100:.2f}%" if revenue_growth_5y else "N/A",
+            "tooltip": "Average annual revenue growth over the past 5 years"
+        },
+        {
+            "label": "5Y Earnings Growth (Annual)",
+            "value": f"{earnings_growth_5y * 100:.2f}%" if earnings_growth_5y else "N/A",
+            "tooltip": "Average annual earnings growth over the past 5 years"
+        },
+        {
+            "label": "Revenue Estimate Next Q",
+            "value": f"${revenue_next_q / 1e9:.2f}B" if revenue_next_q else "N/A",
+            "tooltip": "Average analyst estimate for next quarter revenue"
+        },
+        {
+            "label": "EPS Estimate Next Q",
+            "value": f"${eps_next_q:.2f}" if eps_next_q else "N/A",
+            "tooltip": "Average analyst estimate for next quarter earnings per share"
+        },
+        {
+            "label": "Revenue Estimate Next Y",
+            "value": f"${revenue_next_y / 1e9:.2f}B" if revenue_next_y else "N/A",
+            "tooltip": "Average analyst estimate for next year revenue"
+        },
+        {
+            "label": "YTD Performance",
+            "value": f"{returns['YTD']*100:.2f}%" if returns["YTD"] else "N/A",
+            "tooltip": "Year-to-date performance"
+        },
+        {
+            "label": "1-Month Return",
+            "value": f"{returns['1M']*100:.2f}%" if returns["1M"] else "N/A",
+            "tooltip": "Return over the past month"
+        },
+        {
+            "label": "3-Month Return",
+            "value": f"{returns['3M']*100:.2f}%" if returns["3M"] else "N/A",
+            "tooltip": "Return over the past three months"
+        },
+        {
+            "label": "1-Year Return",
+            "value": f"{returns['1Y']*100:.2f}%" if returns["1Y"] else "N/A",
+            "tooltip": "Return over the past year"
+        },
+        {
+            "label": "3-Year Return (Annual)",
+            "value": f"{returns['3Y']*100:.2f}%" if returns["3Y"] else "N/A",
+            "tooltip": "Annualized return over the past three years"
+        },
+        {
+            "label": "5-Year Return (Annual)",
+            "value": f"{returns['5Y']*100:.2f}%" if returns["5Y"] else "N/A",
+            "tooltip": "Annualized return over the past five years"
+        },
+        {
+            "label": "52-Week Change",
+            "value": f"{returns['52W']*100:.2f}%" if returns["52W"] else "N/A",
+            "tooltip": "Price change over the past 52 weeks"
+        },
+    ]
+
+    return metrics
+
+# === Example usage ===
+if __name__ == "__main__":
+    ticker_symbol = "AAPL"
+    stats = get_stock_metrics(ticker_symbol)
+    for s in stats:
+        print(f"{s['label']}: {s['value']} — {s['tooltip']}")
+
+

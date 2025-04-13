@@ -6,6 +6,9 @@ import pandas as pd
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import requests
+import pytz
+from datetime import datetime, time
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -15,6 +18,25 @@ SOLD_DATA_FILE = "sold.csv"
 BALANCE_FILE = "balance.txt"
 TRANSACTION_FILE = "transactions.csv"  # New transaction log file
 STARTING_BALANCE = 100000.00  # Initial balance
+
+def is_market_hours():
+    """Check if current time is during market hours (8:30 AM - 3:00 PM CST)"""
+    # Get current time in CST
+    cst = pytz.timezone('US/Central')
+    current_time = datetime.now(cst)
+    
+    # Check if it's a weekday (0 = Monday, 4 = Friday)
+    is_weekday = current_time.weekday() <= 4
+    
+    # Define market hours (8:30 AM - 3:00 PM CST)
+    market_start = time(8, 30)
+    market_end = time(15, 0)
+    
+    # Check if current time is within market hours
+    current_time_only = current_time.time()
+    during_market_hours = market_start <= current_time_only <= market_end
+    
+    return is_weekday and during_market_hours
 
 # Initialize necessary files
 def init_files():
@@ -83,6 +105,10 @@ def update_balance(amount):
 # Also update the original sell_stock endpoint to work with the positionId parameter if provided
 @app.route("/sell_stock", methods=["POST"])
 def sell_stock():
+    if not is_market_hours():
+        return jsonify({
+            "error": "Trading is only available during market hours (8:30 AM - 3:00 PM CST)"
+        }), 400
     try:
         ticker = request.args.get("ticker")
         position_id = request.args.get("position_id")
@@ -246,6 +272,18 @@ import re  # Add this import at the top with the other imports
 def simulator():
     return render_template("simulator.html")
 
+def calculate_movement(data):
+    movements = []
+    # Explicitly use the entire data range
+    for i in range(len(data) - 1):  # Exclude the last row
+        next_open = data.iloc[i + 1]["Open"]
+        next_close = data.iloc[i + 1]["Close"]
+        movement = "+" if (next_close - next_open) > 0 else "-"
+        movements.append(movement)
+    
+    movements.append(None)  # Last row has no movement data
+    return movements
+
 @app.route('/evaluate_equation', methods=['POST'])
 def evaluate_equation():
     try:
@@ -261,6 +299,9 @@ def evaluate_equation():
         # Get stock data
         stock = yf.Ticker(ticker)
         data = stock.history(period=period, interval=interval)
+        
+        # Print debug info
+        print(f"Retrieved {len(data)} data points for {ticker} with period={period}, interval={interval}")
         
         # Add fundamental data to each row
         fundamentals = stock.info
@@ -360,33 +401,45 @@ def evaluate_equation():
                     print(f"Error evaluating equation at row {idx}: {e}")
             
             return points
-            
-        # Calculate next day/interval movement (keep existing function)
+        
+        # Function to calculate next day movement direction
         def calculate_movement(data):
             movements = []
-            for i in range(len(data) - 1):  # Exclude the last row
-                next_open = data.iloc[i + 1]["Open"]
-                next_close = data.iloc[i + 1]["Close"]
-                movement = "+" if (next_close - next_open) > 0 else "-"
-                movements.append(movement)
             
-            movements.append(None)  # Last row has no movement data
+            for i in range(len(data)):
+                try:
+                    # Current day movement
+                    if i < len(data) - 1:
+                        # Predict if TOMORROW will close higher than its open
+                        next_open = data.iloc[i+1]["Open"]
+                        next_close = data.iloc[i+1]["Close"]
+                        movement = "+" if (next_close > next_open) else "-"
+                    else:
+                        # Last data point has no next day to predict
+                        movement = None
+                        
+                    movements.append(movement)
+                except Exception as e:
+                    print(f"Error calculating movement at index {i}: {e}")
+                    movements.append(None)
+            
             return movements
             
-        # Calculate prediction accuracy (keep existing function)
+        # Calculate prediction accuracy
         def calculate_accuracy(points, movements):
             correct_predictions = 0
             total_valid = 0
             
-            for i in range(len(points) - 1):  # Exclude last point as it has no movement data
-                if points[i] is not None and movements[i] is not None:
+            # Count valid predictions and correct ones
+            for i in range(len(points)):
+                if i < len(movements) and points[i] is not None and movements[i] is not None:
                     predicted_sign = "+" if points[i] > 0 else "-"
                     if predicted_sign == movements[i]:
                         correct_predictions += 1
                     total_valid += 1
             
             accuracy = (correct_predictions / total_valid) * 100 if total_valid > 0 else 0
-            return accuracy
+            return accuracy, correct_predictions, total_valid
         
         # Evaluate equation with fundamentals included
         points = evaluate_equation_points(data, equation, fundamentals)
@@ -395,19 +448,20 @@ def evaluate_equation():
         movements = calculate_movement(data)
         
         # Calculate accuracy
-        accuracy = calculate_accuracy(points, movements)
+        accuracy, correct_predictions, total_valid = calculate_accuracy(points, movements)
         
         # Prepare result
         result_data = []
         dates = data.index.strftime('%Y-%m-%d').tolist()
         
         for i in range(len(dates)):
-            point_value = None if points[i] is None else float(points[i])
+            point_value = None if i >= len(points) or points[i] is None else float(points[i])
+            movement_value = None if i >= len(movements) or movements[i] is None else movements[i]
             
             result_data.append({
                 "date": dates[i],
                 "point": point_value,
-                "movement": movements[i]
+                "movement": movement_value
             })
 
         # Add fundamental columns to the response
@@ -419,11 +473,14 @@ def evaluate_equation():
         return jsonify({
             "results": result_data,
             "accuracy": round(accuracy, 2),
+            "correct_predictions": correct_predictions,
+            "total_predictions": total_valid,
             "columns": sorted(data.reset_index().columns.tolist()),
-            "fundamental_columns": sorted(fundamental_columns)  # Add fundamental columns to response
+            "fundamental_columns": sorted(fundamental_columns)
         })
         
     except Exception as e:
+        print(f"Error in evaluate_equation: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/available_columns', methods=['GET'])
@@ -546,6 +603,10 @@ def get_trades():
 
 @app.route('/trade', methods=['GET'])
 def trade_stock():
+    if not is_market_hours():
+        return jsonify({
+            "error": "Trading is only available during market hours (8:30 AM - 3:00 PM CST)"
+        }), 400
     ticker = request.args.get('ticker', '').upper()
     quantity = int(request.args.get('quantity', 0))
     trade_type = request.args.get('type', '').lower()
@@ -677,7 +738,7 @@ def stock_analysis():
     info = stock.info
     
     # Add current price and change calculations
-    hist = stock.history(period="2d")
+    hist = stock.history(period="1d")
     if len(hist) >= 2:
         current_price = hist['Close'].iloc[-1]
         prev_close = hist['Close'].iloc[-2]
@@ -718,62 +779,97 @@ def quarterly_data():
     if not ticker:
         return jsonify({"error": "Missing ticker"}), 400
     
-    stock = yf.Ticker(ticker)
-    
-    # Get quarterly financials
-    quarterly_income = stock.quarterly_income_stmt
-    quarterly_balance = stock.quarterly_balance_sheet
-    
-    # Process the data into the format expected by the frontend
-    quarters = []
-    
-    # Get dates from the income statement
-    if not quarterly_income.empty:
-        for date in quarterly_income.columns:
-            quarter_str = date.strftime('%Y Q%q').replace('Q%q', f'Q{(date.month-1)//3+1}')
+    try:
+        stock = yf.Ticker(ticker)
+        
+        # Get quarterly financials
+        quarterly_financials = stock.quarterly_financials
+        quarterly_balance_sheet = stock.quarterly_balance_sheet
+        quarterly_cashflow = stock.quarterly_cashflow
+        
+        # Check if we got data
+        if quarterly_financials is None or quarterly_financials.empty:
+            return jsonify({"quarters": [], "error": "No quarterly data available"})
+        
+        # Transpose for easier manipulation
+        financials_df = quarterly_financials.T
+        
+        # Get dates from financials as they should be consistent across statements
+        quarters = []
+        
+        for date, row in financials_df.iterrows():
+            quarter_data = {
+                "quarter": f"{date.strftime('%Y Q%q').replace('Q%q', f'Q{(date.month-1)//3+1}')} ({date.strftime('%b %d, %Y')})",
+                "date": date.strftime('%Y-%m-%d'),
+            }
             
-            # Get revenue and EPS
-            revenue = quarterly_income.loc['Total Revenue', date] if 'Total Revenue' in quarterly_income.index else None
-            net_income = quarterly_income.loc['Net Income', date] if 'Net Income' in quarterly_income.index else None
+            # Add key financial metrics from income statement
+            if "Total Revenue" in quarterly_financials.index:
+                quarter_data["revenue"] = float(row.get("Total Revenue", 0)) if not pd.isna(row.get("Total Revenue", 0)) else 0
             
-            # Calculate basic EPS (simplified)
-            total_assets = quarterly_balance.loc['Total Assets', date] if 'Total Assets' in quarterly_balance.index else None
+            if "Net Income" in quarterly_financials.index:
+                quarter_data["netIncome"] = float(row.get("Net Income", 0)) if not pd.isna(row.get("Net Income", 0)) else 0
             
-            # Placeholder for EPS calculation - you'd need actual shares outstanding
-            eps = None
-            if net_income is not None:
-                # This is a simplification - actual EPS calculation would use weighted avg shares
-                eps = net_income / (total_assets / 100) if total_assets else net_income / 1000000
+            if "Operating Income" in quarterly_financials.index:
+                quarter_data["operatingIncome"] = float(row.get("Operating Income", 0)) if not pd.isna(row.get("Operating Income", 0)) else 0
             
-            quarters.append({
-                "quarter": quarter_str,
-                "revenue": float(revenue) if revenue is not None else 0,
-                "eps": float(eps) if eps is not None else 0,
-                "revenueGrowth": 0,  # Would need previous period data for this
-                "epsGrowth": 0       # Would need previous period data for this
-            })
+            if "Gross Profit" in quarterly_financials.index:
+                quarter_data["grossProfit"] = float(row.get("Gross Profit", 0)) if not pd.isna(row.get("Gross Profit", 0)) else 0
+            
+            # Add balance sheet data if available for the same date
+            if quarterly_balance_sheet is not None and not quarterly_balance_sheet.empty and date in quarterly_balance_sheet.columns:
+                balance_data = quarterly_balance_sheet[date]
+                
+                if "Total Assets" in balance_data:
+                    quarter_data["totalAssets"] = float(balance_data["Total Assets"]) if not pd.isna(balance_data["Total Assets"]) else 0
+                
+                if "Total Liabilities Net Minority Interest" in balance_data:
+                    quarter_data["totalLiabilities"] = float(balance_data["Total Liabilities Net Minority Interest"]) if not pd.isna(balance_data["Total Liabilities Net Minority Interest"]) else 0
+                
+                if "Total Equity Gross Minority Interest" in balance_data:
+                    quarter_data["totalEquity"] = float(balance_data["Total Equity Gross Minority Interest"]) if not pd.isna(balance_data["Total Equity Gross Minority Interest"]) else 0
+            
+            # Add cash flow data if available
+            if quarterly_cashflow is not None and not quarterly_cashflow.empty and date in quarterly_cashflow.columns:
+                cashflow_data = quarterly_cashflow[date]
+                
+                if "Operating Cash Flow" in cashflow_data:
+                    quarter_data["operatingCashFlow"] = float(cashflow_data["Operating Cash Flow"]) if not pd.isna(cashflow_data["Operating Cash Flow"]) else 0
+                
+                if "Free Cash Flow" in cashflow_data:
+                    quarter_data["freeCashFlow"] = float(cashflow_data["Free Cash Flow"]) if not pd.isna(cashflow_data["Free Cash Flow"]) else 0
+            
+            # Calculate key financial ratios
+            if quarter_data.get("revenue", 0) > 0:
+                if "grossProfit" in quarter_data:
+                    quarter_data["grossMargin"] = round(quarter_data["grossProfit"] / quarter_data["revenue"] * 100, 2)
+                    
+                if "operatingIncome" in quarter_data:
+                    quarter_data["operatingMargin"] = round(quarter_data["operatingIncome"] / quarter_data["revenue"] * 100, 2)
+                    
+                if "netIncome" in quarter_data:
+                    quarter_data["netMargin"] = round(quarter_data["netIncome"] / quarter_data["revenue"] * 100, 2)
+            
+            quarters.append(quarter_data)
+        
+        # Sort by date (most recent first)
+        quarters = sorted(quarters, key=lambda x: x["date"], reverse=True)
+        
+        # Remove the last (oldest) quarter to avoid incomplete data
+        if len(quarters) > 0:
+            quarters = quarters[:-1]
+        
+        return jsonify({"quarters": quarters})
     
-    return jsonify({"quarters": quarters})
+    except Exception as e:
+        print(f"Error in quarterly_data: {str(e)}")
+        return jsonify({"error": str(e), "quarters": []}), 500
 
 def evaluate_equation_for_ticker(ticker, period, interval, equation):
     """
     Evaluates a prediction equation for a specific ticker and returns accuracy metrics.
-    
-    Args:
-        ticker (str): The stock ticker symbol
-        period (str): Time period for data (e.g., '1y', '2y')
-        interval (str): Data interval (e.g., '1d', '1wk')
-        equation (str): The prediction equation to evaluate
-        
-    Returns:
-        dict: Results including accuracy and signal metrics
     """
     try:
-        # Fetch historical data for the ticker
-        import pandas as pd
-        import numpy as np
-        import yfinance as yf
-        
         # Get stock data
         stock = yf.Ticker(ticker)
         df = stock.history(period=period, interval=interval)
@@ -781,150 +877,193 @@ def evaluate_equation_for_ticker(ticker, period, interval, equation):
         if df.empty:
             return {"error": f"No data available for {ticker}"}
         
-        # Drop rows with NaN values as they can cause evaluation issues
+        # Print debug info
+        print(f"Retrieved {len(df)} data points for {ticker}")
+        
+        # Drop rows with NaN values
         df = df.dropna()
         
         # Add commonly used indicators/metrics
-        # Moving averages
-        df['SMA_5'] = df['Close'].rolling(window=5).mean()
-        df['SMA_20'] = df['Close'].rolling(window=20).mean()
-        df['SMA_50'] = df['Close'].rolling(window=50).mean()
-        
+        if len(df) > 5:  # Only calculate if we have enough data
+            df['SMA_5'] = df['Close'].rolling(window=5).mean()
+        if len(df) > 20:
+            df['SMA_20'] = df['Close'].rolling(window=20).mean()
+        if len(df) > 50:
+            df['SMA_50'] = df['Close'].rolling(window=50).mean()
+            
         # Price changes
         df['PriceChange'] = df['Close'] - df['Open']
         df['PriceChangePct'] = (df['Close'] - df['Open']) / df['Open'] * 100
         
-        # Volatility
-        df['DailyReturn'] = df['Close'].pct_change()
-        df['Volatility_5'] = df['DailyReturn'].rolling(window=5).std()
-        
-        # Volume metrics
-        df['VolumeChange'] = df['Volume'].pct_change()
-        df['RelativeVolume'] = df['Volume'] / df['Volume'].rolling(window=20).mean()
-        
-        # Get fundamental data if available
-        try:
-            info = stock.info
-            # Add key fundamentals to each row
-            if 'beta' in info:
-                df['beta'] = info['beta']
-            if 'marketCap' in info:
-                df['marketCap'] = info['marketCap']
-            if 'forwardPE' in info:
-                df['forwardPE'] = info['forwardPE']
-            if 'trailingPE' in info:
-                df['trailingPE'] = info['trailingPE']
-            if 'dividendYield' in info and info['dividendYield'] is not None:
-                df['dividendYield'] = info['dividendYield']
-            if 'priceToSalesTrailing12Months' in info:
-                df['priceToSales'] = info['priceToSalesTrailing12Months']
-        except:
-            # Ignore errors with fundamental data
-            pass
-        
         # Drop rows with NaN values that might have been introduced by indicators
         df = df.dropna()
         
-        # Create a safe evaluation environment
-        def safe_eval(equation, row):
-            # Define a safe locals dict with stock data
-            locals_dict = row.to_dict()
-            
-            # Add safe math functions
-            safe_math = {
-                'abs': abs, 'max': max, 'min': min, 'sum': sum,
-                'round': round, 'pow': pow, 'len': len
-            }
-            locals_dict.update(safe_math)
-            
-            # Safely evaluate
-            try:
-                # Add check to prevent malicious code execution
-                if any(keyword in equation for keyword in ['import', 'exec', 'eval', 'compile', 'open']):
-                    raise ValueError("Potentially unsafe equation")
-                
-                result = eval(equation, {"__builtins__": {}}, locals_dict)
-                return float(result) if result is not None else None
-            except Exception as e:
-                return None
+        if len(df) < 2:
+            return {"error": f"Insufficient data for {ticker} after processing"}
         
         # Calculate the equation result for each row
         results = []
-        for idx in range(len(df) - 1):  # -1 because we need next day's data for comparison
-            row = df.iloc[idx]
-            next_row = df.iloc[idx + 1]
-            
-            # Calculate equation value
-            point = safe_eval(equation, row)
-            
-            # Determine next-day price movement
-            if next_row['Close'] > row['Close']:
-                movement = '+'
-            else:
-                movement = '-'
+        valid_points = 0
+        correct_predictions = 0
+        signal_sum = 0
+        
+        safe_globals = {
+            "__builtins__": {
+                "abs": abs, "max": max, "min": min, "round": round, 
+                "pow": pow, "sum": sum, "len": len, "float": float
+            },
+            "math": __import__('math')
+        }
+        
+        # Process ALL rows in the dataframe
+        for idx in range(len(df)):
+            try:
+                # Create a safe evaluation environment with row data
+                row_dict = df.iloc[idx].to_dict()
                 
-            # Add to results
-            results.append({
-                'date': row.name.strftime('%Y-%m-%d') if hasattr(row.name, 'strftime') else str(row.name),
-                'point': point,
-                'movement': movement
-            })
+                # Safely evaluate the equation
+                point = eval(equation, safe_globals, row_dict)
+                
+                # Make sure we have a numeric result
+                if point is not None:
+                    point = float(point)
+                
+                # Determine next-day price movement
+                if idx < len(df) - 1:
+                    next_row = df.iloc[idx + 1]
+                    actual_movement = next_row['Close'] - next_row['Open']
+                    movement = "+" if actual_movement > 0 else "-"
+                    
+                    # Check if prediction was correct
+                    if point is not None:
+                        valid_points += 1
+                        signal_sum += abs(point)
+                        
+                        predicted_direction = "+" if point > 0 else "-"
+                        if predicted_direction == movement:
+                            correct_predictions += 1
+                else:
+                    movement = None  # Last row has no next day to predict
+                
+                # Add to results
+                results.append({
+                    'date': df.index[idx].strftime('%Y-%m-%d') if hasattr(df.index[idx], 'strftime') else str(df.index[idx]),
+                    'point': point,
+                    'movement': movement
+                })
+            except Exception as e:
+                print(f"Error processing row {idx} for {ticker}: {str(e)}")
+                # Skip this row if evaluation fails
+                results.append({
+                    'date': df.index[idx].strftime('%Y-%m-%d') if hasattr(df.index[idx], 'strftime') else str(df.index[idx]),
+                    'point': None,
+                    'movement': None
+                })
         
-        # Calculate accuracy
-        valid_predictions = [r for r in results if r['point'] is not None]
-        if not valid_predictions:
-            return {"error": "No valid prediction points"}
-        
-        correct_predictions = sum(1 for r in valid_predictions 
-                                  if (r['point'] > 0 and r['movement'] == '+') or 
-                                     (r['point'] <= 0 and r['movement'] == '-'))
-        
-        accuracy = round((correct_predictions / len(valid_predictions)) * 100, 2)
-        
+        # Calculate accuracy consistently over all available data points
+        accuracy = 0
+        if valid_points > 0:
+            accuracy = round((correct_predictions / valid_points) * 100, 2)
+            
         # Calculate average signal strength
-        signal_values = [abs(r['point']) for r in valid_predictions if r['point'] is not None]
-        avg_signal = sum(signal_values) / len(signal_values) if signal_values else None
+        avg_signal = None
+        if valid_points > 0:
+            avg_signal = round(signal_sum / valid_points, 4)
+        
+        print(f"Final stats for {ticker}: {valid_points} valid points, {correct_predictions} correct, {accuracy}% accuracy")
         
         return {
             'ticker': ticker,
             'accuracy': accuracy,
             'avg_signal': avg_signal,
-            'results': results
+            'results': results,
+            'valid_points': valid_points,
+            'correct_predictions': correct_predictions
         }
         
     except Exception as e:
-        import traceback
-        return {"error": str(e), "traceback": traceback.format_exc()}
+        print(f"Error evaluating {ticker}: {str(e)}")
+        return {"error": str(e), "ticker": ticker}
 
 @app.route('/evaluate_sp500', methods=['POST'])
 def evaluate_sp500():
-    data = request.json
-    equation = data['equation']
-    period = data['period']
-    interval = data['interval']
-    
-    # Get S&P 500 tickers
-    sp500_tickers = ['MMM', 'AOS', 'ABT', 'ABBV', 'ACN', 'ADBE', 'AMD']
-    
-    results = []
-    
-    # Process each ticker (you might want to limit this or use background processing)
-    for ticker in sp500_tickers[:100]:  # Limit to 100 for performance
+    try:
+        data = request.get_json()
+        equation = data.get('equation')
+        period = data.get('period', '1mo')
+        interval = data.get('interval', '1d')
+        limit = int(data.get('limit', 30))  # Add limit parameter with default of 30 stocks
+        
+        if not equation:
+            return jsonify({"error": "Missing equation"}), 400
+            
+        # Get S&P 500 tickers using pandas_datareader
         try:
-            # Similar logic to your existing evaluate_equation function
-            result = evaluate_equation_for_ticker(ticker, period, interval, equation)
-            results.append({
-                'ticker': ticker,
-                'accuracy': result['accuracy'],
-                'avg_signal': result['avg_signal']
-            })
+            # Try to get real S&P 500 components
+            import pandas_datareader.data as web
+            sp500_url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+            sp500_table = pd.read_html(sp500_url)[0]
+            sp500_tickers = sp500_table['Symbol'].tolist()
+            
+            # Limit the number of tickers to process
+            sp500_tickers = sp500_tickers[:limit]
         except Exception as e:
-            # Skip failed tickers
-            continue
-    
-    return jsonify({
-        'results': results
-    })
+            # Fallback to a sample of major stocks if we can't get the real S&P 500
+            print(f"Error getting S&P 500 tickers: {str(e)}")
+            sp500_tickers = ['AAPL', 'MSFT', 'AMZN', 'GOOGL', 'META', 'TSLA', 'JPM', 'V', 'PG', 'UNH', 
+                             'JNJ', 'WMT', 'MA', 'HD', 'BAC', 'XOM', 'PFE', 'NVDA', 'DIS', 'NFLX',
+                             'INTC', 'VZ', 'ADBE', 'CSCO', 'CRM', 'CMCSA', 'KO', 'PEP', 'ABT', 'MRK'][:limit]
+        
+        results = []
+        total_valid_points = 0
+        total_correct_predictions = 0
+        successful_tickers = 0
+        
+        # Process each ticker using the existing function
+        for ticker in sp500_tickers:
+            try:
+                print(f"Processing {ticker}...")
+                result = evaluate_equation_for_ticker(ticker, period, interval, equation)
+                
+                if 'error' not in result and result.get('valid_points', 0) > 0:
+                    # Add to overall counts for aggregate accuracy
+                    total_valid_points += result.get('valid_points', 0)
+                    total_correct_predictions += result.get('correct_predictions', 0)
+                    successful_tickers += 1
+                    
+                    # Store individual ticker result with more details
+                    ticker_result = {
+                        'ticker': ticker,
+                        'accuracy': result['accuracy'],
+                        'valid_points': result['valid_points'],
+                        'correct_predictions': result['correct_predictions'],
+                        'avg_signal': result.get('avg_signal')
+                    }
+                    results.append(ticker_result)
+                else:
+                    print(f"Skipping {ticker}: {result.get('error', 'No valid predictions')}")
+            except Exception as e:
+                print(f"Error processing {ticker}: {str(e)}")
+                continue
+                
+        # Calculate overall accuracy across all stocks
+        overall_accuracy = 0
+        if total_valid_points > 0:
+            overall_accuracy = round((total_correct_predictions / total_valid_points) * 100, 2)
+            
+        print(f"Completed processing. Found {successful_tickers}/{len(sp500_tickers)} stocks with valid results.")
+        return jsonify({
+            'overall_accuracy': overall_accuracy,
+            'total_valid_points': total_valid_points,
+            'total_correct_predictions': total_correct_predictions,
+            'stocks_tested': len(sp500_tickers),
+            'stocks_with_data': successful_tickers,
+            'results': results  # Individual stock results
+        })
+        
+    except Exception as e:
+        print(f"Error in evaluate_sp500: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/reset', methods=["POST"])
 def reset_account():
@@ -946,6 +1085,42 @@ def reset_account():
         return jsonify({"success": "Account reset successfully", "balance": STARTING_BALANCE})
         
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/download_transactions', methods=["GET"])
+def download_transactions():
+    try:
+        # Check if transaction file exists
+        if not os.path.exists(TRANSACTION_FILE):
+            return jsonify({"error": "No transaction data available"}), 404
+
+        # Read transaction data
+        transactions_df = pd.read_csv(TRANSACTION_FILE)
+        
+        # Format any monetary values to have consistent decimal places
+        money_columns = ['Price', 'Total', 'Balance After']
+        for col in money_columns:
+            if col in transactions_df.columns:
+                transactions_df[col] = transactions_df[col].apply(lambda x: f"${x:.2f}" if pd.notnull(x) else "")
+        
+        # Create a string buffer to write CSV data
+        from io import StringIO
+        buffer = StringIO()
+        transactions_df.to_csv(buffer, index=False)
+        buffer.seek(0)
+        
+        # Create the response with CSV data
+        from flask import Response
+        response = Response(
+            buffer.getvalue(),
+            mimetype="text/csv",
+            headers={"Content-Disposition": "attachment;filename=transactions.csv"}
+        )
+        
+        return response
+    
+    except Exception as e:
+        print(f"Error downloading transactions: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 def open_browser():

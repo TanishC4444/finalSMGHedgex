@@ -3,28 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hedge - Financial Literacy for Everyone</title>
+    <title>Hedgex - Financial Literacy for Everyone</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        .white{
+            color: white;
+            margin-right: 0.5rem;
+            justify-content: center;
+        }
         :root {
+            /* Light Mode Colors */
             --primary: #60a5fa;
             --primary-dark: #3b82f6;
+            --primary-light: #93c5fd;
+            --primary-lightest: #dbeafe;
+            --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --secondary: #a855f7;
+            --secondary-dark: #8b5cf6;
             --success: #10b981;
             --success-dark: #059669;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --warning-dark: #d97706;
+            --info: #3b82f6;
+            --info-dark: #2563eb;
             --text: #1e293b;
+            --text-light: #475569;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
             --background: #f8fafc;
+            --background-secondary: #f1f5f9;
             --card: #ffffff;
             --border: #e2e8f0;
+            --border-dark: #cbd5e1;
             --shadow: rgba(0, 0, 0, 0.08);
             --shadow-hover: rgba(0, 0, 0, 0.15);
+            --shadow-dropdown: rgba(0, 0, 0, 0.15);
+            --table-header: rgba(96, 165, 250, 0.1);
+            --table-row: rgba(96, 165, 250, 0.05);
+            --navbar-bg: var(--primary);
+            --navbar-text: white;
+            --hero-text: white;
+            --footer-bg: var(--text);
+            --footer-text: white;
+            --footer-link: rgba(255, 255, 255, 0.8);
+            --tooltip-bg: var(--text);
+            --tooltip-text: white;
+            --scrollbar-track: #f1f5f9;
+            --scrollbar-thumb: #cbd5e1;
+            --scrollbar-thumb-hover: #94a3b8;
+            --code-bg: #f8fafc;
+            --code-text: #1e293b;
+            --code-border: #e2e8f0;
         }
-        
+
+        [data-theme="dark"] {
+            /* Dark Mode Colors */
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --primary-lightest: #1e3a8a;
+            --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --secondary: #a855f7;
+            --secondary-dark: #8b5cf6;
+            --success: #059669;
+            --success-dark: #047857;
+            --success-light: #065f46;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --warning: #d97706;
+            --warning-dark: #b45309;
+            --info: #2563eb;
+            --info-dark: #1d4ed8;
+            --text: #f1f5f9;
+            --text-light: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --background: #0f172a;
+            --background-secondary: #1e293b;
+            --card: #1e293b;
+            --border: #334155;
+            --border-dark: #475569;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --shadow-hover: rgba(0, 0, 0, 0.35);
+            --shadow-dropdown: rgba(0, 0, 0, 0.5);
+            --table-header: rgba(59, 130, 246, 0.2);
+            --table-row: rgba(59, 130, 246, 0.1);
+            --navbar-bg: #1e293b;
+            --navbar-text: #f1f5f9;
+            --hero-text: #f1f5f9;
+            --footer-bg: #0f172a;
+            --footer-text: #f1f5f9;
+            --footer-link: rgba(241, 245, 249, 0.7);
+            --tooltip-bg: var(--card);
+            --tooltip-text: var(--text);
+            --scrollbar-track: #1e293b;
+            --scrollbar-thumb: #475569;
+            --scrollbar-thumb-hover: #64748b;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+            --code-border: #334155;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 6px;
+            border: 3px solid var(--scrollbar-track);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+
         body {
             font-family: 'Lexend', sans-serif;
             background-color: var(--background);
@@ -32,351 +145,1389 @@
             line-height: 1.6;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
-        
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Navbar styling */
         .navbar {
-            background: var(--primary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            box-shadow: 0 2px 10px var(--shadow);
+            background: var(--navbar-bg);
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
         }
-        
-        .navbar a {
-            color: white;
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navbar-text);
+            text-decoration: none;
+            transition: transform 0.3s ease, opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .nav-logo svg,
+        .nav-logo img {
+            margin-right: 0.5rem;
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--navbar-text);
             text-decoration: none;
             font-size: 1rem;
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.2s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        
-        .navbar a:hover {
+
+        .nav-links a:hover {
             background-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
         }
-        
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background-color: var(--navbar-text);
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 80%;
+            left: 10%;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: rotate(360deg);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero section styling */
         .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 4rem 2rem;
+            background: var(--primary-gradient);
+            color: var(--hero-text);
+            padding: 6rem 1rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjtvcGFjaXR5OjAuMTt9PC9zdHlsZT48L2RlZnM+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjAwLDEwMFMxNTAsMCwxMDAsMFMwLDEwMCwwLDEwMHM1MCwxMDAsMTAwLDEwMCwyMDAtMTAwLDIwMC0xMDBaIi8+PC9zdmc+');
+            opacity: 0.1;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            animation: pulse 10s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
         .hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-            color: white;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--hero-text);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1s ease both;
         }
-        
+
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             max-width: 800px;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 2rem;
             color: rgba(255, 255, 255, 0.9);
+            animation: fadeInUp 1s ease 0.3s both;
         }
-        
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Content styling */
+        .content {
+            margin: 4rem auto;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px var(--shadow);
+            margin-bottom: 2.5rem;
+            transition: all 0.4s ease;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        /* Typography styling */
+        h2 {
+            font-size: 2rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--primary-dark);
+            position: relative;
+            padding-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .card:hover h2::after {
+            width: 100px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 1.2rem 0 0.8rem;
+            color: var(--text);
+            transition: color 0.3s ease;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin: 1rem 0 0.5rem;
+            color: var(--text);
+            transition: color 0.3s ease;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: var(--text);
+            transition: color 0.3s ease;
+            line-height: 1.7;
+        }
+
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            list-style-position: outside;
+        }
+
+        li {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        /* Table styling */
+        .table-wrapper {
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .table-wrapper:hover {
+            box-shadow: 0 4px 15px var(--shadow-hover);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 1rem;
+            text-align: left;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        th {
+            background-color: var(--table-header);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--table-row);
+        }
+
+        tr {
+            transition: background-color 0.3s ease;
+        }
+
+        tr:hover {
+            background-color: var(--primary-lightest);
+        }
+
+        /* Emoji and icon styling */
+        .emoji {
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .emoji {
+            transform: scale(1.2);
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .strategy-item, .tip-item, .term-item {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: baseline;
+            transition: transform 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .strategy-item:hover, .tip-item:hover, .term-item:hover {
+            transform: translateX(10px);
+            background-color: var(--background-secondary);
+        }
+
+        .strategy-item strong, .tip-item strong, .term-item strong {
+            margin-left: 0.5rem;
+            color: var(--primary-dark);
+            transition: color 0.3s ease;
+        }
+
+        /* Tools grid layout */
+        .tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .tool {
+            background: var(--background-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tool::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .tool:hover {
+            box-shadow: 0 8px 25px var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        .tool:hover::before {
+            opacity: 1;
+        }
+
+        .tool h3 {
+            margin-top: 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .tool h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .tool:hover h3::after {
+            width: 100%;
+        }
+
+        .tool ul {
+            margin-top: auto;
+        }
+
+        /* Call to action buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
         .cta-button {
             background-color: var(--success);
             color: white;
             padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: 500;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-decoration: none;
             display: inline-block;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
-        
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+            z-index: -1;
+        }
+
         .cta-button:hover {
             background-color: var(--success-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        
-        .content {
-            margin: 3rem auto;
-            width: 90%;
-            max-width: 1000px;
+
+        .cta-button:hover::before {
+            left: 100%;
         }
-        
-        .card {
-            background: var(--card);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px var(--shadow);
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            box-shadow: 0 8px 30px var(--shadow-hover);
-            transform: translateY(-5px);
-        }
-        
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
+
+        .cta-button-secondary {
+            background-color: transparent;
             color: var(--primary-dark);
+            border: 1px solid var(--primary-dark);
         }
-        
-        h3 {
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
-            color: var(--text);
+
+        .cta-button-secondary:hover {
+            background-color: rgba(59, 130, 246, 0.1);
         }
-        
-        p {
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            color: var(--text);
+
+        .tool .cta-button {
+            margin-top: auto;
+            align-self: flex-start;
         }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        
-        .feature {
-            background: var(--card);
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px var(--shadow);
-            text-align: center;
-        }
-        
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .testimonial {
-            font-style: italic;
-            padding: 1.5rem;
-            background-color: rgba(96, 165, 250, 0.1);
-            border-left: 4px solid var(--primary);
-            margin: 1.5rem 0;
-        }
-        
-        .team {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .team-member {
-            text-align: center;
-        }
-        
-        .team-member h3 {
-            margin-top: 1rem;
-            margin-bottom: 0.3rem;
-        }
-        
-        .team-member p {
-            color: var(--primary-dark);
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
-        .team-member .bio {
-            font-size: 0.95rem;
-            color: var(--text);
-        }
-        
+
+        /* Footer styling */
         footer {
-            background-color: var(--text);
-            color: white;
-            padding: 2rem;
-            text-align: center;
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            position: relative;
         }
-        
-        .footer-content {
-            max-width: 1000px;
-            margin: 0 auto;
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .footer-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
-            text-align: left;
+            margin-bottom: 2rem;
         }
-        
+
+        .footer-col h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--footer-text);
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .footer-col:hover h3::after {
+            width: 100%;
+        }
+
         .footer-links {
             list-style: none;
+            padding: 0;
         }
-        
+
         .footer-links li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
-        
+
         .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--footer-link);
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
         }
-        
+
+        .footer-links a::before {
+            content: '›';
+            margin-right: 0.5rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
         .footer-links a:hover {
-            color: white;
+            color: var(--footer-text);
+            transform: translateX(5px);
         }
-        
+
+        .footer-links a:hover::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         .copyright {
             margin-top: 2rem;
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: var(--primary);
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .back-to-top:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-5px);
+        }
+
+        .back-to-top::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.3s ease;
+        }
+
+        .back-to-top:hover::after {
+            transform: scale(1);
+        }
+
+        /* Utility classes */
+        .no-bullets {
+            list-style: none;
+            padding-left: 1.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .badge-high {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .badge-medium {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .badge-low {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .badge-very-high {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        tr:hover .badge {
+            transform: scale(1.1);
+        }
+
+        /* Feature boxes */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-box {
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: var(--background-secondary);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px var(--shadow-hover);
+        }
+
+        .feature-box:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-box:hover .feature-icon {
+            transform: scale(1.2);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 1rem;
+            width: 3px;
+            background: var(--primary-gradient);
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            transform: translateX(-50%);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover::before {
+            transform: translateX(-50%) scale(1.5);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Code block styling */
+        .code-block {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-family: monospace;
+            color: var(--code-text);
+            overflow-x: auto;
+            transition: all 0.3s ease;
+        }
+
+        .code-block:hover {
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        /* Tooltip styling */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--text-secondary);
+        }
+
+        .tooltip .tooltip-content {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.75rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px var(--shadow-dropdown);
+        }
+
+        .tooltip:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        /* Accordion styling */
+        .accordion {
+            margin: 1.5rem 0;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-item:hover {
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .accordion-header {
+            background-color: var(--background-secondary);
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background-color: var(--primary-lightest);
+        }
+
+        .accordion-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1rem;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+            padding: 1rem;
+        }
+
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Chart container */
+        .chart-container {
+            background-color: var(--card);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
         }
         
+        .chart-container:hover {
+            box-shadow: 0 8px 30px var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        /* Card tabs */
+        .card-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .card-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .card-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .card-tab:hover:not(.active) {
+            background-color: var(--background-secondary);
+            border-bottom-color: var(--border-dark);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Risk meter */
+        .risk-meter-container {
+            margin: 2rem 0;
+        }
+
+        .risk-meter {
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(to right, var(--success), var(--warning), var(--danger));
+            border-radius: 6px;
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .risk-indicator {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: var(--card);
+            border: 3px solid var(--text);
+            border-radius: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 0.5s ease;
+        }
+
+        .risk-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Progress circle */
+        .progress-circle {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0% var(--progress, 0%), var(--background-secondary) var(--progress, 0%) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            transition: background 0.3s ease;
+        }
+
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--card);
+        }
+
+        .progress-value {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Responsive media queries */
         @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
-                gap: 1rem;
+            .navbar-container {
+                flex-direction: column;
+                align-items: flex-start;
+                position: relative;
             }
-            
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+                display: none;
+                padding: 1rem 0;
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                right: 1rem;
+                top: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .content {
+                padding: 1rem;
+                margin: 2rem auto;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+
+            .timeline::before {
+                left: 0.75rem;
+            }
+
+            .timeline-item {
+                padding-left: 2.5rem;
+            }
+
+            .timeline-item::before {
+                left: 0.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 4rem 1rem;
+            }
+
             .hero h1 {
                 font-size: 2rem;
             }
-            
-            .features {
+
+            .card {
+                padding: 1.25rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.3rem;
+            }
+
+            .tools {
                 grid-template-columns: 1fr;
             }
-            
-            .team {
+
+            .feature-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 1rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/learn">Learn Trading</a>
-        <a href="/practice">Practice Trading</a>
-        <a href="/simulator">Simulator</a>
-        <a href="/analysis">Analysis</a>
+        <div class="navbar-container container">
+            <a href="/" class="nav-logo">
+                Hedgex
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/learn">Learn Trading</a>
+                <a href="/practice">Practice Trading</a>
+                <a href="/simulator">Simulator</a>
+                <a href="/analysis">Analysis</a>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+            <button class="mobile-menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
     </div>
     
     <div class="hero">
-        <h1>Hedge: Empowering Financial Literacy</h1>
-        <p>Founded by a high school student with a mission to make stock trading accessible to everyone.</p>
-        <a href="/learn" class="cta-button">Start Learning Now</a>
+        <div class="hero-content container">
+            <h1>Hedgex: Empowering Financial Literacy</h1>
+            <p>Founded by a high school student with a mission to make stock trading accessible to everyone.</p>
+            <div class="hero-buttons">
+                <a href="/learn" class="cta-button">Start Learning Now</a>
+                <a href="/practice" class="cta-button">Try Practice Trading</a>
+            </div>
+        </div>
     </div>
     
-    <div class="content">
+    <div class="content container">
         <div class="card">
-            <h2>Our Story</h2>
-            <p>Hedge was born from a personal journey. As a junior in high school, I (Tanish Chauhan) struggled to understand the complexities of the stock market. The resources available were either too technical or oversimplified. That's when I teamed up with my mentor to create Hedge.</p>
+            <h2><span class="emoji">📖</span> Our Story</h2>
+            <p>Hedgex was born from a personal journey. As a junior in high school, I (Tanish Chauhan) wanted to deeply understand the stock market. The resources available were either too technical or didn't provide the tools and explanations. That's when I teamed up with my mentor to create Hedgex.</p>
             
             <p>What started as a small project for a class assignment quickly evolved into a passionate mission to solve the financial literacy gap among young people. We believe that understanding how to invest and grow wealth shouldn't be limited to business majors or finance professionals.</p>
             
-            <div class="testimonial">
-                "I created Hedge because I wanted to give young people the financial education I wish I had earlier. Understanding how money works shouldn't be complicated or boring." — Tanish Chauhan, Founder
+            <div class="card" style="background-color: var(--primary-lightest); margin-top: 2rem;">
+                <p style="font-style: italic; font-size: 1.2rem; margin-bottom: 0;">
+                    "I created Hedgex because I wanted to give anyone the opportunity to take a hold of their financial future through the world of investing."
+                </p>
+                <p style="text-align: right; font-weight: 600; margin-top: 1rem; color: var(--primary-dark);">
+                    — Tanish Chauhan, Founder
+                </p>
             </div>
         </div>
         
         <div class="card">
-            <h2>Our Mission</h2>
-            <p>At Hedge, we're on a mission to demystify stock trading and investing for everyone, especially young people. We believe financial literacy is a critical life skill that should be accessible to all, regardless of background or education.</p>
+            <h2><span class="emoji">🎯</span> Our Mission</h2>
+            <p>At Hedgex, we're on a mission to demystify stock trading and investing for everyone, especially young people. We believe financial literacy is a critical life skill that should be accessible to all, regardless of background or education.</p>
             
-            <div class="features">
-                <div class="feature">
+            <div class="feature-grid">
+                <div class="feature-box">
                     <div class="feature-icon">📚</div>
-                    <h3>Educational Content</h3>
+                    <h3 class="feature-title">Educational Content</h3>
                     <p>Simple, jargon-free learning materials that break down complex concepts.</p>
                 </div>
-                <div class="feature">
+                <div class="feature-box">
                     <div class="feature-icon">🎮</div>
-                    <h3>Risk-Free Practice</h3>
+                    <h3 class="feature-title">Risk-Free Practice</h3>
                     <p>Gain confidence with virtual trading before investing real money.</p>
                 </div>
-                <div class="feature">
+                <div class="feature-box">
                     <div class="feature-icon">📊</div>
-                    <h3>Simulation Tools</h3>
+                    <h3 class="feature-title">Simulation Tools</h3>
                     <p>Experiment with different variables to understand market dynamics.</p>
                 </div>
             </div>
         </div>
         
         <div class="card">
-            <h2>Meet the Team</h2>
-            <div class="team">
-                <div class="team-member">
+            <h2><span class="emoji">👥</span> Meet the Team</h2>
+            <div class="tools">
+                <div class="tool">
                     <h3>Tanish Chauhan</h3>
                     <p>Founder & Developer</p>
-                    <p class="bio">Junior in high school with a passion for technology and financial education. Started coding at 13 and created Hedge to help peers understand investing basics.</p>
+                    <p>Junior in high school with a passion for technology and financial education. Started coding at 11 and created Hedgex to help peers understand investing basics.</p>
                 </div>
-                <div class="team-member">
+                <div class="tool">
                     <h3>Shubhrose Singh</h3>
                     <p>Mentor</p>
-                    <p class="bio">Data Engineer and UCLA graduate passionate about mentoring and knowledge sharing. Experienced in Python, Git, and building efficient data pipelines, with a focus on guiding others in data engineering best practices.</p>
+                    <p>Data Engineer and UCLA graduate passionate about mentoring and knowledge sharing. Experienced in Python, Git, and building efficient data pipelines, with a focus on guiding others in data engineering best practices.</p>
                 </div>
             </div>
         </div>
         
         <div class="card">
-            <h2>Our Impact</h2>
-            <p>Since launching Hedge, we've helped over 500 students at our high school gain confidence in understanding stock markets. Our practice trading platform has simulated over 10,000 trades, allowing users to learn without financial risk.</p>
-            
-            <p>We've partnered with three local schools to incorporate Hedge into their economics curriculum, and we're expanding to more schools this year.</p>
-            
-            <div class="testimonial">
-                "Hedge has transformed how I teach economics. Students who were intimidated by the stock market are now eagerly participating in trading simulations and discussing investment strategies." — Economics Teacher, Lincoln High School
-            </div>
+            <h2><span class="emoji">📈</span> Our Impact</h2>
+            <p>Since launching Hedgex, we hope to provide this program to nearby schools so that students can learn the basics about trading.</p>
         </div>
         
         <div class="card">
-            <h2>Future Plans</h2>
-            <p>We're committed to continually improving Hedge based on user feedback. Our roadmap includes:</p>
-            <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
-                <li>Expanding our educational content to cover more advanced topics</li>
-                <li>Developing mobile apps for iOS and Android</li>
-                <li>Creating a community forum for users to share strategies and insights</li>
-                <li>Offering virtual workshops for schools and community organizations</li>
-            </ul>
+            <h2><span class="emoji">🚀</span> Future Plans</h2>
+            <p>We're committed to continually improving Hedgex based on user feedback. Our roadmap includes:</p>
             
-            <a href="/learn" class="cta-button">Start Your Financial Journey</a>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Q2 2025</div>
+                    <p>Expanding our educational content to cover more advanced topics</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Q3 2025</div>
+                    <p>Work on directly reaching out and expanding user base</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Q4 2025</div>
+                    <p>Establish/Expand a newsletter that provides insights on the market</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Q1 2026</div>
+                    <p>Continue expanding features and establish trading competitions</p>
+                </div>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="/learn" class="cta-button">Start Your Financial Journey</a>
+                <a href="/practice" class="cta-button cta-button-secondary">Try Our Simulator</a>
+            </div>
         </div>
     </div>
     
     <footer>
-        <div class="footer-content">
-            <div>
-                <h3>Contact Us</h3>
-                <p>Email: tanishchauhan4444@gmail.com</p>
-                <p>We'd love to hear your feedback or answer any questions!</p>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3 class="white">About Hedgex</h3>
+                    <p class="white">Empowering young people with financial knowledge and skills to navigate the stock market with confidence.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/learn">Learn Trading</a></li>
+                        <li><a href="/practice">Practice Trading</a></li>
+                        <li><a href="/simulator">Simulator</a></li>
+                        <li><a href="/analysis">Analysis</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <p class="white">Email: tanishchauhan4444@gmail.com</p>
+                    <p class="white">We'd love to hear your feedback or answer any questions!</p>
+                </div>
             </div>
-            <div>
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/learn">Learn Trading</a></li>
-                    <li><a href="/practice">Practice Trading</a></li>
-                    <li><a href="/simulator">Simulator</a></li>
-                </ul>
+            <div class="copyright">
+                © 2025 Hedgex Financial Literacy. All rights reserved.
             </div>
-        </div>
-        <div class="copyright">
-            © 2025 Hedge Financial Literacy. All rights reserved.
         </div>
     </footer>
 
+    <a href="#" class="back-to-top" id="backToTop">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+
     <script>
-        function showAlert() {
-            alert("Welcome to Hedge!");
-        }
+        // Toggle mobile menu
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
+        
+        // Toggle dark mode
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            // Check for saved theme preference or use prefer-color-scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // Apply theme based on saved preference or system preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '🌙';
+            }
+            
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update toggle button appearance
+                themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+            });
+        
+        // Back to top button visibility
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
     </script>
 </body>
 </html>

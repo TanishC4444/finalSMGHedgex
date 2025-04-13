@@ -4,307 +4,419 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Equation Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         :root {
             --primary: #60a5fa;
             --primary-dark: #3b82f6;
+            --primary-light: #93c5fd;
+            --primary-lightest: #dbeafe;
+            --secondary: #a855f7;
             --success: #10b981;
+            --success-light: #d1fae5;
+            --error: #ef4444;
+            --warning: #f59e0b;
             --text: #1e293b;
+            --text-light: #64748b;
             --background: #f8fafc;
             --card: #ffffff;
             --border: #e2e8f0;
             --shadow: rgba(0, 0, 0, 0.08);
-            --error: #ef4444;
-            --warning: #f59e0b;
+            --navbar-bg: var(--primary);
+            --navbar-text: white;
+        }
+        
+        [data-theme="dark"] {
+            /* Dark Mode Colors */
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --primary-lightest: #1e3a8a;
+            --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --secondary: #a855f7;
+            --secondary-dark: #8b5cf6;
+            --success: #059669;
+            --success-dark: #047857;
+            --success-light: #065f46;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --warning: #d97706;
+            --warning-dark: #b45309;
+            --info: #2563eb;
+            --info-dark: #1d4ed8;
+            --text: #f1f5f9;
+            --text-light: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --background: #0f172a;
+            --background-secondary: #1e293b;
+            --card: #1e293b;
+            --border: #334155;
+            --border-dark: #475569;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --shadow-hover: rgba(0, 0, 0, 0.35);
+            --shadow-dropdown: rgba(0, 0, 0, 0.5);
+            --table-header: rgba(59, 130, 246, 0.2);
+            --table-row: rgba(59, 130, 246, 0.1);
+            --navbar-bg: #1e293b;
+            --navbar-text: #f1f5f9;
+            --hero-text: #f1f5f9;
+            --footer-bg: #0f172a;
+            --footer-text: #f1f5f9;
+            --footer-link: rgba(241, 245, 249, 0.7);
+            --tooltip-bg: var(--card);
+            --tooltip-text: var(--text);
+            --scrollbar-track: #1e293b;
+            --scrollbar-thumb: #475569;
+            --scrollbar-thumb-hover: #64748b;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+            --code-border: #334155;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
         
         body {
             font-family: 'Lexend', sans-serif;
             background-color: var(--background);
             color: var(--text);
-            margin: 0;
-            padding: 0;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
         
+        /* Improved Navbar */
         .navbar {
-            background: var(--primary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
+            background: var(--navbar-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             box-shadow: 0 2px 10px var(--shadow);
-        }
-        
-        .navbar a {
-            color: white;
-            text-decoration: none;
             transition: all 0.3s ease;
         }
-        
-        .navbar a:hover {
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navbar-text);
+            text-decoration: none;
+            transition: transform 0.3s ease, opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--navbar-text);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
         }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background-color: var(--navbar-text);
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 80%;
+            left: 10%;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: rotate(360deg);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--navbar-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
+        }
         
+        /* Hero Section */
         .hero {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             text-align: center;
-            padding: 3rem 2rem;
+            padding: 3.5rem 2rem;
+            position: relative;
+            overflow: hidden;
         }
         
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,0.1)' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.4;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Content Container */
         .content {
             max-width: 1200px;
             margin: 2rem auto;
-            padding: 0 1rem;
+            padding: 0 1.5rem;
         }
         
-        .search-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-        
-        .search-group {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .search-input {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
-        
-        .search-button {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .select-input {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
-        
+        /* Card Styles */
         .card {
             background: var(--card);
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px var(--shadow);
-            margin-bottom: 1.5rem;
-        }
-        
-        .chart-container {
-            width: 100%;
-            height: 400px;
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 1rem;
-        }
-        
-        .tab {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-radius: 4px;
-            background: var(--border);
-        }
-        
-        .tab.active {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-        
-        .info-item {
-            border: 1px solid var(--border);
-            padding: 0.75rem;
-            border-radius: 4px;
-        }
-        
-        .info-label {
-            font-weight: bold;
-            margin-bottom: 0.25rem;
-        }
-        
-        .loading {
-            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            margin-bottom: 2rem;
             padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
-        .equation-builder {
-            margin-top: 2rem;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px var(--shadow);
         }
         
-        .equation-input {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            align-items: flex-start;
-            flex-wrap: wrap;
-        }
-        
-        .equation-textarea {
-            flex: 1;
-            min-width: 300px;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            height: 80px;
-            font-family: monospace;
-        }
-        
-        .equation-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .column-container {
-            margin-top: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 1rem;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .column-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        
-        .column-item {
-            background: rgba(96, 165, 250, 0.1);
-            padding: 0.35rem 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-        
-        .column-item:hover {
-            background: rgba(96, 165, 250, 0.3);
-        }
-        
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        .results-table th, .results-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .results-table th {
-            background-color: rgba(96, 165, 250, 0.1);
-        }
-        
-        .results-table tr:hover {
-            background-color: rgba(96, 165, 250, 0.05);
-        }
-        
-        .accuracy-display {
+        .card h2 {
             font-size: 1.5rem;
-            text-align: center;
-            margin: 1.5rem 0;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary-lightest);
         }
         
-        .positive {
-            color: var(--success);
+        .card h3 {
+            font-size: 1.25rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--text);
         }
         
-        .negative {
-            color: var(--error);
-        }
-        
+        /* Instructions */
         .instructions {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background-color: rgba(96, 165, 250, 0.1);
-            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            background-color: var(--primary-lightest);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
         }
         
+        .instructions p {
+            margin-bottom: 0.75rem;
+        }
+        
+        .instructions p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .instructions code {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* Parameter Section */
         .parameter-section {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
+            align-items: flex-end;
         }
         
         .parameter-group {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            flex: 1;
+            min-width: 200px;
         }
         
         .parameter-label {
-            font-weight: bold;
-            font-size: 0.9rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
         }
-        /* Add these styles to your existing CSS in simulator.html */
+        
+        .search-input, .select-input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--card);
+            color: var(--text);
+        }
+        
+        .search-input:focus, .select-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+        
+        .search-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 600;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .search-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Column Container */
+        .column-container {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            background-color: var(--card);
+            box-shadow: 0 2px 10px var(--shadow);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .column-container h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+        }
+        
         .column-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            margin-top: 1rem;
         }
-
+        
         .column-list h4 {
             width: 100%;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
             color: var(--text);
             font-size: 1rem;
+            font-weight: 600;
         }
-
+        
         .column-list h4:first-child {
             margin-top: 0;
         }
-
+        
         .column-item {
             background: rgba(96, 165, 250, 0.1);
-            padding: 0.35rem 0.75rem;
-            border-radius: 4px;
+            padding: 0.5rem 0.85rem;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: all 0.2s;
             border: 1px solid transparent;
+            position: relative;
+            color: var(--text);
         }
-
+        
         .column-item:hover {
             background: rgba(96, 165, 250, 0.2);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
             border-color: rgba(96, 165, 250, 0.4);
+            box-shadow: 0 2px 8px rgba(96, 165, 250, 0.15);
         }
-
-        #additional-fundamentals {
-            flex-wrap: wrap;
-            display: none;
-            gap: 0.5rem;
-        }
-        .column-item {
-            position: relative;
-        }
-
+        
+        /* Tooltip for column items */
         .tooltip {
             position: absolute;
             bottom: 100%;
@@ -312,45 +424,302 @@
             transform: translateX(-50%);
             background: var(--text);
             color: white;
-            padding: 0.5rem;
-            border-radius: 4px;
-            width: 200px;
+            padding: 0.75rem;
+            border-radius: 6px;
+            width: 220px;
             z-index: 100;
             display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-size: 0.85rem;
+            font-weight: 400;
+            line-height: 1.4;
         }
-
+        
         .column-item:hover .tooltip {
             display: block;
         }
-
-        .tooltip-content {
-            font-size: 0.8rem;
-        }
-
+        
         .tooltip::after {
             content: '';
             position: absolute;
             top: 100%;
             left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
+            margin-left: -6px;
+            border-width: 6px;
             border-style: solid;
             border-color: var(--text) transparent transparent transparent;
+        }
+        
+        /* Equation Builder */
+        .equation-builder {
+            margin-top: 2rem;
+        }
+        
+        .equation-input {
+            display: flex;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        
+        .equation-textarea {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            height: 100px;
+            font-family: monospace;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--card);
+            color: var(--text);
+        }
+        
+        .equation-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+        
+        .equation-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        /* Results Styles */
+        .accuracy-display {
+            font-size: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--primary-lightest);
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 450px;
+            margin: 2rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px var(--shadow);
+            padding: 1rem;
+            background: var(--card);
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+        
+        .results-table th, .results-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .results-table th {
+            background-color: var(--primary-lightest);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        
+        .results-table tr:hover {
+            background-color: rgba(96, 165, 250, 0.05);
+        }
+        
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Status colors */
+        .positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .negative {
+            color: var(--error);
+            font-weight: 600;
+        }
+        
+        /* Loading animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+        
+        /* SP500 results */
+        #sp500-results-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+        
+        #sp500-results-table th {
+            background-color: var(--primary-lightest);
+            color: var(--primary-dark);
+            padding: 1rem;
+            font-weight: 600;
+            text-align: left;
+        }
+        
+        #sp500-results-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        #sp500-results-table tr:hover {
+            background-color: rgba(96, 165, 250, 0.05);
+        }
+        
+        #sp500-results-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Responsive Media Queries */
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+                align-items: flex-start;
+                position: relative;
+                padding: 0.5rem 1.5rem;
+            }
+            
+            .nav-logo {
+                z-index: 101;
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                width: 100%;
+                background: var(--navbar-bg);
+                padding: 1rem;
+                gap: 1rem;
+                display: none;
+                box-shadow: 0 4px 10px var(--shadow);
+                border-radius: 0 0 8px 8px;
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                right: 1rem;
+                top: 1rem;
+            }
+            
+            .theme-toggle {
+                position: absolute;
+                right: 4rem;
+                top: 1rem;
+                z-index: 101;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .equation-input {
+                flex-direction: column;
+            }
+            
+            .equation-buttons {
+                flex-direction: row;
+                width: 100%;
+            }
+            
+            .equation-buttons button {
+                flex: 1;
+            }
+            
+            .parameter-group {
+                min-width: 100%;
+            }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
         }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/learn">Learn</a>
-        <a href="/practice">Practice</a>
-        <a href="/simulator">Simulator</a>
-        <a href="/analysis">Analysis</a>
+        <div class="navbar-container">
+            <a href="/" class="nav-logo">Hedgex</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/learn">Learn Trading</a>
+                <a href="/practice">Practice Trading</a>
+                <a href="/simulator">Simulator</a>
+                <a href="/analysis">Analysis</a>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+            <button class="mobile-menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
     </div>
     
     <div class="hero">
         <h1>Stock Equation Simulator</h1>
-        <p>Create and test stock price prediction equations</p>
+        <p>Create and test stock price prediction equations with historical data</p>
     </div>
     
     <div class="content">
@@ -394,7 +763,12 @@
                 
                 <div class="parameter-group">
                     <div class="parameter-label">&nbsp;</div>
-                    <button id="load-columns-btn" class="search-button">Load Columns</button>
+                    <button id="load-columns-btn" class="search-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 12L3 12M3 12L10 19M3 12L10 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Load Columns
+                    </button>
                 </div>
             </div>
             
@@ -409,9 +783,18 @@
                 <div class="equation-input">
                     <textarea id="equation-textarea" class="equation-textarea" placeholder="Enter your equation using columns from above..."></textarea>
                     <div class="equation-buttons">
-                        <button id="evaluate-equation-btn" class="search-button">Evaluate Equation</button>
-                        <button id="clear-equation-btn" class="search-button" style="background: var(--error);">Clear</button>
-                        <button id="evaluate-sp500-btn" class="search-button" style="background: var(--warning);">Test on S&P 500</button>
+                        <button id="evaluate-equation-btn" class="search-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Evaluate Equation
+                        </button>
+                        <button id="clear-equation-btn" class="search-button" style="background: var(--error);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 18L18 6M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Clear
+                        </button>
                     </div>
                 </div>
             </div>
@@ -468,6 +851,34 @@
     </div>
     
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            // Check for saved theme preference or use prefer-color-scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // Apply theme based on saved preference or system preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '🌙';
+            }
+            
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // Update toggle button appearance
+                themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+            });
         // Initialize variables
         let resultsChart = null;
         let availableColumns = [];
@@ -816,6 +1227,7 @@
         const sp500ResultsBody = document.getElementById('sp500-results-body');
 
         // Evaluate equation on S&P 500
+        // Evaluate equation on S&P 500
         evaluateSp500Btn.addEventListener('click', function() {
             const equation = equationTextarea.value.trim();
             const period = periodSelect.value;
@@ -829,7 +1241,7 @@
             // Show loading state
             sp500ResultsCard.style.display = 'block';
             sp500Loading.style.display = 'block';
-            sp500ResultsBody.innerHTML = '';
+            sp500ResultsBody.innerHTML = '<tr><td colspan="5" class="loading">Processing stocks, this may take a moment...</td></tr>';
             
             // Evaluate equation on S&P 500 using API
             fetch('/evaluate_sp500', {
@@ -857,8 +1269,26 @@
                 // Hide loading
                 sp500Loading.style.display = 'none';
                 
-                // Sort results by accuracy (descending)
-                const sortedResults = data.results.sort((a, b) => b.accuracy - a.accuracy);
+                if (!data.results || data.results.length === 0) {
+                    sp500ResultsBody.innerHTML = '<tr><td colspan="5">No valid results found. Try a different equation or time period.</td></tr>';
+                    return;
+                }
+                
+                // Log the data for debugging
+                console.log("S&P 500 Results:", data.results);
+                
+                // Make sure accuracy is a number for proper sorting
+                const validResults = data.results.map(result => ({
+                    ...result,
+                    // Use predicted_accuracy if available, otherwise fall back to accuracy
+                    sortAccuracy: parseFloat(result.predicted_accuracy !== undefined ? 
+                        result.predicted_accuracy : result.accuracy) || 0
+                }));
+
+                // Sort results by the correct accuracy field (descending)
+                const sortedResults = validResults.sort((a, b) => b.sortAccuracy - a.sortAccuracy);
+                
+                console.log("Sorted Results:", sortedResults);
                 
                 // Display top results
                 displaySp500Results(sortedResults);
@@ -869,60 +1299,72 @@
             });
         });
 
-        // Display S&P 500 results
-        function displaySp500Results(results) {
-            sp500ResultsBody.innerHTML = '';
-            
-            results.forEach((result, index) => {
-                const row = document.createElement('tr');
-                
-                // Rank column
-                const rankCell = document.createElement('td');
-                rankCell.textContent = index + 1;
-                row.appendChild(rankCell);
-                
-                // Ticker column
-                const tickerCell = document.createElement('td');
-                tickerCell.textContent = result.ticker;
-                row.appendChild(tickerCell);
-                
-                // Accuracy column
-                const accuracyCell = document.createElement('td');
-                accuracyCell.textContent = result.accuracy + '%';
-                
-                // Color based on accuracy
-                if (result.accuracy >= 60) {
-                    accuracyCell.className = 'positive';
-                } else if (result.accuracy <= 45) {
-                    accuracyCell.className = 'negative';
-                }
-                row.appendChild(accuracyCell);
-                
-                // Average Signal column
-                const signalCell = document.createElement('td');
-                signalCell.textContent = result.avg_signal ? result.avg_signal.toFixed(4) : 'N/A';
-                row.appendChild(signalCell);
-                
-                // Action column
-                const actionCell = document.createElement('td');
-                const selectBtn = document.createElement('button');
-                selectBtn.className = 'search-button';
-                selectBtn.style.padding = '0.25rem 0.5rem';
-                selectBtn.textContent = 'Select';
-                selectBtn.addEventListener('click', function() {
-                    // Set the ticker and run the equation for this stock
-                    tickerInput.value = result.ticker;
-                    loadColumnsBtn.click();
-                    setTimeout(() => {
-                        evaluateEquationBtn.click();
-                    }, 1000); // Allow time for columns to load
-                });
-                actionCell.appendChild(selectBtn);
-                row.appendChild(actionCell);
-                
-                sp500ResultsBody.appendChild(row);
-            });
+    // Display S&P 500 results
+    function displaySp500Results(results) {
+        sp500ResultsBody.innerHTML = '';
+        
+        if (results.length === 0) {
+            sp500ResultsBody.innerHTML = '<tr><td colspan="5">No results found.</td></tr>';
+            return;
         }
+        
+        results.forEach((result, index) => {
+            const row = document.createElement('tr');
+            
+            // Rank column
+            const rankCell = document.createElement('td');
+            rankCell.textContent = index + 1;
+            row.appendChild(rankCell);
+            
+            // Ticker column
+            const tickerCell = document.createElement('td');
+            tickerCell.textContent = result.ticker;
+            row.appendChild(tickerCell);
+            
+            // Accuracy column
+            const accuracyCell = document.createElement('td');
+            // Make sure we're using the predicted_accuracy field if available, otherwise fall back to accuracy
+            const displayAccuracy = result.predicted_accuracy !== undefined ? 
+                parseFloat(result.predicted_accuracy).toFixed(2) : 
+                parseFloat(result.accuracy).toFixed(2);
+                
+            accuracyCell.textContent = `${displayAccuracy}% (${result.correct_predictions}/${result.valid_points})`;
+
+            // Color based on the displayed accuracy
+            if (parseFloat(displayAccuracy) >= 60) {
+                accuracyCell.className = 'positive';
+            } else if (parseFloat(displayAccuracy) <= 45) {
+                accuracyCell.className = 'negative';
+            }
+            row.appendChild(accuracyCell);
+            
+            // Average Signal column
+            const signalCell = document.createElement('td');
+            signalCell.textContent = result.avg_signal !== null && result.avg_signal !== undefined ? 
+                parseFloat(result.avg_signal).toFixed(4) : 'N/A';
+            row.appendChild(signalCell);
+            
+            // Action column
+            const actionCell = document.createElement('td');
+            const selectBtn = document.createElement('button');
+            selectBtn.className = 'search-button';
+            selectBtn.style.padding = '0.25rem 0.5rem';
+            selectBtn.textContent = 'Select';
+            selectBtn.addEventListener('click', function() {
+                // Set the ticker and run the equation for this stock
+                tickerInput.value = result.ticker;
+                loadColumnsBtn.click();
+                setTimeout(() => {
+                    evaluateEquationBtn.click();
+                }, 1000); // Allow time for columns to load
+            });
+            actionCell.appendChild(selectBtn);
+            row.appendChild(actionCell);
+            
+            sp500ResultsBody.appendChild(row);
+        });
+    }
+    
     </script>
 </body>
 </html>
