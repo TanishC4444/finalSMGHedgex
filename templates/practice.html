@@ -507,6 +507,18 @@
             width: 18px;
             height: 18px;
         }
+        .balance-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        .net-profit {
+            color: var(--success);
+        }
+        .net-loss {
+            color: var(--error);
+        }
     </style>
 </head>
 <body>
@@ -535,6 +547,7 @@
         <div class="header">
             <h1>Stock Trading Dashboard</h1>
             <h3>Account Balance: $<span id="balance">0.00</span></h3>
+            <h3>Net Balance: $<span id="netBalance">0.00</span></h3>
         </div>
 
         <div class="stock-search">
@@ -604,6 +617,7 @@
         window.onload = function() {
             updateBalanceDisplay();
             updatePortfolio();
+            updateNetBalance(); // Add this line
             
             // Add event listener for Enter key on ticker input
             document.getElementById('ticker').addEventListener('keypress', function(e) {
@@ -828,6 +842,7 @@
                     showNotification(data.success || 'Transaction completed successfully', 'success');
                     updateBalanceDisplay();
                     updatePortfolio();
+                    updateNetBalance(); // Add this line
                     
                     // Clear quantity input
                     document.getElementById('quantity').value = 1;
@@ -858,6 +873,7 @@
                     updateBalanceDisplay();
                     // Refresh the portfolio display
                     updatePortfolio();
+                    updateNetBalance(); // Add this line
                 }
             })
             .catch(error => {
@@ -875,6 +891,7 @@
                     
                     if (!holdings || holdings.length === 0 || (holdings.error && holdings.error.includes('No holdings'))) {
                         tableBody.innerHTML = '<tr><td colspan="7" class="no-holdings">No stocks in your portfolio</td></tr>';
+                        updateNetBalance(); // Add this line
                         return;
                     }
                     
@@ -904,6 +921,7 @@
                         
                         tableBody.appendChild(row);
                     });
+                    updateNetBalance(); // Add this line
                 })
                 .catch(error => {
                     console.error('Error updating portfolio:', error);
@@ -917,6 +935,7 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('balance').textContent = parseFloat(data.balance).toFixed(2);
+                    updateNetBalance(); // Add this line
                 })
                 .catch(error => {
                     console.error('Error updating balance:', error);
@@ -1029,6 +1048,57 @@
                 themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
             });
             });
+            function updateNetBalance() {
+                // First get the current cash balance
+                fetch('/balance')
+                    .then(response => response.json())
+                    .then(balanceData => {
+                        const cashBalance = parseFloat(balanceData.balance);
+                        
+                        // Then get current holdings data
+                        fetch('/update_holdings')
+                            .then(response => response.json())
+                            .then(holdings => {
+                                let totalCurrentValue = 0;
+                                let totalPurchaseValue = 0;
+                                
+                                // If there are holdings, calculate total values
+                                if (holdings && holdings.length > 0 && !holdings.error) {
+                                    holdings.forEach(holding => {
+                                        if (parseFloat(holding.Quantity) <= 0) return;
+                                        
+                                        totalCurrentValue += parseFloat(holding['Current Value']);
+                                        totalPurchaseValue += parseFloat(holding['Price Bought']) * parseFloat(holding.Quantity);
+                                    });
+                                }
+                                
+                                // Calculate unrealized profit/loss
+                                const unrealizedProfitLoss = totalCurrentValue - totalPurchaseValue;
+                                
+                                // Calculate net balance
+                                const netBalance = cashBalance + totalCurrentValue;
+                                
+                                // Update display
+                                const netBalanceElement = document.getElementById('netBalance');
+                                netBalanceElement.textContent = netBalance.toFixed(2);
+                                
+                                // Add class based on profit/loss
+                                if (unrealizedProfitLoss > 0) {
+                                    netBalanceElement.className = 'net-profit';
+                                } else if (unrealizedProfitLoss < 0) {
+                                    netBalanceElement.className = 'net-loss';
+                                } else {
+                                    netBalanceElement.className = '';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching holdings for net balance:', error);
+                            });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching balance for net balance:', error);
+                    });
+            }
     </script>
 </body>
 </html>

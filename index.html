@@ -3,103 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hedge - Fantasy Trading</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Hedgex | Learn Trading with Zero Risk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
             /* Light theme variables */
-            --primary-bg: linear-gradient(135deg, #a0c4ff, #caf0f8);
-            --card-bg: rgba(255, 255, 255, 0.2);
-            --card-hover-bg: rgba(255, 255, 255, 0.3);
-            --text-color: #1a3a5f;
-            --heading-color: #003566;
-            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            --button-bg: #0077b6;
-            --button-hover: #0096c7;
-            --section-border: rgba(255, 255, 255, 0.5);
+            --primary-bg: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+            --secondary-bg: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-hover-bg: #ffffff;
+            --accent-color: #0077b6;
+            --accent-hover: #0096c7;
+            --accent-light: rgba(0, 119, 182, 0.1);
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --heading-color: #0f172a;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --button-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
+            --border-color: rgba(226, 232, 240, 0.8);
+            --highlight: #38bdf8;
         }
 
         [data-theme="dark"] {
             /* Dark theme variables */
-            --primary-bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --card-hover-bg: rgba(44, 62, 80, 0.8);
+            --primary-bg: linear-gradient(135deg, #0f172a, #1e293b);
+            --secondary-bg: #111827;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-hover-bg: rgba(44, 62, 80, 0.9);
+            --accent-color: #38bdf8;
+            --accent-hover: #7dd3fc;
+            --accent-light: rgba(56, 189, 248, 0.1);
             --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
             --heading-color: #f8fafc;
-            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            --button-bg: #0369a1;
-            --button-hover: #0284c7;
-            --section-border: rgba(255, 255, 255, 0.1);
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --button-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+            --border-color: rgba(51, 65, 85, 0.8);
+            --highlight: #0ea5e9;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         body {
-            font-family: 'Lexend', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--primary-bg);
             color: var(--text-color);
             overflow-x: hidden;
             min-height: 100vh;
             transition: background 0.5s ease;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lexend', sans-serif;
+            color: var(--heading-color);
+            font-weight: 600;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 0 20px;
         }
 
-        /* Header styles */
-        header {
-            padding: 20px 0;
+        /* Navigation */
+        nav {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 15px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--accent-color), var(--highlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .logo {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
+            background: linear-gradient(45deg, var(--accent-color), var(--highlight));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             position: relative;
-            text-shadow: 0 2px 10px rgba(0, 119, 182, 0.3);
         }
 
-        .logo::after {
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link::after {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 4px;
-            bottom: -5px;
+            width: 0;
+            height: 2px;
+            bottom: 0;
             left: 0;
-            background: linear-gradient(90deg, transparent, #0077b6, transparent);
-            transform: scaleX(0);
-            transform-origin: center;
-            transition: transform 0.5s ease;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
         }
 
-        .logo:hover::after {
-            transform: scaleX(1);
+        .nav-link:hover::after {
+            width: 100%;
         }
 
-        .theme-toggle {
+        .cta-button-small {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button-small:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            cursor: pointer;
             background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            background: var(--accent-light);
             border: none;
             cursor: pointer;
             width: 50px;
-            height: 30px;
-            border-radius: 15px;
-            background-color: var(--card-bg);
+            height: 28px;
+            border-radius: 14px;
             position: relative;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -109,237 +192,867 @@
         .theme-toggle::before {
             content: '';
             position: absolute;
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             top: 4px;
             left: 4px;
-            background-color: #ffd60a;
+            background-color: var(--accent-color);
             transition: transform 0.3s ease;
             z-index: 1;
-            box-shadow: 0 0 10px rgba(255, 214, 10, 0.5);
         }
 
         [data-theme="dark"] .theme-toggle::before {
-            transform: translateX(20px);
-            background-color: #94a3b8;
+            transform: translateX(22px);
         }
 
         .theme-toggle .sun {
             color: #ffd60a;
-            font-size: 14px;
+            font-size: 12px;
             z-index: 2;
         }
 
         .theme-toggle .moon {
             color: #94a3b8;
-            font-size: 14px;
+            font-size: 12px;
             z-index: 2;
         }
 
         /* Hero Section */
-        .hero {
+        .hero-section {
+            padding: 140px 0 80px;
             text-align: center;
-            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        h1 {
-            font-size: 5rem;
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            animation: fadeIn 1s forwards;
+        }
+
+        .hero-title {
+            font-size: 4rem;
             font-weight: 700;
             margin-bottom: 20px;
-            color: var(--heading-color);
-            position: relative;
+            line-height: 1.2;
+            animation: fadeInUp 1s forwards 0.3s;
             opacity: 0;
-            transform: translateY(-30px);
-            animation: fadeInDown 1s forwards 0.3s;
         }
 
-        .tagline {
-            font-size: 1.5rem;
+        .hero-title span {
+            color: var(--accent-color);
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
             opacity: 0;
-            animation: fadeIn 1s forwards 0.8s;
+            animation: fadeInUp 1s forwards 0.6s;
             margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--text-muted);
         }
 
-        /* Section styling */
-        .section {
-            background: var(--card-bg);
-            padding: 30px;
-            margin: 30px 0;
-            border-radius: 15px;
-            box-shadow: var(--card-shadow);
-            transform: translateY(30px);
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
             opacity: 0;
-            transition: transform 0.5s ease, background 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--section-border);
-            backdrop-filter: blur(10px);
-            text-align: left;
+            animation: fadeInUp 1s forwards 0.9s;
         }
 
-        .section.animate {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .section:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-            background: var(--card-hover-bg);
-        }
-
-        .section h2 {
-            color: var(--heading-color);
-            font-size: 2rem;
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section h2::after {
-            content: '';
-            position: absolute;
-            width: 50%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--button-bg), transparent);
-            bottom: -10px;
-            left: 0;
-            border-radius: 3px;
-        }
-
-        .section p {
-            line-height: 1.7;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .section ul {
-            list-style-type: none;
-            margin: 20px 0;
-        }
-
-        .section li {
-            margin: 10px 0;
-            position: relative;
-            padding-left: 25px;
-            line-height: 1.6;
-        }
-
-        .section li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--button-bg);
-            font-weight: bold;
-        }
-
-        .section li strong {
-            color: var(--heading-color);
-            font-weight: 600;
-        }
-
-        /* About section */
-        .about {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .about::before {
-            content: '';
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 119, 182, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
-            top: -20px;
-            right: -20px;
-            z-index: -1;
-        }
-
-        /* CTA button */
-        .cta-container {
-            margin: 50px 0;
-            text-align: center;
-        }
-
-        .download-link {
-            display: inline-block;
-            padding: 15px 35px;
-            background: var(--button-bg);
+        .cta-button {
+            background: var(--accent-color);
             color: white;
+            border: none;
             border-radius: 8px;
-            text-decoration: none;
+            padding: 15px 30px;
             font-weight: 600;
             font-size: 1.1rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
-            z-index: 1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: var(--button-shadow);
         }
 
-        .download-link:hover {
+        .cta-button:hover {
+            background: var(--accent-hover);
             transform: translateY(-3px);
             box-shadow: 0 7px 20px rgba(0, 119, 182, 0.4);
         }
 
-        .download-link::before {
+        .secondary-button {
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .secondary-button:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .hero-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-light);
+            filter: blur(60px);
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -150px;
+            opacity: 0.5;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -80px;
+            left: -100px;
+            opacity: 0.3;
+        }
+
+        /* Features section */
+        .features-section {
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--highlight));
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .section-description {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            color: var(--text-muted);
+            flex-grow: 1;
+        }
+
+        /* How It Works section */
+        .how-it-works-section {
+            padding: 80px 0;
+            background: var(--secondary-bg);
+            position: relative;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .steps-container::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.7s ease;
-            z-index: -1;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: var(--border-color);
+            transform: translateX(-50%);
         }
 
-        .download-link:hover::before {
-            left: 100%;
+        .step {
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .step:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .step:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .step-content {
+            width: 45%;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-description {
+            color: var(--text-muted);
+        }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-image {
+            max-width: 90%;
+            margin: 40px auto 0;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-image:hover {
+            transform: scale(1.03);
+        }
+
+        /* Testimonials */
+        .testimonials-section {
+            padding: 80px 0;
+            background: var(--secondary-bg);
+        }
+
+        .testimonials-carousel {
+            max-width: 800px;
+            margin: 40px auto 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-slide {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            margin: 20px 10px;
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .testimonial-content::before, 
+        .testimonial-content::after {
+            content: '"';
+            font-size: 3rem;
+            color: var(--accent-light);
+            position: absolute;
+            opacity: 0.7;
+        }
+
+        .testimonial-content::before {
+            top: -20px;
+            left: -10px;
+        }
+
+        .testimonial-content::after {
+            bottom: -40px;
+            right: -10px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-details {
+            text-align: left;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: var(--heading-color);
+        }
+
+        .author-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        /* About section */
+        .about-section {
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .about-container {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .about-image {
+            flex: 1;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            max-width: 500px;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .about-title {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--highlight));
+            bottom: -10px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .about-description {
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--accent-color), #023e8a);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta-description {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cta-button-white {
+            background: white;
+            color: var(--accent-color);
+            border: none;
+            border-radius: 8px;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-button-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.2);
+            background: #f8f9fa;
+        }
+
+        .cta-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .cta-shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -100px;
+        }
+
+        .cta-shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -80px;
         }
 
         /* Footer */
         .footer {
-            margin-top: 60px;
-            padding: 20px 0;
-            text-align: center;
-            position: relative;
+            background: var(--secondary-bg);
+            padding: 60px 0 30px;
             color: var(--text-color);
-            opacity: 0.8;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--accent-color), var(--highlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        .footer-description {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            max-width: 300px;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: var(--accent-color);
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .copyright {
+            color: var(--text-muted);
             font-size: 0.9rem;
         }
 
-        .footer::before {
-            content: '';
-            position: absolute;
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-bottom-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-bottom-link:hover {
+            color: var(--accent-color);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--text-color), transparent);
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--card-shadow);
+            transform: translateY(30px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--accent-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--heading-color);
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .form-button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .form-button:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Charts */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
         }
 
         /* Animations */
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
             }
             to {
                 opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
@@ -352,132 +1065,1224 @@
             }
         }
 
-        /* Responsive design */
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .about-container {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                max-width: 100%;
+            }
+            
+            .steps-container::before {
+                left: 20px;
+            }
+            
+            .step {
+                flex-direction: row !important;
+            }
+            .step-number {
+                left: 20px;
+            }
+            
+            .step-content {
+                width: calc(100% - 50px);
+                margin-left: 40px;
+            }
+        }
+
         @media (max-width: 768px) {
-            h1 {
-                font-size: 3.5rem;
-            }
-            
-            .tagline {
-                font-size: 1.2rem;
-            }
-            
-            .section {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: var(--card-bg);
+                flex-direction: column;
                 padding: 20px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                border-bottom: 1px solid var(--border-color);
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+            
+            .about-stats {
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
 
         @media (max-width: 480px) {
-            h1 {
-                font-size: 2.8rem;
+            .hero-title {
+                font-size: 2rem;
             }
             
-            .section h2 {
-                font-size: 1.5rem;
+            .section-title {
+                font-size: 1.8rem;
             }
             
-            .download-link {
-                padding: 12px 25px;
+            .testimonial-slide {
+                padding: 20px 15px;
             }
+            
+            .cta-title {
+                font-size: 2rem;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-bottom-links {
+                justify-content: center;
+            }
+        }
+
+        /* Live Market Data */
+        .market-data-section {
+            padding: 80px 0;
+        }
+        
+        .market-ticker {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .ticker-wrap {
+            display: flex;
+            animation: ticker 30s linear infinite;
+            white-space: nowrap;
+        }
+        
+        .ticker-item {
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .ticker-symbol {
+            font-weight: 600;
+            color: var(--heading-color);
+        }
+        
+        .ticker-price {
+            color: var(--text-color);
+        }
+        
+        .ticker-change {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .ticker-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .ticker-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        
+        .market-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            height: 100%;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chart-timeframe {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .timeframe-button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .timeframe-button.active, .timeframe-button:hover {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .chart-canvas {
+            width: 100%;
+            height: 200px;
+        }
+
+        /* Educational Resources */
+        .resources-section {
+            padding: 80px 0;
+            background: var(--secondary-bg);
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .resource-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .resource-image {
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .resource-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .resource-card:hover .resource-image img {
+            transform: scale(1.05);
+        }
+        
+        .resource-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .resource-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .resource-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        
+        .resource-description {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            gap: 12px;
+        }
+
+        /* Portfolio Demo */
+        .portfolio-demo-section {
+            padding: 80px 0;
+        }
+        
+        .portfolio-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .portfolio-tab {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+        
+        .portfolio-tab.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        
+        .portfolio-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+        
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .portfolio-value-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .portfolio-value-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .portfolio-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+        
+        .portfolio-change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .portfolio-change.positive {
+            color: #10b981;
+        }
+        
+        .portfolio-change.negative {
+            color: #ef4444;
+        }
+        
+        .portfolio-timeframe {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .portfolio-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .portfolio-table th, .portfolio-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .portfolio-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .portfolio-table td {
+            color: var(--text-color);
+        }
+        
+        .portfolio-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .stock-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stock-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .stock-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stock-symbol {
+            font-weight: 600;
+            color: var(--heading-color);
+        }
+        
+        .stock-name {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .stock-change {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .stock-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .stock-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Loading */
+        .loading-skeleton {
+            background: linear-gradient(90deg, var(--card-bg), var(--border-color), var(--card-bg));
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--accent-hover);
+            transform: translateY(-5px);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1 class="logo">Hedge</h1>
-            <button class="theme-toggle" aria-label="Toggle dark mode">
-                <span class="sun">☀️</span>
-                <span class="moon">🌙</span>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo-container">
+                <h1 class="logo">Hedgex</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#about" class="nav-link">About</a>
+                <button class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+                <a href="#" class="cta-button-small open-demo-modal">Try Demo</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Mobile menu">
+                <i class="fas fa-bars"></i>
             </button>
-        </header>
-        
-        <div class="hero">
-            <p class="tagline">Fantasy Trading. Real Learning.</p>
         </div>
-        
-        <div class="section">
-            <h2>What is Trading?</h2>
-            <p>Trading is the act of buying and selling assets, such as stocks, to generate profit. Understanding trading helps develop financial literacy and strategic thinking. Markets operate on principles of supply and demand, and traders utilize various strategies like fundamental and technical analysis to make informed decisions.</p>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-shapes">
+            <div class="hero-shape shape-1"></div>
+            <div class="hero-shape shape-2"></div>
         </div>
-        
-        <div class="section">
-            <h2>Why is Trading Important?</h2>
-            <p>Trading plays a crucial role in the global economy, driving liquidity, price discovery, and wealth creation. Learning about trading equips individuals with the tools to navigate financial markets, make informed investment decisions, and prepare for long-term financial success.</p>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-star"></i> Risk-Free Trading Simulator
+                </div>
+                <h1 class="hero-title">Learn to Trade with <span>Zero Risk</span></h1>
+                <p class="hero-description">Build your financial literacy, master investment strategies, and experience real-world market dynamics with virtual money.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="cta-button download-app">
+                        <i class="fas fa-download"></i> Download Hedgex
+                    </a>
+                    <a href="#how-it-works" class="secondary-button">
+                        <i class="fas fa-play"></i> See How It Works
+                    </a>
+                </div>
+            </div>
         </div>
-        
-        <div class="section">
-            <h2>How Hedge Works</h2>
-            <p>Hedge is a fantasy trading platform designed to simulate real-world stock trading using fake money. It provides a risk-free environment for users to experiment with investment strategies, analyze market trends, and track their portfolio performance.</p>
-            <ul>
-                <li><strong>Data Collection:</strong> Hedge uses <code>yfinance</code> to fetch real-time market data, including stock prices, volume, and historical trends.</li>
-                <li><strong>Backend Processing:</strong> A <code>Flask</code>-based backend handles data requests, processes trades, and updates user portfolios.</li>
-                <li><strong>Local Data Tracking:</strong> User transactions and portfolio performance are stored locally, ensuring efficient tracking and retrieval.</li>
-                <li><strong>User Interface:</strong> A clean and interactive web interface allows users to explore stocks, make trades, and monitor their investments seamlessly.</li>
-            </ul>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose Hedgex</h2>
+                <p class="section-description">Discover the powerful features that make Hedgex the ideal platform for learning to trade without financial risk.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Real-Time Market Data</h3>
+                    <p class="feature-description">Experience authentic market conditions with live data from global exchanges, powered by the yfinance API, giving you the most current stock prices and trends.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3 class="feature-title">Virtual Portfolio Management</h3>
+                    <p class="feature-description">Track your investments, view performance metrics, and analyze your trading strategies with a comprehensive dashboard that simulates real portfolio management.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="feature-title">Interactive Learning Resources</h3>
+                    <p class="feature-description">Access a library of educational content including tutorials, market analysis techniques, and investment strategies to enhance your financial literacy.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Realistic Trading Experience</h3>
+                    <p class="feature-description">Execute buy/sell orders, set limit prices, and practice diversification strategies in a platform that mirrors professional trading environments.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="feature-title">Advanced Analytics</h3>
+                    <p class="feature-description">Visualize performance data with interactive charts and graphs to identify patterns, track progress, and improve your decision-making process.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="feature-title">Personalized Alerts</h3>
+                    <p class="feature-description">Stay informed with customizable notifications about market movements, portfolio changes, and educational opportunities relevant to your interests.</p>
+                </div>
+            </div>
         </div>
-        
-        <div class="section">
-            <h2>Key Features</h2>
-            <p>Hedge is packed with features to create an engaging and realistic trading experience:</p>
-            <ul>
-                <li><strong>Live Stock Data:</strong> Access real-time stock prices and trends.</li>
-                <li><strong>Portfolio Management:</strong> Track your investments and assess performance over time.</li>
-                <li><strong>Simulated Trading:</strong> Execute buy/sell orders without real-world financial risk.</li>
-                <li><strong>Educational Resources:</strong> Learn fundamental and technical analysis techniques.</li>
-                <li><strong>Market Insights:</strong> Receive periodic updates on market trends and investment strategies.</li>
-            </ul>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How Hedgex Works</h2>
+                <p class="section-description">Learn how our platform simulates real-world trading environments to help you develop valuable investment skills.</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title"><i class="fas fa-download"></i> Download & Setup</h3>
+                        <p class="step-description">Install Hedgex on your device and create your account. You'll receive virtual funds to start building your portfolio without risking real money.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title"><i class="fas fa-search"></i> Research & Analyze</h3>
+                        <p class="step-description">Use our integrated research tools to explore stocks, analyze market trends, and make informed investment decisions based on real-time data.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title"><i class="fas fa-money-bill-wave"></i> Execute Trades</h3>
+                        <p class="step-description">Place buy and sell orders with your virtual funds, set price limits, and build a diversified portfolio just like you would in actual stock markets.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3 class="step-title"><i class="fas fa-chart-pie"></i> Track Performance</h3>
+                        <p class="step-description">Monitor your investments in real-time, view detailed analytics of your trading history, and evaluate the effectiveness of your strategies.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3 class="step-title"><i class="fas fa-book"></i> Learn & Improve</h3>
+                        <p class="step-description">Access educational resources tailored to your experience level, from basic concepts to advanced trading strategies, helping you continually enhance your skills.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <div class="section about">
-            <h2>About Me</h2>
-            <p>I'm a junior at Prosper High School, passionate about finance and technology. I created Hedge to expand access to stock trading knowledge in a risk-free and engaging manner. By leveraging real market data and a structured learning approach, my goal is to make financial literacy more accessible to students and aspiring traders.</p>
+    </section>
+
+    <!-- Dashboard Preview
+    <section class="dashboard-preview">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Experience Our Trading Dashboard</h2>
+                <p class="section-description">Get a glimpse of our intuitive and powerful trading interface designed to provide a professional experience.</p>
+            </div>
+            
+            <img src="/api/placeholder/1100/600" alt="Hedgex Trading Dashboard" class="dashboard-image">
         </div>
-        
-        <div class="cta-container">
-            <a class="download-link" href="https://github.com/TanishC4444/PCIS_FantasySMG/archive/refs/heads/main.zip" download>Download Hedge</a>
+    </section> -->
+
+    <!-- Portfolio Demo Section
+    <section class="portfolio-demo-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Portfolio Demo</h2>
+                <p class="section-description">See how easy it is to track and manage your investments with our comprehensive portfolio tools.</p>
+            </div>
+            
+            <div class="portfolio-tabs">
+                <button class="portfolio-tab active">Overview</button>
+                <button class="portfolio-tab">Holdings</button>
+                <button class="portfolio-tab">Performance</button>
+                <button class="portfolio-tab">History</button>
+            </div>
+            
+            <div class="portfolio-content">
+                <div class="portfolio-header">
+                    <div class="portfolio-value-container">
+                        <span class="portfolio-value-label">Portfolio Value</span>
+                        <span class="portfolio-value">$124,567.89</span>
+                        <span class="portfolio-change positive">
+                            <i class="fas fa-caret-up"></i> $2,345.67 (1.92%)
+                        </span>
+                    </div>
+                    <div class="portfolio-timeframe">
+                        <button class="timeframe-button">1D</button>
+                        <button class="timeframe-button active">1W</button>
+                        <button class="timeframe-button">1M</button>
+                        <button class="timeframe-button">3M</button>
+                        <button class="timeframe-button">1Y</button>
+                        <button class="timeframe-button">All</button>
+                    </div>
+                </div>
+                
+                <canvas id="portfolioChart" class="chart-canvas" style="height: 250px; margin-bottom: 30px;"></canvas>
+                
+                <h3 style="margin-bottom: 15px;">Top Holdings</h3>
+                <table class="portfolio-table">
+                    <thead>
+                        <tr>
+                            <th>Stock</th>
+                            <th>Shares</th>
+                            <th>Avg. Cost</th>
+                            <th>Current Price</th>
+                            <th>Market Value</th>
+                            <th>Return</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="stock-info">
+                                    <div class="stock-logo">AAPL</div>
+                                    <div class="stock-details">
+                                        <span class="stock-symbol">AAPL</span>
+                                        <span class="stock-name">Apple Inc.</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>125</td>
+                            <td>$178.23</td>
+                            <td>$189.50</td>
+                            <td>$23,687.50</td>
+                            <td class="stock-change positive">+6.32%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="stock-info">
+                                    <div class="stock-logo">MSFT</div>
+                                    <div class="stock-details">
+                                        <span class="stock-symbol">MSFT</span>
+                                        <span class="stock-name">Microsoft Corp.</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>55</td>
+                            <td>$387.12</td>
+                            <td>$406.87</td>
+                            <td>$22,377.85</td>
+                            <td>55</td>
+                            <td>$387.12</td>
+                            <td>$406.87</td>
+                            <td>$22,377.85</td>
+                            <td class="stock-change positive">+5.10%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="stock-info">
+                                    <div class="stock-logo">AMZN</div>
+                                    <div class="stock-details">
+                                        <span class="stock-symbol">AMZN</span>
+                                        <span class="stock-name">Amazon.com Inc.</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>95</td>
+                            <td>$169.34</td>
+                            <td>$182.70</td>
+                            <td>$17,356.50</td>
+                            <td class="stock-change positive">+7.89%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="stock-info">
+                                    <div class="stock-logo">META</div>
+                                    <div class="stock-details">
+                                        <span class="stock-symbol">META</span>
+                                        <span class="stock-name">Meta Platforms Inc.</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>32</td>
+                            <td>$435.67</td>
+                            <td>$478.22</td>
+                            <td>$15,303.04</td>
+                            <td class="stock-change positive">+9.77%</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="stock-info">
+                                    <div class="stock-logo">GOOGL</div>
+                                    <div class="stock-details">
+                                        <span class="stock-symbol">GOOGL</span>
+                                        <span class="stock-name">Alphabet Inc.</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>80</td>
+                            <td>$161.45</td>
+                            <td>$174.93</td>
+                            <td>$13,994.40</td>
+                            <td class="stock-change positive">+8.35%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
-        <div class="footer">
-            &copy; 2025 Hedge | Created with passion for financial education.
+    </section> -->
+
+    <!-- Educational Resources Section
+    <section class="resources-section" id="resources">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Learning Resources</h2>
+                <p class="section-description">Strengthen your financial knowledge with our library of educational materials designed for traders of all levels.</p>
+            </div>
+            
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-image">
+                        <img src="/api/placeholder/400/300" alt="Investment Basics Guide">
+                    </div>
+                    <div class="resource-content">
+                        <span class="resource-tag">Beginner</span>
+                        <h3 class="resource-title">Investment Fundamentals Guide</h3>
+                        <p class="resource-description">Learn the basics of stock markets, asset classes, and investment principles in this comprehensive guide for beginners.</p>
+                        <a href="#" class="resource-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-image">
+                        <img src="/api/placeholder/400/300" alt="Technical Analysis">
+                    </div>
+                    <div class="resource-content">
+                        <span class="resource-tag">Intermediate</span>
+                        <h3 class="resource-title">Technical Analysis Masterclass</h3>
+                        <p class="resource-description">Discover how to read charts, identify patterns, and use technical indicators to make more informed trading decisions.</p>
+                        <a href="#" class="resource-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-image">
+                        <img src="/api/placeholder/400/300" alt="Portfolio Strategy">
+                    </div>
+                    <div class="resource-content">
+                        <span class="resource-tag">Advanced</span>
+                        <h3 class="resource-title">Portfolio Optimization Strategies</h3>
+                        <p class="resource-description">Explore advanced techniques for balancing risk and return, asset allocation, and building resilient investment portfolios.</p>
+                        <a href="#" class="resource-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section> -->
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About Hedgex</h2>
+                <p class="section-description">Our mission is to democratize financial education and empower everyone to build investment skills with confidence.</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Hedgex was created by a team of financial professionals and educators who believe that learning to invest shouldn't require risking real money. Our platform combines cutting-edge technology with comprehensive educational resources to provide a realistic trading experience without the financial stakes.</p>
+                    <p>Whether you're a student, career-changer, or simply curious about investing, Hedgex gives you the tools and knowledge to navigate financial markets with confidence.</p>
+                    
+                    <div class="about-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">50K+</div>
+                            <div class="stat-label">Stocks</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">$100,000+</div>
+                            <div class="stat-label">Virtual Cash</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What Our Users Say</h2>
+                <p class="section-description">Hear from people who have transformed their understanding of investing with Hedgex.</p>
+            </div>
+            
+            <div class="testimonials-slider">
+                <div class="testimonial-slide">
+                    <div class="testimonial-content">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"Hedgex completely changed how I approach investing. After practicing for three months, I felt confident enough to start investing my actual savings and have seen consistent growth in my real portfolio."</p>
+                        <div class="testimonial-author">
+                            <img src="/api/placeholder/60/60" alt="User Avatar" class="author-avatar">
+                            <div class="author-info">
+                                <h4 class="author-name">Sarah Johnson</h4>
+                                <p class="author-role">Software Engineer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-slide">
+                    <div class="testimonial-content">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"As a finance professor, I recommend Hedgex to all my students. It's the perfect balance of realistic market simulation and educational content. The analytics tools are particularly impressive."</p>
+                        <div class="testimonial-author">
+                            <img src="/api/placeholder/60/60" alt="User Avatar" class="author-avatar">
+                            <div class="author-info">
+                                <h4 class="author-name">Dr. Michael Chen</h4>
+                                <p class="author-role">Finance Professor</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Start Your Investment Journey?</h2>
+            <p class="cta-description">Download Hedgex today and begin building your investment skills without financial risk.</p>
+            <div class="cta-buttons">
+                <a href="#" class="cta-button download-app">
+                    <i class="fas fa-download"></i> Download Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <i class="fas fa-chart-line logo-icon"></i>
+                        <h2>Hedgex</h2>
+                    </div>
+                    <p class="footer-description">Learn to trade with confidence using our risk-free stock market simulator.</p>
+                    <!-- <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div> -->
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#resources">Learning Resources</a></li>
+                        <li><a href="#about">About Us</a></li>
+                    </ul>
+                </div>
+                
+                <!-- <div class="footer-column">
+                    <h3 class="footer-title">Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div> -->
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Subscribe</h3>
+                    <p class="footer-description">Get the latest updates and news from Hedgex.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
     </div>
 
+    <!-- Demo Modal (Hidden by default)
+    <div class="modal" id="demoModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Try Hedgex Web Demo</h2>
+            <p>Experience our trading simulator directly in your browser. No download required!</p>
+            <div class="modal-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <button class="cta-button">Start Demo</button>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- JavaScript -->
     <script>
-        // Animate sections on scroll
+        // Theme toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const sections = document.querySelectorAll('.section');
-            
-            // Intersection Observer for section animations
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-            
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-            
-            // Dark mode toggle
             const themeToggle = document.querySelector('.theme-toggle');
-            themeToggle.addEventListener('click', () => {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Check for saved theme preference or use prefer-color-scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // Apply theme based on saved preference or system preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '🌙';
+            }
+            
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
                 document.documentElement.setAttribute('data-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
+                
+                // Update toggle button appearance
+                themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+            });
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Modal functionality
+        const modal = document.getElementById('demoModal');
+        const openModalBtns = document.querySelectorAll('.open-demo-modal');
+        const closeModal = document.querySelector('.close-modal');
+        
+        openModalBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.style.display = 'flex';
+            });
+        });
+        
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Back to top button
+        const backToTopBtn = document.querySelector('.back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Charts initialization with Chart.js
+        document.addEventListener('DOMContentLoaded', function() {
+            // S&P 500 Chart
+            const sp500Ctx = document.getElementById('sp500Chart').getContext('2d');
+            const sp500Chart = new Chart(sp500Ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                    datasets: [{
+                        label: 'S&P 500',
+                        data: [4563, 4580, 4592, 4605, 4620],
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(37, 99, 235, 1)',
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
             });
             
-            // Check for saved theme preference
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            }
+            // Sector Chart
+            const sectorCtx = document.getElementById('sectorChart').getContext('2d');
+            const sectorChart = new Chart(sectorCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tech', 'Finance', 'Healthcare', 'Energy', 'Consumer'],
+                    datasets: [{
+                        label: 'Weekly Performance',
+                        data: [3.2, 1.8, 2.5, -0.7, 1.2],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(37, 99, 235, 0.6)',
+                            'rgba(37, 99, 235, 0.5)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(37, 99, 235, 0.4)'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Portfolio Chart
+            const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+            const portfolioChart = new Chart(portfolioCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: [122300, 122650, 123200, 123800, 124450, 124100, 124567.89],
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(37, 99, 235, 1)',
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
         });
     </script>
 </body>
